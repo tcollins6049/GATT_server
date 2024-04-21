@@ -24,6 +24,7 @@ class ThermometerService(Service):
         Service.__init__(self, index, self.THERMOMETER_SVC_UUID, True)
         self.add_characteristic(TempCharacteristic(self))
         self.add_characteristic(UnitCharacteristic(self))
+        self.add_characteristic(FileCharacteristic(self))
 
     def is_farenheit(self):
         return self.farenheit
