@@ -34,9 +34,9 @@ class ThermometerService(Service):
 
 
 class FileCharacteristic(Characteristic):
-    def __init__(self, bus, index, service):
+    def __init__(self, service):
         Characteristic.__init__(
-            self, bus, index,
+            self,
             '00000005-710e-4a5b-8d75-3e5b444bc3cf', 
             ['read', 'write'],  
             service)
