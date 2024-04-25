@@ -1,0 +1,7 @@
+loguru==0.6.0
+paho-mqtt==1.6.1
+pytz==2022.5
+vcgencmd==0.1.1
+watchdog==2.1.9
+pyserial==3.5
+adafruit-circuitpython-dht==3.7.8
