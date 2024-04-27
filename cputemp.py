@@ -40,7 +40,7 @@ class FileCharacteristic(Characteristic):
             '00000005-710e-4a5b-8d75-3e5b444bc3cf', 
             ['read', 'write'],  
             service)
-        self.file_path = '/home/bee/AppMAIS/beemon-config.ini' 
+        self.file_path = '/home/GATT_server/beemon-config.ini' 
 
     def ReadValue(self, options):
         with open(self.file_path, 'r') as file:
