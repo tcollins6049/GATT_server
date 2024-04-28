@@ -57,8 +57,20 @@ class FileCharacteristic(Characteristic):
     def WriteValue(self, value, options):
         data = ''.join(chr(v) for v in value)
         print('FileCharacteristic Write: {}'.format(data))
+        modified_lines = []
+        with open(self.file_path, 'r') as file:
+            for line in file:
+                # Check if the line starts with 'capture_window_start_time'
+                if line.startswith('capture_window_start_time'):
+                    # Modify the line with the new value
+                    modified_line = line.split('=')[0].strip() + '= ' + data + '\n'
+                    modified_lines.append(modified_line)
+                else:
+                    modified_lines.append(line)
+
+        # Write the modified lines back to the file
         with open(self.file_path, 'w') as file:
-            file.write(data)
+            file.writelines(modified_lines)
 
 
 class TempCharacteristic(Characteristic):
