@@ -43,10 +43,16 @@ class FileCharacteristic(Characteristic):
         self.file_path = '/home/pi/GATT_server/beemon-config.ini'
 
     def ReadValue(self, options):
+        capture_lines = []
         with open(self.file_path, 'r') as file:
-            data = file.read()
-        print('FileCharacteristic Read: {}'.format(data))
-        return [dbus.Byte(c) for c in data.encode()]
+            for line in file:
+                # Check if the line starts with 'capture_window_start_time'
+                if line.startswith('capture_window_start_time'):
+                    capture_lines.append(line.strip())
+        # Concatenate all captured lines into a single string
+        captured_data = '\n'.join(capture_lines)
+        print('FileCharacteristic Read: {}'.format(captured_data))
+        return [dbus.Byte(c) for c in captured_data.encode()]
 
     def WriteValue(self, value, options):
         data = ''.join(chr(v) for v in value)
