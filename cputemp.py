@@ -45,9 +45,11 @@ class FileCharacteristic(Characteristic):
     def ReadValue(self, options):
         capture_lines = []
         with open(self.file_path, 'r') as file:
+            idx = 0;
             for line in file:
-                if line.startswith('capture_window_start_time'):
+                if line.startswith('capture_window_start_time') and idx == 0:
                     capture_lines.append(line.strip())
+                    idx += 1
         
         captured_data = '\n'.join(capture_lines)
         print('FileCharacteristic Read: {}'.format(captured_data))
@@ -57,15 +59,15 @@ class FileCharacteristic(Characteristic):
         data = ''.join(chr(v) for v in value)
         print('FileCharacteristic Write: {}'.format(data))
         modified_lines = []
-        idx = 0
+        # idx = 0
         with open(self.file_path, 'r') as file:
             for line in file:
                 # Check if the line starts with 'capture_window_start_time'
-                if (line.startswith('capture_window_start_time') and idx == 0):
+                if (line.startswith('capture_window_start_time')):
                     # Modify the line with the new value
                     modified_line = line.split('=')[0].strip() + '= ' + data + '\n'
                     modified_lines.append(modified_line)
-                    idx += 1;
+                    # idx += 1;
                 else:
                     modified_lines.append(line)
 
