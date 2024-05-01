@@ -46,10 +46,9 @@ class FileCharacteristic(Characteristic):
         capture_lines = []
         with open(self.file_path, 'r') as file:
             for line in file:
-                # Check if the line starts with 'capture_window_start_time'
                 if line.startswith('capture_window_start_time'):
                     capture_lines.append(line.strip())
-        # Concatenate all captured lines into a single string
+        
         captured_data = '\n'.join(capture_lines)
         print('FileCharacteristic Read: {}'.format(captured_data))
         return [dbus.Byte(c) for c in captured_data.encode()]
@@ -59,12 +58,14 @@ class FileCharacteristic(Characteristic):
         print('FileCharacteristic Write: {}'.format(data))
         modified_lines = []
         with open(self.file_path, 'r') as file:
+            let i = 0;
             for line in file:
                 # Check if the line starts with 'capture_window_start_time'
-                if line.startswith('capture_window_start_time'):
+                if line.startswith('capture_window_start_time' and i == 0):
                     # Modify the line with the new value
                     modified_line = line.split('=')[0].strip() + '= ' + data + '\n'
                     modified_lines.append(modified_line)
+                    i += 1;
                 else:
                     modified_lines.append(line)
 
