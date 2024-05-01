@@ -57,15 +57,15 @@ class FileCharacteristic(Characteristic):
         data = ''.join(chr(v) for v in value)
         print('FileCharacteristic Write: {}'.format(data))
         modified_lines = []
+        idx = 0
         with open(self.file_path, 'r') as file:
-            i = 0;
             for line in file:
                 # Check if the line starts with 'capture_window_start_time'
-                if (line.startswith('capture_window_start_time') and i == 0):
+                if (line.startswith('capture_window_start_time') and idx == 0):
                     # Modify the line with the new value
                     modified_line = line.split('=')[0].strip() + '= ' + data + '\n'
                     modified_lines.append(modified_line)
-                    i += 1;
+                    idx += 1;
                 else:
                     modified_lines.append(line)
 
