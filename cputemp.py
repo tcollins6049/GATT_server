@@ -58,7 +58,7 @@ class FileCharacteristic(Characteristic):
         print('FileCharacteristic Write: {}'.format(data))
         modified_lines = []
         with open(self.file_path, 'r') as file:
-            let i = 0;
+            i = 0;
             for line in file:
                 # Check if the line starts with 'capture_window_start_time'
                 if line.startswith('capture_window_start_time' and i == 0):
