@@ -25,6 +25,7 @@ class ThermometerService(Service):
         self.add_characteristic(TempCharacteristic(self))
         self.add_characteristic(UnitCharacteristic(self))
         self.add_characteristic(FileCharacteristic_capStart(self))
+        self.add_characteristic(FileCharacteristic_captEnd(self))
 
     def is_farenheit(self):
         return self.farenheit
@@ -52,12 +53,12 @@ class FileCharacteristic_capStart(Characteristic):
                     idx += 1
         
         captured_data = '\n'.join(capture_lines)
-        print('FileCharacteristic Read: {}'.format(captured_data))
+        print('FileCharacteristic_captStart Read: {}'.format(captured_data))
         return [dbus.Byte(c) for c in captured_data.encode()]
 
     def WriteValue(self, value, options):
         data = ''.join(chr(v) for v in value)
-        print('FileCharacteristic Write: {}'.format(data))
+        print('FileCharacteristic_captStart Write: {}'.format(data))
         modified_lines = []
         # idx = 0
         with open(self.file_path, 'r') as file:
