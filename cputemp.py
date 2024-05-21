@@ -67,7 +67,7 @@ class FileCharacteristic(Characteristic):
         with open(self.file_path, 'r') as file:
             for line in file:
                 if line.startswith(self.variable_name):
-                    modified_line = self.variable_name + '= ' + data + '\n'
+                    modified_line = self.variable_name + ' = ' + data + '\n'
                     modified_lines.append(modified_line)
                 else:
                     modified_lines.append(line)
