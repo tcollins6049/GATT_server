@@ -24,8 +24,12 @@ class ThermometerService(Service):
         Service.__init__(self, index, self.THERMOMETER_SVC_UUID, True)
         self.add_characteristic(TempCharacteristic(self))
         self.add_characteristic(UnitCharacteristic(self))
-        self.add_characteristic(FileCharacteristic_capStart(self))
-        self.add_characteristic(FileCharacteristic_captEnd(self))
+        # self.add_characteristic(FileCharacteristic_capStart(self))
+        # self.add_characteristic(FileCharacteristic_captEnd(self))
+        cap_start = FileCharacteristic(service, '00000005-710e-4a5b-8d75-3e5b444bc3cf', 'capture_window_start_time')
+        self.add_characteristic(cap_start)
+        cap_end = FileCharacteristic(service, '00000006-710e-4a5b-8d75-3e5b444bc3cf', 'capture_window_end_time')
+        self.add_characteristic(cap_end)
 
     def is_farenheit(self):
         return self.farenheit
@@ -33,7 +37,46 @@ class ThermometerService(Service):
     def set_farenheit(self, farenheit):
         self.farenheit = farenheit
 
+    
+class FileCharacteristic(Characteristic):
+    def __init__(self, service, uuid, variable_name):
+        Characteristic.__init__(
+            self,
+            uuid, 
+            ['read', 'write'],  
+            service)
+        self.file_path = '/home/bee/AppMAIS/beemon-config.ini'
+        self.variable_name = variable_name
 
+    def ReadValue(self, options):
+        capture_lines = []
+        with open(self.file_path, 'r') as file:
+            for line in file:
+                if line.startswith(self.variable_name):
+                    capture_lines.append(line.strip())
+                    break
+        
+        captured_data = '\n'.join(capture_lines)
+        print('FileCharacteristic Read: {}'.format(captured_data))
+        return [dbus.Byte(c) for c in captured_data.encode()]
+
+    def WriteValue(self, value, options):
+        data = ''.join(chr(v) for v in value)
+        print('FileCharacteristic Write: {}'.format(data))
+        modified_lines = []
+        with open(self.file_path, 'r') as file:
+            for line in file:
+                if line.startswith(self.variable_name):
+                    modified_line = self.variable_name + '= ' + data + '\n'
+                    modified_lines.append(modified_line)
+                else:
+                    modified_lines.append(line)
+
+        with open(self.file_path, 'w') as file:
+            file.writelines(modified_lines)
+
+
+'''
 class FileCharacteristic_capStart(Characteristic):
     def __init__(self, service):
         Characteristic.__init__(
@@ -117,6 +160,7 @@ class FileCharacteristic_captEnd(Characteristic):
         # Write the modified lines back to the file
         with open(self.file_path, 'w') as file:
             file.writelines(modified_lines)
+'''
 
 
 class TempCharacteristic(Characteristic):
