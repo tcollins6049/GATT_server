@@ -31,9 +31,9 @@ class ThermometerService(Service):
         cap_end = FileCharacteristic(self, '00000006-710e-4a5b-8d75-3e5b444bc3cf', 'capture_window_end_time')
         self.add_characteristic(cap_end)
         cap_duration = FileCharacteristic(self, '00000007-710e-4a5b-8d75-3e5b444bc3cf', 'capture_duration_seconds')
-        self.add_characterisitc(cap_duration)
+        self.add_characteristic(cap_duration)
         cap_interval = FileCharacteristic(self, '00000008-710e-4a5b-8d75-3e5b444bc3cf', 'capture_interval_seconds')
-        self.add_characterisitc(cap_interval)
+        self.add_characteristic(cap_interval)
 
     def is_farenheit(self):
         return self.farenheit
