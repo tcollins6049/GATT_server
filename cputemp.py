@@ -12,6 +12,7 @@ NOTIFY_TIMEOUT = 5000
 class ThermometerAdvertisement(Advertisement):
     def __init__(self, index):
         Advertisement.__init__(self, index, "peripheral")
+        self.add_service_uuid(ThermometerService.THERMOMETER_SVC_UUID)
         # self.add_local_name("Thermometer")
         self.include_tx_power = True
 
@@ -79,92 +80,6 @@ class FileCharacteristic(Characteristic):
         with open(self.file_path, 'w') as file:
             file.writelines(modified_lines)
 
-
-'''
-class FileCharacteristic_capStart(Characteristic):
-    def __init__(self, service):
-        Characteristic.__init__(
-            self,
-            '00000005-710e-4a5b-8d75-3e5b444bc3cf', 
-            ['read', 'write'],  
-            service)
-        self.file_path = '/home/bee/AppMAIS/beemon-config.ini'
-
-    def ReadValue(self, options):
-        capture_lines = []
-        with open(self.file_path, 'r') as file:
-            idx = 0;
-            for line in file:
-                if line.startswith('capture_window_start_time') and idx == 0:
-                    capture_lines.append(line.strip())
-                    idx += 1
-        
-        captured_data = '\n'.join(capture_lines)
-        print('FileCharacteristic_captStart Read: {}'.format(captured_data))
-        return [dbus.Byte(c) for c in captured_data.encode()]
-
-    def WriteValue(self, value, options):
-        data = ''.join(chr(v) for v in value)
-        print('FileCharacteristic_captStart Write: {}'.format(data))
-        modified_lines = []
-        # idx = 0
-        with open(self.file_path, 'r') as file:
-            for line in file:
-                # Check if the line starts with 'capture_window_start_time'
-                if (line.startswith('capture_window_start_time')):
-                    # Modify the line with the new value
-                    modified_line = line.split('=')[0].strip() + '= ' + data + '\n'
-                    modified_lines.append(modified_line)
-                    # idx += 1;
-                else:
-                    modified_lines.append(line)
-
-        # Write the modified lines back to the file
-        with open(self.file_path, 'w') as file:
-            file.writelines(modified_lines)
-
-class FileCharacteristic_captEnd(Characteristic):
-    def __init__(self, service):
-        Characteristic.__init__(
-            self,
-            '00000006-710e-4a5b-8d75-3e5b444bc3cf', 
-            ['read', 'write'],  
-            service)
-        self.file_path = '/home/tcollins6049/GATT_server/beemon-config.ini'
-
-    def ReadValue(self, options):
-        capture_lines = []
-        with open(self.file_path, 'r') as file:
-            idx = 0;
-            for line in file:
-                if line.startswith('capture_window_end_time') and idx == 0:
-                    capture_lines.append(line.strip())
-                    idx += 1
-        
-        captured_data = '\n'.join(capture_lines)
-        print('FileCharacteristic_captEnd Read: {}'.format(captured_data))
-        return [dbus.Byte(c) for c in captured_data.encode()]
-
-    def WriteValue(self, value, options):
-        data = ''.join(chr(v) for v in value)
-        print('FileCharacteristic_captEnd Write: {}'.format(data))
-        modified_lines = []
-        # idx = 0
-        with open(self.file_path, 'r') as file:
-            for line in file:
-                # Check if the line starts with 'capture_window_start_time'
-                if (line.startswith('capture_window_end_time')):
-                    # Modify the line with the new value
-                    modified_line = line.split('=')[0].strip() + '= ' + data + '\n'
-                    modified_lines.append(modified_line)
-                    # idx += 1;
-                else:
-                    modified_lines.append(line)
-
-        # Write the modified lines back to the file
-        with open(self.file_path, 'w') as file:
-            file.writelines(modified_lines)
-'''
 
 
 class TempCharacteristic(Characteristic):
