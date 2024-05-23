@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-import dbus
+import dbus, os
 from advertisement import Advertisement
 from service import Application, Service, Characteristic, Descriptor
 from gpiozero import CPUTemperature
