@@ -1,32 +1,39 @@
 #!/usr/bin/python3
-
 import dbus
-
 from advertisement import Advertisement
 from service import Application, Service, Characteristic, Descriptor
 from gpiozero import CPUTemperature
 
+# Constants for GATT characteristic interface and notification timeout
 GATT_CHRC_IFACE = "org.bluez.GattCharacteristic1"
 NOTIFY_TIMEOUT = 5000
 
+# Advertisement class for the Thermometer service
 class ThermometerAdvertisement(Advertisement):
     def __init__(self, index):
         Advertisement.__init__(self, index, "peripheral")
         self.add_service_uuid(ThermometerService.THERMOMETER_SVC_UUID)
-        # self.add_local_name("Thermometer")
         self.include_tx_power = True
+        # Uncomment the line below to add a local name to the advertisement
+        # self.add_local_name("Thermometer")
+
 
 class ThermometerService(Service):
+    # UUID for the Thermometer service
     THERMOMETER_SVC_UUID = "00000001-710e-4a5b-8d75-3e5b444bc3cf"
 
     def __init__(self, index):
+        # Initialize the temperature unit to Fahrenheit
         self.farenheit = True
 
+        # Initialize the base Service class with the service UUID
         Service.__init__(self, index, self.THERMOMETER_SVC_UUID, True)
+
+        # Add characteristics to the service
         self.add_characteristic(TempCharacteristic(self))
         self.add_characteristic(UnitCharacteristic(self))
-        # self.add_characteristic(FileCharacteristic_capStart(self))
-        # self.add_characteristic(FileCharacteristic_captEnd(self))
+        
+        # Adding file-related characteristics
         cap_start = FileCharacteristic(self, '00000005-710e-4a5b-8d75-3e5b444bc3cf', 'capture_window_start_time')
         self.add_characteristic(cap_start)
         cap_end = FileCharacteristic(self, '00000006-710e-4a5b-8d75-3e5b444bc3cf', 'capture_window_end_time')
@@ -36,39 +43,69 @@ class ThermometerService(Service):
         cap_interval = FileCharacteristic(self, '00000008-710e-4a5b-8d75-3e5b444bc3cf', 'capture_interval_seconds')
         self.add_characteristic(cap_interval)
 
+        # Adding a characteristic for file information (e.g., file size)
+        self.add_characteristic(FileInfoCharacteristic(self, '00000009-710e-4a5b-8d75-3e5b444bc3cf'))
+
+    # Method to check if the temperature unit is Fahrenheit
     def is_farenheit(self):
         return self.farenheit
 
+    # Method to set the temperature unit to Fahrenheit or Celsius
     def set_farenheit(self, farenheit):
         self.farenheit = farenheit
 
-    
+
 class FileCharacteristic(Characteristic):
     def __init__(self, service, uuid, variable_name):
+        # Initialize the base Characteristic class with read and write properties
         Characteristic.__init__(
             self,
             uuid, 
             ['read', 'write'],  
             service)
+        
+        # Path to the configuration file.
         self.file_path = '/home/bee/AppMAIS/beemon-config.ini'
+        # Variable name to look for in the configuration file
         self.variable_name = variable_name
 
     def ReadValue(self, options):
+        """
+        Reads the value of the variable from the configuration file.
+
+        :param options: Additional options for reading the value.
+        :return: The value of the variable encoded in bytes.
+        """
         capture_lines = []
+
+        # Open the configuration file and find the line starting with the variable name
         with open(self.file_path, 'r') as file:
             for line in file:
                 if line.startswith(self.variable_name):
                     capture_lines.append(line.strip())
                     break
         
+        # Join the captured lines and print the read value
         captured_data = '\n'.join(capture_lines)
         print('FileCharacteristic Read: {}'.format(captured_data))
+
+        # Return the read value as a list of dbus.Byte
         return [dbus.Byte(c) for c in captured_data.encode()]
 
     def WriteValue(self, value, options):
+        """
+        Writes the provided value to the configuration file, updating the variable.
+
+        :param value: The value to write, provided as a list of bytes.
+        :param options: Additional options for writing the value.
+        """
+        # Convert the byte values to a string
         data = ''.join(chr(v) for v in value)
         print('FileCharacteristic Write: {}'.format(data))
+
         modified_lines = []
+
+        # Open the configuration file and update the line starting with the variable name
         with open(self.file_path, 'r') as file:
             for line in file:
                 if line.startswith(self.variable_name):
@@ -77,9 +114,25 @@ class FileCharacteristic(Characteristic):
                 else:
                     modified_lines.append(line)
 
+        # Write the modified lines back to the file
         with open(self.file_path, 'w') as file:
             file.writelines(modified_lines)
 
+
+class FileInfoCharacteristic(Characteristic):
+    def __init__(self, service, uuid):
+        Characteristic.__init__(
+            self,
+            uuid,
+            ['read'],
+            service)
+        self.file_path = '/home/bee/AppMAIS/beemon-config.ini'
+
+    def ReadValue(self, options):
+        file_size = os.path.getsize(self.file_path)
+        file_info = f"File Size: {file_size} bytes"
+        print('FileInfoCharacteristic Read: {}'.format(file_info))
+        return [dbus.Byte(c) for c in file_info.encode()]
 
 
 class TempCharacteristic(Characteristic):
@@ -134,6 +187,7 @@ class TempCharacteristic(Characteristic):
 
         return value
 
+
 class TempDescriptor(Descriptor):
     TEMP_DESCRIPTOR_UUID = "2901"
     TEMP_DESCRIPTOR_VALUE = "CPU Temperature"
@@ -152,6 +206,7 @@ class TempDescriptor(Descriptor):
             value.append(dbus.Byte(c.encode()))
 
         return value
+
 
 class UnitCharacteristic(Characteristic):
     UNIT_CHARACTERISTIC_UUID = "00000003-710e-4a5b-8d75-3e5b444bc3cf"
@@ -177,6 +232,7 @@ class UnitCharacteristic(Characteristic):
         value.append(dbus.Byte(val.encode()))
 
         return value
+
 
 class UnitDescriptor(Descriptor):
     UNIT_DESCRIPTOR_UUID = "2901"
