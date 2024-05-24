@@ -44,7 +44,10 @@ class ThermometerService(Service):
         self.add_characteristic(cap_interval)
 
         # Adding a characteristic for file information (e.g., file size)
-        self.add_characteristic(FileInfoCharacteristic(self, '00000009-710e-4a5b-8d75-3e5b444bc3cf'))
+        self.add_characteristic(FileInfoCharacteristic(self, '00000009-710e-4a5b-8d75-3e5b444bc3cf'));
+
+        # Adding a characteristic for file transfers
+        self.add_characteristic(FileTransferCharacteristic(self, '00000010-710e-4a5b-8d75-3e5b444bc3cf'));
 
     # Method to check if the temperature unit is Fahrenheit
     def is_farenheit(self):
@@ -133,6 +136,47 @@ class FileInfoCharacteristic(Characteristic):
         file_info = f"File Size: {file_size} bytes"
         print('FileInfoCharacteristic Read: {}'.format(file_info))
         return [dbus.Byte(c) for c in file_info.encode()]
+    
+
+class FileTransferCharacteristic(Characteristic):
+    def __init__(self, service, uuid):
+        Characteristic.__init__(
+            self,
+            uuid,
+            ['read', 'notify'],
+            service)
+        self.file_path = '/path/to/your/file'
+        self.chunk_size = 512  # Adjust this size based on your needs and BLE MTU size
+        self.offset = 0
+        self.file_size = os.path.getsize(self.file_path)
+
+    def ReadValue(self, options):
+        # Read the current chunk from the file
+        with open(self.file_path, 'rb') as f:
+            f.seek(self.offset)
+            chunk = f.read(self.chunk_size)
+            self.offset += self.chunk_size
+            
+            # Check if we need to wrap around or if we are done
+            if self.offset >= self.file_size:
+                self.offset = 0  # Reset for the next read
+                self.notify_done()  # Optional: notify client that the transfer is complete
+
+        # Convert chunk to list of dbus bytes
+        return [dbus.Byte(c) for c in chunk]
+
+    def notify_done(self):
+        # Notify the client that the file transfer is complete
+        # This can be a custom implementation depending on how you want to signal completion
+        print('File transfer completed.')
+
+    def StartNotify(self):
+        # Method to handle notifications
+        print('Notification started')
+
+    def StopNotify(self):
+        # Method to handle stopping notifications
+        print('Notification stopped')
 
 
 class TempCharacteristic(Characteristic):
