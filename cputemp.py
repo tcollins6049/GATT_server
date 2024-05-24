@@ -145,37 +145,33 @@ class FileTransferCharacteristic(Characteristic):
             uuid,
             ['read', 'notify'],
             service)
-        self.file_path = '/home/bee/AppMAIS/beemon-config.ini'
-        self.chunk_size = 512  # Adjust this size based on your needs and BLE MTU size
+        self.file_path = '/path/to/example.mp3'
+        self.chunk_size = 512  # Adjust this based on your BLE MTU size
         self.offset = 0
         self.file_size = os.path.getsize(self.file_path)
 
     def ReadValue(self, options):
-        # Read the current chunk from the file
         with open(self.file_path, 'rb') as f:
             f.seek(self.offset)
             chunk = f.read(self.chunk_size)
             self.offset += self.chunk_size
             
-            # Check if we need to wrap around or if we are done
             if self.offset >= self.file_size:
                 self.offset = 0  # Reset for the next read
                 self.notify_done()  # Optional: notify client that the transfer is complete
 
-        # Convert chunk to list of dbus bytes
-        return [dbus.Byte(c) for c in chunk]
+        # Encode chunk to base-64
+        encoded_chunk = base64.b64encode(chunk).decode('utf-8')
+        print('FileTransferCharacteristic Read:', encoded_chunk)
+        return [dbus.Byte(c) for c in encoded_chunk]
 
     def notify_done(self):
-        # Notify the client that the file transfer is complete
-        # This can be a custom implementation depending on how you want to signal completion
         print('File transfer completed.')
 
     def StartNotify(self):
-        # Method to handle notifications
         print('Notification started')
 
     def StopNotify(self):
-        # Method to handle stopping notifications
         print('Notification stopped')
 
 
