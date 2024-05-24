@@ -145,7 +145,7 @@ class FileTransferCharacteristic(Characteristic):
             uuid,
             ['read', 'notify'],
             service)
-        self.file_path = '/path/to/your/file'
+        self.file_path = '/home/bee/AppMAIS/beemon-config.ini'
         self.chunk_size = 512  # Adjust this size based on your needs and BLE MTU size
         self.offset = 0
         self.file_size = os.path.getsize(self.file_path)
