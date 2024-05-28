@@ -16,6 +16,7 @@ class ThermometerAdvertisement(Advertisement):
         self.include_tx_power = True
         # Uncomment the line below to add a local name to the advertisement
         self.add_local_name("TESTNAME")
+        print("local name set to TESTNAME")
 
 
 class ThermometerService(Service):
