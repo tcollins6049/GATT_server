@@ -15,7 +15,7 @@ class ThermometerAdvertisement(Advertisement):
         self.add_service_uuid(ThermometerService.THERMOMETER_SVC_UUID)
         self.include_tx_power = True
         # Uncomment the line below to add a local name to the advertisement
-        # self.add_local_name("Thermometer")
+        self.add_local_name("")
 
 
 class ThermometerService(Service):
@@ -137,7 +137,7 @@ class FileInfoCharacteristic(Characteristic):
         print('FileInfoCharacteristic Read: {}'.format(file_info))
         return [dbus.Byte(c) for c in file_info.encode()]
     
-
+# COME BACK TO
 class FileTransferCharacteristic(Characteristic):
     def __init__(self, service, uuid):
         Characteristic.__init__(
