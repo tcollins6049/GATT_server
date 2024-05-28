@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-import dbus, os
+import dbus, os, socket
 from advertisement import Advertisement
 from service import Application, Service, Characteristic, Descriptor
 from gpiozero import CPUTemperature
@@ -16,7 +16,9 @@ class ThermometerAdvertisement(Advertisement):
         self.include_tx_power = True
         # Uncomment the line below to add a local name to the advertisement
         # self.add_local_name("")
-        print("local name still not set")
+        system_name = socket.gethostname()
+        self.add_local_name(system_name)
+        print(f"Local name set to: {system_name}")
 
 
 class ThermometerService(Service):
