@@ -165,7 +165,9 @@ class CPUFileReadCharacteristic(Characteristic):
             # Sort files by modification time
             files.sort(key=os.path.getmtime, reverse=True)
             if files:
+                print("FILES[0]", files[0])
                 return files[0]
+        print("GONNA RETURN NONE")
         return None
 
     def ReadValue(self, options):
