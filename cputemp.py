@@ -4,6 +4,8 @@ from advertisement import Advertisement
 from service import Application, Service, Characteristic, Descriptor
 from gpiozero import CPUTemperature
 from datetime import datetime
+from watchdog.observers import Observer
+from watchdog.events import FileSystemEventHandler
 
 # Constants for GATT characteristic interface and notification timeout
 GATT_CHRC_IFACE = "org.bluez.GattCharacteristic1"
@@ -145,15 +147,18 @@ class FileInfoCharacteristic(Characteristic):
         return [dbus.Byte(c) for c in file_info.encode()]
     
 
-class CPUFileReadCharacteristic(Characteristic):
+class CPUFileReadCharacteristic(Characteristic, FileSystemEventHandler):
     def __init__(self, service, uuid):
         Characteristic.__init__(
             self,
             uuid,
-            ['read'],
+            ['read', 'notify'],
             service)
         self.folder_path = '/home/bee/appmais/bee_tmp/cpu/'
+        self.file_path = None
+        self.value = None
         print(f"Characteristic initialized with UUID: {uuid}")
+        self.start_monitoring()
 
     def get_most_recent_file(self):
         print("Getting most recent file")
@@ -175,20 +180,36 @@ class CPUFileReadCharacteristic(Characteristic):
         print("GONNA RETURN NONE")
         return None
 
-    def ReadValue(self, options):
-        print("ReadValue called")
-        self.file_path = self.get_most_recent_file()
+    def on_modified(self, event):
+        print(f"File system changed: {event.src_path}")
+        new_file = self.get_most_recent_file()
+        if new_file != self.file_path:
+            self.file_path = new_file
+            self.update_value()
+
+    def update_value(self):
         if self.file_path is not None:
             try:
                 with open(self.file_path, 'r') as file:
                     last_line = file.readlines()[-1]
-                print(f"Returning data: {last_line}")
-                return [dbus.Byte(b) for b in last_line.encode()]
+                self.value = [dbus.Byte(b) for b in last_line.encode()]
+                self.PropertiesChanged('org.bluez.GattCharacteristic1', {'Value': self.value}, [])
+                print(f"Value updated and notification sent: {last_line}")
             except Exception as e:
                 print(f"Error occurred while reading the file: {e}")
-                return []
+
+    def start_monitoring(self):
+        event_handler = self
+        observer = Observer()
+        observer.schedule(event_handler, self.folder_path, recursive=True)
+        observer.start()
+
+    def ReadValue(self, options):
+        print("ReadValue called")
+        if self.value is not None:
+            return self.value
         else:
-            print("No file found")
+            print("No value available")
             return []
 
 
