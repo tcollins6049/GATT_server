@@ -157,14 +157,21 @@ class CPUFileReadCharacteristic(Characteristic):
 
     def get_most_recent_file(self):
         print("Getting most recent file")
-        dirs = [d for d in os.listdir(self.folder_path) if os.path.isdir(os.path.join(self.folder_path, d))]
-        dirs.sort(key=lambda x: datetime.strptime(x, '%Y-%m-%d'), reverse=True)
-        for d in dirs:
-            files = glob.glob(os.path.join(self.folder_path, d, '*.csv'))
-            files.sort(key=os.path.getmtime, reverse=True)
-            if files:
-                print("FILES[0]", files[0])
-                return files[0]
+        try:
+            dirs = [d for d in os.listdir(self.folder_path) if os.path.isdir(os.path.join(self.folder_path, d))]
+            print(f"Directories found: {dirs}")
+            dirs.sort(key=lambda x: datetime.strptime(x, '%Y-%m-%d'), reverse=True)
+            print(f"Sorted directories: {dirs}")
+            for d in dirs:
+                files = glob.glob(os.path.join(self.folder_path, d, '*.csv'))
+                print(f"Files in {d}: {files}")
+                files.sort(key=os.path.getmtime, reverse=True)
+                print(f"Sorted files in {d}: {files}")
+                if files:
+                    print("FILES[0]", files[0])
+                    return files[0]
+        except Exception as e:
+            print(f"Error occurred while getting most recent file: {e}")
         print("GONNA RETURN NONE")
         return None
 
@@ -172,10 +179,14 @@ class CPUFileReadCharacteristic(Characteristic):
         print("ReadValue called")
         self.file_path = self.get_most_recent_file()
         if self.file_path is not None:
-            with open(self.file_path, 'r') as file:
-                last_line = file.readlines()[-1]
-            print(f"Returning data: {last_line}")
-            return [dbus.Byte(b) for b in last_line.encode()]
+            try:
+                with open(self.file_path, 'r') as file:
+                    last_line = file.readlines()[-1]
+                print(f"Returning data: {last_line}")
+                return [dbus.Byte(b) for b in last_line.encode()]
+            except Exception as e:
+                print(f"Error occurred while reading the file: {e}")
+                return []
         else:
             print("No file found")
             return []
