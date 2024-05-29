@@ -151,12 +151,30 @@ class CPUFileReadCharacteristic(Characteristic):
             uuid,
             ['read'],
             service)
-        self.file_path = '/home/bee/appmais/bee_tmp/cpu/2024-05-28/rpi4-60@2024-05-28.csv'
+        self.folder_path = '/home/bee/appmais/bee_tmp/cpu/'
+
+    def get_most_recent_file(self):
+        # Get list of directories
+        dirs = [d for d in os.listdir(self.folder_path) if os.path.isdir(os.path.join(self.folder_path, d))]
+        # Sort directories by date
+        dirs.sort(key=lambda x: datetime.strptime(x, '%Y-%m-%d'), reverse=True)
+        for d in dirs:
+            # Get list of files in directory
+            files = glob.glob(os.path.join(self.folder_path, d, '*.csv'))
+            # Sort files by modification time
+            files.sort(key=os.path.getmtime, reverse=True)
+            if files:
+                return files[0]
+        return None
 
     def ReadValue(self, options):
-        with open(self.file_path, 'r') as file:
-            last_line = file.readlines()[-1]
-        return [dbus.Byte(b) for b in last_line.encode()]
+        self.file_path = self.get_most_recent_file()
+        if self.file_path is not None:
+            with open(self.file_path, 'r') as file:
+                last_line = file.readlines()[-1]
+            return [dbus.Byte(b) for b in last_line.encode()]
+        else:
+            return []
 
 
 class TempCharacteristic(Characteristic):
