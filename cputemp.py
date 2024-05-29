@@ -156,7 +156,7 @@ class CPUFileReadCharacteristic(Characteristic):
     def ReadValue(self, options):
         with open(self.file_path, 'r') as file:
             last_line = file.readlines()[-1]
-        return last_line
+        return [dbus.Byte(b) for b in last_line.encode()]
 
 
 class TempCharacteristic(Characteristic):
