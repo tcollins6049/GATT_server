@@ -48,9 +48,12 @@ class ThermometerService(Service):
 
         # Adding a characteristic for file information (e.g., file size)
         self.add_characteristic(FileInfoCharacteristic(self, '00000009-710e-4a5b-8d75-3e5b444bc3cf'));
+    
+        # Adding a characterisitc for cpu file data
+        self.add_characteristic(CPUFileReadCharacteristic(self, '00000010-710e-4a5b-8d75-3e5b444bc3cf'))
 
         # Adding a characteristic for file transfers
-        self.add_characteristic(FileTransferCharacteristic(self, '00000010-710e-4a5b-8d75-3e5b444bc3cf'));
+        # self.add_characteristic(FileTransferCharacteristic(self, '00000010-710e-4a5b-8d75-3e5b444bc3cf'));
 
     # Method to check if the temperature unit is Fahrenheit
     def is_farenheit(self):
@@ -140,42 +143,20 @@ class FileInfoCharacteristic(Characteristic):
         print('FileInfoCharacteristic Read: {}'.format(file_info))
         return [dbus.Byte(c) for c in file_info.encode()]
     
-# COME BACK TO
-class FileTransferCharacteristic(Characteristic):
+
+class CPUFileReadCharacteristic(Characteristic):
     def __init__(self, service, uuid):
         Characteristic.__init__(
             self,
             uuid,
-            ['read', 'notify'],
+            ['read'],
             service)
-        self.file_path = '/home/bee/AppMAIS/beemon-config.ini'
-        self.chunk_size = 512  # Adjust this based on your BLE MTU size
-        self.offset = 0
-        self.file_size = os.path.getsize(self.file_path)
+        self.file_path = '/home/bee/appmais/bee_tmp/cpu/2024-05-28/rpi4-60@2024-05-28.csv'
 
     def ReadValue(self, options):
-        with open(self.file_path, 'rb') as f:
-            f.seek(self.offset)
-            chunk = f.read(self.chunk_size)
-            self.offset += self.chunk_size
-            
-            if self.offset >= self.file_size:
-                self.offset = 0  # Reset for the next read
-                self.notify_done()  # Optional: notify client that the transfer is complete
-
-        # Encode chunk to base-64
-        encoded_chunk = base64.b64encode(chunk).decode('utf-8')
-        print('FileTransferCharacteristic Read:', encoded_chunk)
-        return [dbus.Byte(c) for c in encoded_chunk]
-
-    def notify_done(self):
-        print('File transfer completed.')
-
-    def StartNotify(self):
-        print('Notification started')
-
-    def StopNotify(self):
-        print('Notification stopped')
+        with open(self.file_path, 'r') as file:
+            last_line = file.readlines()[-1]
+        return last_line
 
 
 class TempCharacteristic(Characteristic):
