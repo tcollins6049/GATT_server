@@ -157,6 +157,7 @@ class CPUFileReadCharacteristic(Characteristic, FileSystemEventHandler):
         self.folder_path = '/home/bee/appmais/bee_tmp/cpu/'
         self.file_path = None
         self.value = None
+        self.notifying = False
         print(f"Characteristic initialized with UUID: {uuid}")
         self.start_monitoring()
 
@@ -193,8 +194,10 @@ class CPUFileReadCharacteristic(Characteristic, FileSystemEventHandler):
                 with open(self.file_path, 'r') as file:
                     last_line = file.readlines()[-1]
                 self.value = [dbus.Byte(b) for b in last_line.encode()]
-                self.PropertiesChanged('org.bluez.GattCharacteristic1', {'Value': self.value}, [])
-                print(f"Value updated and notification sent: {last_line}")
+                print(f"Value updated: {last_line}")
+                if self.notifying:
+                    self.PropertiesChanged('org.bluez.GattCharacteristic1', {'Value': self.value}, [])
+                    print(f"Notification sent: {last_line}")
             except Exception as e:
                 print(f"Error occurred while reading the file: {e}")
 
@@ -211,6 +214,20 @@ class CPUFileReadCharacteristic(Characteristic, FileSystemEventHandler):
         else:
             print("No value available")
             return []
+
+    def StartNotify(self):
+        if self.notifying:
+            print("Already notifying, nothing to do")
+            return
+        self.notifying = True
+        print("StartNotify called, notifications enabled")
+
+    def StopNotify(self):
+        if not self.notifying:
+            print("Notifications already stopped, nothing to do")
+            return
+        self.notifying = False
+        print("StopNotify called, notifications disabled")
 
 
 class TempCharacteristic(Characteristic):
