@@ -4,8 +4,6 @@ from advertisement import Advertisement
 from service import Application, Service, Characteristic, Descriptor
 from gpiozero import CPUTemperature
 from datetime import datetime
-from watchdog.observers import Observer
-from watchdog.events import FileSystemEventHandler
 
 # Constants for GATT characteristic interface and notification timeout
 GATT_CHRC_IFACE = "org.bluez.GattCharacteristic1"
@@ -147,19 +145,15 @@ class FileInfoCharacteristic(Characteristic):
         return [dbus.Byte(c) for c in file_info.encode()]
     
 
-class CPUFileReadCharacteristic(Characteristic, FileSystemEventHandler):
+class CPUFileReadCharacteristic(Characteristic):
     def __init__(self, service, uuid):
         Characteristic.__init__(
             self,
             uuid,
-            ['read', 'notify'],
+            ['read'],
             service)
         self.folder_path = '/home/bee/appmais/bee_tmp/cpu/'
-        self.file_path = None
-        self.value = None
-        self.notifying = False
         print(f"Characteristic initialized with UUID: {uuid}")
-        self.start_monitoring()
 
     def get_most_recent_file(self):
         print("Getting most recent file")
@@ -181,53 +175,21 @@ class CPUFileReadCharacteristic(Characteristic, FileSystemEventHandler):
         print("GONNA RETURN NONE")
         return None
 
-    def on_modified(self, event):
-        print(f"File system changed: {event.src_path}")
-        new_file = self.get_most_recent_file()
-        if new_file != self.file_path:
-            self.file_path = new_file
-            self.update_value()
-
-    def update_value(self):
+    def ReadValue(self, options):
+        print("ReadValue called")
+        self.file_path = self.get_most_recent_file()
         if self.file_path is not None:
             try:
                 with open(self.file_path, 'r') as file:
                     last_line = file.readlines()[-1]
-                self.value = [dbus.Byte(b) for b in last_line.encode()]
-                print(f"Value updated: {last_line}")
-                if self.notifying:
-                    self.PropertiesChanged('org.bluez.GattCharacteristic1', {'Value': self.value}, [])
-                    print(f"Notification sent: {last_line}")
+                print(f"Returning data: {last_line}")
+                return [dbus.Byte(b) for b in last_line.encode()]
             except Exception as e:
                 print(f"Error occurred while reading the file: {e}")
-
-    def start_monitoring(self):
-        event_handler = self
-        observer = Observer()
-        observer.schedule(event_handler, self.folder_path, recursive=True)
-        observer.start()
-
-    def ReadValue(self, options):
-        print("ReadValue called")
-        if self.value is not None:
-            return self.value
+                return []
         else:
-            print("No value available")
+            print("No file found")
             return []
-
-    def StartNotify(self):
-        if self.notifying:
-            print("Already notifying, nothing to do")
-            return
-        self.notifying = True
-        print("StartNotify called, notifications enabled")
-
-    def StopNotify(self):
-        if not self.notifying:
-            print("Notifications already stopped, nothing to do")
-            return
-        self.notifying = False
-        print("StopNotify called, notifications disabled")
 
 
 class TempCharacteristic(Characteristic):
