@@ -52,7 +52,7 @@ class ThermometerService(Service):
         self.add_characteristic(FileInfoCharacteristic(self, '00000009-710e-4a5b-8d75-3e5b444bc3cf'));
     
         # Adding a characterisitc for cpu file data
-        # self.add_characteristic(CPUFileReadCharacteristic(self, '00000010-710e-4a5b-8d75-3e5b444bc3cf'))
+        self.add_characteristic(CPUFileReadCharacteristic(self, '00000010-710e-4a5b-8d75-3e5b444bc3cf'))
 
         # Adding a characteristic for file transfers
         # self.add_characteristic(FileTransferCharacteristic(self, '00000010-710e-4a5b-8d75-3e5b444bc3cf'));
@@ -87,21 +87,25 @@ class FileCharacteristic(Characteristic):
         :param options: Additional options for reading the value.
         :return: The value of the variable encoded in bytes.
         """
-        capture_lines = []
+        try:
+            capture_lines = []
 
-        # Open the configuration file and find the line starting with the variable name
-        with open(self.file_path, 'r') as file:
-            for line in file:
-                if line.startswith(self.variable_name):
-                    capture_lines.append(line.strip())
-                    break
-        
-        # Join the captured lines and print the read value
-        captured_data = '\n'.join(capture_lines)
-        print('FileCharacteristic Read: {}'.format(captured_data))
+            # Open the configuration file and find the line starting with the variable name
+            with open(self.file_path, 'r') as file:
+                for line in file:
+                    if line.startswith(self.variable_name):
+                        capture_lines.append(line.strip())
+                        break
+            
+            # Join the captured lines and print the read value
+            captured_data = '\n'.join(capture_lines)
+            print('FileCharacteristic Read: {}'.format(captured_data))
 
-        # Return the read value as a list of dbus.Byte
-        return [dbus.Byte(c) for c in captured_data.encode()]
+            # Return the read value as a list of dbus.Byte
+            return [dbus.Byte(c) for c in captured_data.encode()]
+        except Exception as e:
+            print(f"Error Reading File: {e}")
+            return []
 
 
     def WriteValue(self, value, options):
@@ -111,24 +115,27 @@ class FileCharacteristic(Characteristic):
         :param value: The value to write, provided as a list of bytes.
         :param options: Additional options for writing the value.
         """
-        # Convert the byte values to a string
-        data = ''.join(chr(v) for v in value)
-        print('FileCharacteristic Write: {}'.format(data))
+        try:
+            # Convert the byte values to a string
+            data = ''.join(chr(v) for v in value)
+            print('FileCharacteristic Write: {}'.format(data))
 
-        modified_lines = []
+            modified_lines = []
 
-        # Open the configuration file and update the line starting with the variable name
-        with open(self.file_path, 'r') as file:
-            for line in file:
-                if line.startswith(self.variable_name):
-                    modified_line = self.variable_name + ' = ' + data + '\n'
-                    modified_lines.append(modified_line)
-                else:
-                    modified_lines.append(line)
+            # Open the configuration file and update the line starting with the variable name
+            with open(self.file_path, 'r') as file:
+                for line in file:
+                    if line.startswith(self.variable_name):
+                        modified_line = self.variable_name + ' = ' + data + '\n'
+                        modified_lines.append(modified_line)
+                    else:
+                        modified_lines.append(line)
 
-        # Write the modified lines back to the file
-        with open(self.file_path, 'w') as file:
-            file.writelines(modified_lines)
+            # Write the modified lines back to the file
+            with open(self.file_path, 'w') as file:
+                file.writelines(modified_lines)
+        except Exception as e:
+            print(f"Error Writing File: {e}")
 
 
 class FileInfoCharacteristic(Characteristic):
