@@ -180,41 +180,6 @@ class CPUFileReadCharacteristic(Characteristic):
         return None
     
 
-    def on_modified(self, event):
-        print(f'File {event.src_path} has been modified')
-        # Here you can add the code to read the last line of the file
-        self.file_path = self.get_most_recent_file()
-        if self.file_path is not None:
-            try:
-                with open(self.file_path, 'r') as file:
-                    last_line = file.readlines()[-1]
-                print(f"Returning data: {last_line}")
-                return [dbus.Byte(b) for b in last_line.encode()]
-            except Exception as e:
-                print(f"Error occurred while reading the file: {e}")
-                return []
-        else:
-            print("No file found")
-            return []
-
-
-    def on_created(self, event):
-        print(f'File {event.src_path} has been created')
-        # Here you can add the code to read the last line of the file
-        self.file_path = self.get_most_recent_file()
-        if self.file_path is not None:
-            try:
-                with open(self.file_path, 'r') as file:
-                    last_line = file.readlines()[-1]
-                print(f"Returning data: {last_line}")
-                return [dbus.Byte(b) for b in last_line.encode()]
-            except Exception as e:
-                print(f"Error occurred while reading the file: {e}")
-                return []
-        else:
-            print("No file found")
-            return []
-
     def ReadValue(self, options):
         print("ReadValue called")
         self.file_path = self.get_most_recent_file()
@@ -230,10 +195,24 @@ class CPUFileReadCharacteristic(Characteristic):
         else:
             print("No file found")
             return []
+        
+class FileChangeHandler(FileSystemEventHandler):
+    def __init__(self, characteristic):
+        self.characteristic = characteristic
+
+    def on_modified(self, event):
+        print(f'File {event.src_path} has been modified')
+        self.characteristic.readValue({})
+
+    def on_created(self, event):
+        print(f'File {event.src_path} has been created')
+        self.characteristic.readValue({})
 
 
 if __name__ == "__main__":
-    event_handler = FileChangeHandler()
+    my_characteristic = CPUFileReadCharacteristic('00000001-710e-4a5b-8d75-3e5b444bc3cf', '00000009-710e-4a5b-8d75-3e5b444bc3cf')
+
+    event_handler = FileChangeHandler(my_characteristic)
     observer = Observer()
     observer.schedule(event_handler, path='/home/bee/appmais/bee_tmp/cpu/', recursive=True)
     observer.start()
