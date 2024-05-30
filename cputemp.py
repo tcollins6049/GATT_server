@@ -4,6 +4,9 @@ from advertisement import Advertisement
 from service import Application, Service, Characteristic, Descriptor
 from gpiozero import CPUTemperature
 from datetime import datetime
+from watchdog.observers import Observer
+from watchdog.events import FileSystemEventHandler
+import time
 
 # Constants for GATT characteristic interface and notification timeout
 GATT_CHRC_IFACE = "org.bluez.GattCharacteristic1"
@@ -102,6 +105,7 @@ class FileCharacteristic(Characteristic):
         # Return the read value as a list of dbus.Byte
         return [dbus.Byte(c) for c in captured_data.encode()]
 
+
     def WriteValue(self, value, options):
         """
         Writes the provided value to the configuration file, updating the variable.
@@ -174,6 +178,42 @@ class CPUFileReadCharacteristic(Characteristic):
             print(f"Error occurred while getting most recent file: {e}")
         print("GONNA RETURN NONE")
         return None
+    
+
+    def on_modified(self, event):
+        print(f'File {event.src_path} has been modified')
+        # Here you can add the code to read the last line of the file
+        self.file_path = self.get_most_recent_file()
+        if self.file_path is not None:
+            try:
+                with open(self.file_path, 'r') as file:
+                    last_line = file.readlines()[-1]
+                print(f"Returning data: {last_line}")
+                return [dbus.Byte(b) for b in last_line.encode()]
+            except Exception as e:
+                print(f"Error occurred while reading the file: {e}")
+                return []
+        else:
+            print("No file found")
+            return []
+
+
+    def on_created(self, event):
+        print(f'File {event.src_path} has been created')
+        # Here you can add the code to read the last line of the file
+        self.file_path = self.get_most_recent_file()
+        if self.file_path is not None:
+            try:
+                with open(self.file_path, 'r') as file:
+                    last_line = file.readlines()[-1]
+                print(f"Returning data: {last_line}")
+                return [dbus.Byte(b) for b in last_line.encode()]
+            except Exception as e:
+                print(f"Error occurred while reading the file: {e}")
+                return []
+        else:
+            print("No file found")
+            return []
 
     def ReadValue(self, options):
         print("ReadValue called")
@@ -190,6 +230,19 @@ class CPUFileReadCharacteristic(Characteristic):
         else:
             print("No file found")
             return []
+
+
+if __name__ == "__main__":
+    event_handler = FileChangeHandler()
+    observer = Observer()
+    observer.schedule(event_handler, path='/home/bee/appmais/bee_tmp/cpu/', recursive=True)
+    observer.start()
+    try:
+        while True:
+            time.sleep(1)
+    except KeyboardInterrupt:
+        observer.stop()
+    observer.join()
 
 
 class TempCharacteristic(Characteristic):
