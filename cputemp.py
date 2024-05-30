@@ -1,12 +1,10 @@
 #!/usr/bin/python3
-import dbus, os, socket, glob, time
+import dbus, os, socket, glob
 from advertisement import Advertisement
 from service import Application, Service, Characteristic, Descriptor
 from gpiozero import CPUTemperature
 from datetime import datetime
-from gi.repository import GLib
-from dbus.mainloop.glib import DBusGMainLoop
-from threading import Thread
+
 
 # Constants for GATT characteristic interface and notification timeout
 GATT_CHRC_IFACE = "org.bluez.GattCharacteristic1"
@@ -154,43 +152,10 @@ class CPUFileReadCharacteristic(Characteristic):
         Characteristic.__init__(
             self,
             uuid,
-            ['read', 'notify'],
-            service
-        )
+            ['read'],
+            service)
         self.folder_path = '/home/bee/appmais/bee_tmp/cpu/'
-        self.notifying = False
-        self.latest_file_path = None
-        self.current_date = datetime.now().strftime('%Y-%m-%d')
-
         print(f"Characteristic initialized with UUID: {uuid}")
-        self.start_monitoring()
-
-    def start_monitoring(self):
-        self.monitor_thread = Thread(target=self.monitor_files, daemon=True)
-        self.monitor_thread.start()
-
-    def monitor_files(self):
-        while True:
-            new_date = datetime.now().strftime('%Y-%m-%d')
-            if new_date != self.current_date:
-                self.current_date = new_date
-                self.latest_file_path = None
-
-            most_recent_file = self.get_most_recent_file()
-            if most_recent_file and most_recent_file != self.latest_file_path:
-                self.latest_file_path = most_recent_file
-                if self.notifying:
-                    self.notify_clients()
-            time.sleep(5)  # Adjust the sleep duration as needed
-
-    def notify_clients(self):
-        try:
-            with open(self.latest_file_path, 'r') as file:
-                last_line = file.readlines()[-1]
-            value = [dbus.Byte(b) for b in last_line.encode()]
-            self.PropertiesChanged('org.bluez.GattCharacteristic1', {'Value': value}, [])
-        except Exception as e:
-            print(f"Error occurred while notifying clients: {e}")
 
     def get_most_recent_file(self):
         print("Getting most recent file")
@@ -227,16 +192,6 @@ class CPUFileReadCharacteristic(Characteristic):
         else:
             print("No file found")
             return []
-    
-    def StartNotify(self):
-        if self.notifying:
-            return
-        self.notifying = True
-
-    def StopNotify(self):
-        if not self.notifying:
-            return
-        self.notifying = False
         
 
 class TempCharacteristic(Characteristic):
