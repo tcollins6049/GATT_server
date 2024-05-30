@@ -17,10 +17,10 @@ class ThermometerAdvertisement(Advertisement):
         self.add_service_uuid(ThermometerService.THERMOMETER_SVC_UUID)
         self.include_tx_power = True
         # Uncomment the line below to add a local name to the advertisement
-        # self.add_local_name("")
-        system_name = socket.gethostname()
-        self.add_local_name(system_name)
-        print(f"Local name set to: {system_name}")
+        self.add_local_name("THIS NAME")
+        # system_name = socket.gethostname()
+        # self.add_local_name(system_name)
+        # print(f"Local name set to: {system_name}")
 
 
 class ThermometerService(Service):
