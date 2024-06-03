@@ -234,8 +234,10 @@ class FileTransferCharacteristic(Characteristic):
             ['read'],
             service)
         self.file_path = file_path
+        print(f"FileTransferCharacteristic initialized with UUID: {uuid}")
 
     def ReadValue(self, options):
+        print("FileTransferCharacteristic ReadValue called")
         try:
             with open(self.file_path, 'rb') as file:
                 file_data = file.read()
