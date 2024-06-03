@@ -10,7 +10,9 @@ from datetime import datetime
 GATT_CHRC_IFACE = "org.bluez.GattCharacteristic1"
 NOTIFY_TIMEOUT = 5000
 
-# Advertisement class for the Thermometer service
+"""
+    Advertisement class for the Thermometer service
+"""
 class ThermometerAdvertisement(Advertisement):
     def __init__(self, index):
         Advertisement.__init__(self, index, "peripheral")
@@ -23,6 +25,10 @@ class ThermometerAdvertisement(Advertisement):
         print(f"Local name set to: {system_name}")
 
 
+"""
+    Class to establish the provided service, this service is responsible for all characteristics so far
+    !! Maybe come back and add a few more services for better characteristic organization !!
+"""
 class ThermometerService(Service):
     # UUID for the Thermometer service
     THERMOMETER_SVC_UUID = "00000001-710e-4a5b-8d75-3e5b444bc3cf"
@@ -38,7 +44,7 @@ class ThermometerService(Service):
         self.add_characteristic(TempCharacteristic(self))
         self.add_characteristic(UnitCharacteristic(self))
         
-        # Adding file-related characteristics
+        # Adding file-related variable change characteristics
         cap_start = FileCharacteristic(self, '00000005-710e-4a5b-8d75-3e5b444bc3cf', 'capture_window_start_time')
         self.add_characteristic(cap_start)
         cap_end = FileCharacteristic(self, '00000006-710e-4a5b-8d75-3e5b444bc3cf', 'capture_window_end_time')
@@ -54,8 +60,9 @@ class ThermometerService(Service):
         # Adding a characterisitc for cpu file data
         self.add_characteristic(CPUFileReadCharacteristic(self, '00000010-710e-4a5b-8d75-3e5b444bc3cf'))
 
-        # Adding a characteristic for file transfers
-        # self.add_characteristic(FileTransferCharacteristic(self, '00000010-710e-4a5b-8d75-3e5b444bc3cf'));
+        # Adding a characteristic for pulling a file
+        self.add_characteristic(FileTransferCharacteristic(self, '00000011-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/audio/2024-05-29/rpi4-60@2024-05-29@14-20-00.wav'))
+
 
     # Method to check if the temperature unit is Fahrenheit
     def is_farenheit(self):
@@ -66,6 +73,9 @@ class ThermometerService(Service):
         self.farenheit = farenheit
 
 
+"""
+    This is a generic class responsible for reading and writing to variables from the beemon-config file
+"""
 class FileCharacteristic(Characteristic):
     def __init__(self, service, uuid, variable_name):
         # Initialize the base Characteristic class with read and write properties
@@ -80,13 +90,14 @@ class FileCharacteristic(Characteristic):
         # Variable name to look for in the configuration file
         self.variable_name = variable_name
 
-    def ReadValue(self, options):
-        """
+
+    """
         Reads the value of the variable from the configuration file.
 
         :param options: Additional options for reading the value.
         :return: The value of the variable encoded in bytes.
-        """
+    """
+    def ReadValue(self, options):
         try:
             capture_lines = []
 
@@ -108,13 +119,13 @@ class FileCharacteristic(Characteristic):
             return []
 
 
-    def WriteValue(self, value, options):
-        """
+    """
         Writes the provided value to the configuration file, updating the variable.
 
         :param value: The value to write, provided as a list of bytes.
         :param options: Additional options for writing the value.
-        """
+    """
+    def WriteValue(self, value, options):
         try:
             # Convert the byte values to a string
             data = ''.join(chr(v) for v in value)
@@ -138,6 +149,10 @@ class FileCharacteristic(Characteristic):
             print(f"Error Writing File: {e}")
 
 
+"""
+    Reads the file size of file located at given path.
+    !! Need to change file path to be a parameter !!
+"""
 class FileInfoCharacteristic(Characteristic):
     def __init__(self, service, uuid):
         Characteristic.__init__(
@@ -154,6 +169,11 @@ class FileInfoCharacteristic(Characteristic):
         return [dbus.Byte(c) for c in file_info.encode()]
     
 
+"""
+    This class is responsible for reading the cpu temperature from the file
+
+    !! Need to add update functionality !!
+"""
 class CPUFileReadCharacteristic(Characteristic):
     def __init__(self, service, uuid):
         Characteristic.__init__(
@@ -199,8 +219,36 @@ class CPUFileReadCharacteristic(Characteristic):
         else:
             print("No file found")
             return []
-        
 
+
+"""
+    This class is responsible for pulling a file from the passed in file path
+
+    !! This is just test right now, not currently working !!
+"""  
+class FileTransferCharacteristic(Characteristic):
+    def __init__(self, service, uuid, file_path):
+        Characteristic.__init__(
+            self,
+            uuid,
+            ['read'],
+            service)
+        self.file_path = file_path
+
+    def ReadValue(self, options):
+        try:
+            with open(self.file_path, 'rb') as file:
+                file_data = file.read()
+            print(f"Read {len(file_data)} bytes from file")
+            return [dbus.Byte(b) for b in file_data]
+        except Exception as e:
+            print(f"Error reading file: {e}")
+            return []
+
+
+"""
+    This class is responsible for reading the cpu temperature.
+"""
 class TempCharacteristic(Characteristic):
     TEMP_CHARACTERISTIC_UUID = "00000002-710e-4a5b-8d75-3e5b444bc3cf"
 
@@ -319,14 +367,23 @@ class UnitDescriptor(Descriptor):
 
         return value
 
-app = Application()
-app.add_service(ThermometerService(0))
-app.register()
 
-adv = ThermometerAdvertisement(0)
-adv.register()
+"""
+    This is what will run first
+"""
+def main():
+    app = Application()
+    app.add_service(ThermometerService(0))
+    app.register()
 
-try:
-    app.run()
-except KeyboardInterrupt:
-    app.quit()
+    adv = ThermometerAdvertisement(0)
+    adv.register()
+
+    try:
+        app.run()
+    except KeyboardInterrupt:
+        app.quit()
+
+
+if __name__ == "__main__":
+    main()
