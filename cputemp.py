@@ -63,6 +63,12 @@ class ThermometerService(Service):
         # Adding a characteristic for pulling a file
         self.add_characteristic(FileTransferCharacteristic(self, '00000011-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/audio/2024-05-29/rpi4-60@2024-05-29@14-20-00.wav'))
 
+        # Adding file-related variable change characteristics for video
+        self.add_characteristic(FileCharacteristic(self, '00000012-710e-4a5b-8d75-3e5b444bc3cf', 'video','capture_window_start_time'))
+        self.add_characteristic(FileCharacteristic(self, '00000013-710e-4a5b-8d75-3e5b444bc3cf', 'video', 'capture_window_end_time'))
+        self.add_characteristic(FileCharacteristic(self, '00000014-710e-4a5b-8d75-3e5b444bc3cf', 'video', 'capture_duration_seconds'))
+        self.add_characteristic(FileCharacteristic(self, '00000015-710e-4a5b-8d75-3e5b444bc3cf', 'video', 'capture_interval_seconds'))
+
 
     # Method to check if the temperature unit is Fahrenheit
     def is_farenheit(self):
@@ -145,6 +151,7 @@ class FileCharacteristic(Characteristic):
             
             if values:
                 captured_data = '\n'.join(values)
+                
                 print(f"FileCharacteristic Read: {captured_data}")
                 return [dbus.Byte(c) for c in captured_data.encode()]
             else:
