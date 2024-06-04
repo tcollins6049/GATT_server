@@ -186,7 +186,7 @@ class FileCharacteristic(Characteristic):
             if self.section_name == 'video':
                 # Update the specific section and variable name if section is 'video'
                 if self.section_name in config:
-                    # config[self.section_name][self.variable_name] = data
+                    config[self.section_name][self.variable_name] = data
                     print("HHHHHHHHHH", data)
                 else:
                     print(f"Section {self.section_name} not found")
@@ -194,7 +194,7 @@ class FileCharacteristic(Characteristic):
                 # Update all sections except 'video'
                 for section in config.sections():
                     if section != 'video' and self.variable_name in config[section]:
-                        # config[section][self.variable_name] = data
+                        config[section][self.variable_name] = data
                         print("IIIIIIII", data)
             # Write the updated config back to the file
             with open(self.file_path, 'w') as file:
