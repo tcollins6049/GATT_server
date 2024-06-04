@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-import dbus, os, socket, glob
+import dbus, os, socket, glob, configparser
 from advertisement import Advertisement
 from service import Application, Service, Characteristic, Descriptor
 from gpiozero import CPUTemperature
@@ -45,13 +45,13 @@ class ThermometerService(Service):
         self.add_characteristic(UnitCharacteristic(self))
         
         # Adding file-related variable change characteristics
-        cap_start = FileCharacteristic(self, '00000005-710e-4a5b-8d75-3e5b444bc3cf', 'capture_window_start_time')
+        cap_start = FileCharacteristic(self, '00000005-710e-4a5b-8d75-3e5b444bc3cf', 'global','capture_window_start_time')
         self.add_characteristic(cap_start)
-        cap_end = FileCharacteristic(self, '00000006-710e-4a5b-8d75-3e5b444bc3cf', 'capture_window_end_time')
+        cap_end = FileCharacteristic(self, '00000006-710e-4a5b-8d75-3e5b444bc3cf', 'global', 'capture_window_end_time')
         self.add_characteristic(cap_end)
-        cap_duration = FileCharacteristic(self, '00000007-710e-4a5b-8d75-3e5b444bc3cf', 'capture_duration_seconds')
+        cap_duration = FileCharacteristic(self, '00000007-710e-4a5b-8d75-3e5b444bc3cf', 'global', 'capture_duration_seconds')
         self.add_characteristic(cap_duration)
-        cap_interval = FileCharacteristic(self, '00000008-710e-4a5b-8d75-3e5b444bc3cf', 'capture_interval_seconds')
+        cap_interval = FileCharacteristic(self, '00000008-710e-4a5b-8d75-3e5b444bc3cf', 'global', 'capture_interval_seconds')
         self.add_characteristic(cap_interval)
 
         # Adding a characteristic for file information (e.g., file size)
@@ -77,7 +77,7 @@ class ThermometerService(Service):
     This is a generic class responsible for reading and writing to variables from the beemon-config file
 """
 class FileCharacteristic(Characteristic):
-    def __init__(self, service, uuid, variable_name):
+    def __init__(self, service, uuid, section_name, variable_name):
         # Initialize the base Characteristic class with read and write properties
         Characteristic.__init__(
             self,
@@ -87,6 +87,8 @@ class FileCharacteristic(Characteristic):
         
         # Path to the configuration file.
         self.file_path = '/home/bee/AppMAIS/beemon-config.ini'
+        # Section name to look for in config file
+        self.section_name = section_name
         # Variable name to look for in the configuration file
         self.variable_name = variable_name
 
@@ -98,7 +100,7 @@ class FileCharacteristic(Characteristic):
         :return: The value of the variable encoded in bytes.
     """
     def ReadValue(self, options):
-        try:
+        '''try:
             capture_lines = []
 
             # Open the configuration file and find the line starting with the variable name
@@ -114,6 +116,42 @@ class FileCharacteristic(Characteristic):
 
             # Return the read value as a list of dbus.Byte
             return [dbus.Byte(c) for c in captured_data.encode()]
+        except Exception as e:
+            print(f"Error Reading File: {e}")
+            return []
+        '''
+        try:
+            # Cretae a config parser and read the file
+            config = configparser.ConfigParser()
+            config.read(self.file_path)
+
+            values = []
+
+            # Handles reading variable in video section
+            if self.section_name == 'video':
+                # Get the value from only the video section
+                if self.section_name in config and self.variable_name in config[self.section_name]:
+                    value = config[self.section_name][self.variable_name]
+                    values.append(f"{self.section_name}: {value}")
+                else:
+                    print(f"Variable {self.variable_name} not found in section {self.section_name}")
+            # Handles reading that variable in all other sections
+            else:
+                # Get the value from all sections except 'video'
+                for section in config.sections():
+                    if section != 'video' and self.variable_name in config[section]:
+                        value = config[section][self.variable_name]
+                        values.append(f"{section}: {value}")
+            
+            if values:
+                captured_data = '\n'.join(values)
+                print(f"FileCharacteristic Read: {captured_data}")
+                return [dbus.Byte(c) for c in captured_data.encode()]
+            else:
+                print(f"Variable {self.variable_name} not found in any applicable section")
+                return []
+            
+
         except Exception as e:
             print(f"Error Reading File: {e}")
             return []
@@ -203,6 +241,7 @@ class CPUFileReadCharacteristic(Characteristic):
             print(f"Error occurred while getting most recent file: {e}")
         print("GONNA RETURN NONE")
         return None
+
 
     def ReadValue(self, options):
         print("ReadValue called")
