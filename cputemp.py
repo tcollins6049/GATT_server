@@ -106,26 +106,6 @@ class FileCharacteristic(Characteristic):
         :return: The value of the variable encoded in bytes.
     """
     def ReadValue(self, options):
-        '''try:
-            capture_lines = []
-
-            # Open the configuration file and find the line starting with the variable name
-            with open(self.file_path, 'r') as file:
-                for line in file:
-                    if line.startswith(self.variable_name):
-                        capture_lines.append(line.strip())
-                        break
-            
-            # Join the captured lines and print the read value
-            captured_data = '\n'.join(capture_lines)
-            print('FileCharacteristic Read: {}'.format(captured_data))
-
-            # Return the read value as a list of dbus.Byte
-            return [dbus.Byte(c) for c in captured_data.encode()]
-        except Exception as e:
-            print(f"Error Reading File: {e}")
-            return []
-        '''
         try:
             # Cretae a config parser and read the file
             config = configparser.ConfigParser()
@@ -171,6 +151,7 @@ class FileCharacteristic(Characteristic):
         :param options: Additional options for writing the value.
     """
     def WriteValue(self, value, options):
+        '''
         try:
             # Convert the byte values to a string
             data = ''.join(chr(v) for v in value)
@@ -190,6 +171,34 @@ class FileCharacteristic(Characteristic):
             # Write the modified lines back to the file
             with open(self.file_path, 'w') as file:
                 file.writelines(modified_lines)
+        except Exception as e:
+            print(f"Error Writing File: {e}")
+        '''
+        try:
+            # Convert the byte values to a string
+            data = ''.join(chr(v) for v in value)
+            print('FileCharacteristic Write: {}'.format(data))
+
+            # Create a config parser and read the file
+            config = configparser.ConfigParser()
+            config.read(self.file_path)
+
+            if self.section_name == 'video':
+                # Update the specific section and variable name if section is 'video'
+                if self.section_name in config:
+                    # config[self.section_name][self.variable_name] = data
+                    print("HHHHHHHHHH", data)
+                else:
+                    print(f"Section {self.section_name} not found")
+            else:
+                # Update all sections except 'video'
+                for section in config.sections():
+                    if section != 'video' and self.variable_name in config[section]:
+                        # config[section][self.variable_name] = data
+                        print("IIIIIIII", data)
+            # Write the updated config back to the file
+            with open(self.file_path, 'w') as file:
+                config.write(file)
         except Exception as e:
             print(f"Error Writing File: {e}")
 
