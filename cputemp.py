@@ -69,6 +69,9 @@ class ThermometerService(Service):
         self.add_characteristic(FileCharacteristic(self, '00000014-710e-4a5b-8d75-3e5b444bc3cf', 'video', 'capture_duration_seconds'))
         self.add_characteristic(FileCharacteristic(self, '00000015-710e-4a5b-8d75-3e5b444bc3cf', 'video', 'capture_interval_seconds'))
 
+        # Adding characteristics for enabling and disabling sensors
+        self.add_characteristic(SensorStateCharacteristic(self, '00000016-710e-4a5b-8d75-3e5b444bc3cf', 'audio'))
+
 
     # Method to check if the temperature unit is Fahrenheit
     def is_farenheit(self):
@@ -151,29 +154,6 @@ class FileCharacteristic(Characteristic):
         :param options: Additional options for writing the value.
     """
     def WriteValue(self, value, options):
-        '''
-        try:
-            # Convert the byte values to a string
-            data = ''.join(chr(v) for v in value)
-            print('FileCharacteristic Write: {}'.format(data))
-
-            modified_lines = []
-
-            # Open the configuration file and update the line starting with the variable name
-            with open(self.file_path, 'r') as file:
-                for line in file:
-                    if line.startswith(self.variable_name):
-                        modified_line = self.variable_name + ' = ' + data + '\n'
-                        modified_lines.append(modified_line)
-                    else:
-                        modified_lines.append(line)
-
-            # Write the modified lines back to the file
-            with open(self.file_path, 'w') as file:
-                file.writelines(modified_lines)
-        except Exception as e:
-            print(f"Error Writing File: {e}")
-        '''
         try:
             # Convert the byte values to a string
             data = ''.join(chr(v) for v in value)
@@ -201,6 +181,65 @@ class FileCharacteristic(Characteristic):
                 config.write(file)
         except Exception as e:
             print(f"Error Writing File: {e}")
+
+
+
+"""
+    This class is responsible for enabling and disabling sensors in the config file
+"""
+class SensorStateCharacteristic(Characteristic):
+    def __init__(self, service, uuid, section_name):
+        # Initialize the base Characteristic class with read and write properties
+        Characteristic.__init__(
+            self,
+            uuid, 
+            ['read', 'write'],  
+            service)
+        
+        # Path to the configuration file.
+        self.file_path = '/home/bee/AppMAIS/beemon-config.ini'
+        # Section name to look for in config file
+        self.section_name = section_name
+        # Variable name to look for in the configuration file
+        self.variable_name = 'auto_start'
+    
+
+    """
+        Reads the value of the variable from the configuration file.
+
+        :param options: Additional options for reading the value.
+        :return: The value of the variable encoded in bytes.
+    """
+    def ReadValue(self, options):
+        try:
+            # Cretae a config parser and read the file
+            config = configparser.ConfigParser()
+            config.read(self.file_path)
+
+            values = []
+
+            # Get the value from only the video section
+            if self.section_name in config and self.variable_name in config[self.section_name]:
+                value = config[self.section_name][self.variable_name]
+                values.append(f"{self.section_name}: {value}")
+            else:
+                print(f"Variable {self.variable_name} not found in section {self.section_name}")
+            
+            if values:
+                captured_data = '\n'.join(values)
+                
+                print(f"FileCharacteristic Read: {captured_data}")
+                return [dbus.Byte(c) for c in captured_data.encode()]
+            else:
+                print(f"Variable {self.variable_name} not found in any applicable section")
+                return []
+            
+
+        except Exception as e:
+            print(f"Error Reading File: {e}")
+            return []
+    
+
 
 
 """
