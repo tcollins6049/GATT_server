@@ -264,8 +264,8 @@ class SensorStateCharacteristic(Characteristic):
 
             # Update the specific section and variable name if section is 'video'
             if self.section_name in config:
-                # config[self.section_name][self.variable_name] = data
-                print("HHHHHHHHHH", data)
+                config[self.section_name][self.variable_name] = data
+                # print("HHHHHHHHHH", data)
             else:
                 print(f"Section {self.section_name} not found")
             # Write the updated config back to the file
