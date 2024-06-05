@@ -238,6 +238,34 @@ class SensorStateCharacteristic(Characteristic):
         except Exception as e:
             print(f"Error Reading File: {e}")
             return []
+        
+    """
+        Writes the provided value to the configuration file, updating the variable.
+
+        :param value: The value to write, provided as a list of bytes.
+        :param options: Additional options for writing the value.
+    """
+    def WriteValue(self, value, options):
+        try:
+            # Convert the byte values to a string
+            data = ''.join(chr(v) for v in value)
+            print('FileCharacteristic Write: {}'.format(data))
+
+            # Create a config parser and read the file
+            config = configparser.ConfigParser()
+            config.read(self.file_path)
+
+            # Update the specific section and variable name if section is 'video'
+            if self.section_name in config:
+                # config[self.section_name][self.variable_name] = data
+                print("HHHHHHHHHH", data)
+            else:
+                print(f"Section {self.section_name} not found")
+            # Write the updated config back to the file
+            with open(self.file_path, 'w') as file:
+                config.write(file)
+        except Exception as e:
+            print(f"Error Writing File: {e}")
     
 
 
