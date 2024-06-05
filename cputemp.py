@@ -71,6 +71,11 @@ class ThermometerService(Service):
 
         # Adding characteristics for enabling and disabling sensors
         self.add_characteristic(SensorStateCharacteristic(self, '00000016-710e-4a5b-8d75-3e5b444bc3cf', 'audio'))
+        self.add_characteristic(SensorStateCharacteristic(self, '00000017-710e-4a5b-8d75-3e5b444bc3cf', 'video'))
+        self.add_characteristic(SensorStateCharacteristic(self, '00000018-710e-4a5b-8d75-3e5b444bc3cf', 'temp'))
+        self.add_characteristic(SensorStateCharacteristic(self, '00000019-710e-4a5b-8d75-3e5b444bc3cf', 'airquality'))
+        self.add_characteristic(SensorStateCharacteristic(self, '00000020-710e-4a5b-8d75-3e5b444bc3cf', 'scale'))
+        self.add_characteristic(SensorStateCharacteristic(self, '00000021-710e-4a5b-8d75-3e5b444bc3cf', 'cpu'))
 
 
     # Method to check if the temperature unit is Fahrenheit
