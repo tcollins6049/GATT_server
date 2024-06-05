@@ -249,6 +249,13 @@ class SensorStateCharacteristic(Characteristic):
         try:
             # Convert the byte values to a string
             data = ''.join(chr(v) for v in value)
+
+            # Ensure the string is 'True' if it's 'true'
+            if data.lower() == 'true':
+                data = 'True'
+            elif data.lower() == 'false':
+                data = 'False'
+
             print('FileCharacteristic Write: {}'.format(data))
 
             # Create a config parser and read the file
