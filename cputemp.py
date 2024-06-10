@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-import dbus, os, socket, glob, configparser
+import dbus, os, socket, glob, configparser, subprocess
 from advertisement import Advertisement
 from service import Application, Service, Characteristic, Descriptor
 from gpiozero import CPUTemperature
@@ -76,6 +76,9 @@ class ThermometerService(Service):
         self.add_characteristic(SensorStateCharacteristic(self, '00000019-710e-4a5b-8d75-3e5b444bc3cf', 'airquality'))
         self.add_characteristic(SensorStateCharacteristic(self, '00000020-710e-4a5b-8d75-3e5b444bc3cf', 'scale'))
         self.add_characteristic(SensorStateCharacteristic(self, '00000021-710e-4a5b-8d75-3e5b444bc3cf', 'cpu'))
+
+        # Adding the new command characteristic
+        self.add_characteristic(CommandCharacteristic(self))
 
 
     # Method to check if the temperature unit is Fahrenheit
@@ -380,6 +383,31 @@ class FileTransferCharacteristic(Characteristic):
         except Exception as e:
             print(f"Error reading file: {e}")
             return []
+        
+
+"""
+This class is responsible for running a command on the pi sent from the app
+
+!! This is just test right now, not currently working !!
+"""
+class CommandCharacteristic(Characteristic):
+    COMMAND_CHARACTERISTIC_UUID = "00000022-710e-4a5b-8d75-3e5b444bc3cf"
+
+    def __init__(self, service):
+        Characteristic.__init__(
+            self, self.COMMAND_CHARACTERISTIC_UUID,
+            ["write"], service)
+    
+    def WriteValue(self, value, options):
+        command = ''.join([chr(b) for b in value])
+        print(f"Received command: {command}")
+        try:
+            result = subprocess.run(command, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            print("Command output:", result.stdout.decode('utf-8'))
+            print("Command error:", result.stderr.decode('utf-8'))
+        except subprocess.CalledProcessError as e:
+            print("Command failed:", e)
+
 
 
 """
