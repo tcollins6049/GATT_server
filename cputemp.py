@@ -366,7 +366,7 @@ class CPUFileReadCharacteristic(Characteristic):
 class FileTransferCharacteristic(Characteristic):
     FILE_TRANSFER_CHARACTERISTIC_UUID = "00000011-710e-4a5b-8d75-3e5b444bc3cf"
 
-    def __init__(self, service, file_path):
+    def __init__(self, service, char_uuid, file_path):
         Characteristic.__init__(
             self,
             self.FILE_TRANSFER_CHARACTERISTIC_UUID,
