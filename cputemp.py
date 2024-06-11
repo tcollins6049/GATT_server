@@ -373,7 +373,7 @@ class FileTransferCharacteristic(Characteristic):
         self.file_data = None
         self.chunk_index = 0
 
-    def onReadRequest(self, offset):
+    def ReadValue(self):
         if self.file_data is None:
             with open(self.file_path, 'rb') as f:
                 self.file_data = f.read()
