@@ -296,7 +296,7 @@ class FileInfoCharacteristic(Characteristic):
             uuid,
             ['read'],
             service)
-        self.file_path = '/home/bee/AppMAIS/beemon-config.ini'
+        self.file_path = '/home/bee/appmais/bee_tmp/audio/2024-05-29/rpi4-60@2024-05-29@14-20-00.wav'
 
     def ReadValue(self, options):
         file_size = os.path.getsize(self.file_path)
