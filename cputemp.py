@@ -364,31 +364,28 @@ class CPUFileReadCharacteristic(Characteristic):
     !! This is just test right now, not currently working !!
 """  
 class FileTransferCharacteristic(Characteristic):
-    FILE_CHUNK_SIZE = 512  # Adjust this size based on your needs
-
     def __init__(self, service, uuid, file_path):
         Characteristic.__init__(
-            self, uuid, ["read"], service)
+            self,
+            uuid,
+            ['read'],
+            service)
         self.file_path = file_path
-        self.file_data = None
-        self.chunk_index = 0
+        self.offset = 0
+        print(f"FileTransferCharacteristic initialized with UUID: {uuid}")
 
     def ReadValue(self, options):
+        print("FileTransferCharacteristic ReadValue called")
         try:
-            if self.file_data is None:
-                with open(self.file_path, 'rb') as f:
-                    self.file_data = f.read()
-
-            start = self.chunk_index * self.FILE_CHUNK_SIZE
-            end = start + self.FILE_CHUNK_SIZE
-            chunk = self.file_data[start:end]
-
-            self.chunk_index += 1
-
-            if start >= len(self.file_data):
-                self.chunk_index = 0  # Reset for next read
-
-            return [dbus.Byte(c) for c in chunk]
+            mtu = options.get('mtu', 512) - 3  # subtract 3 bytes for ATT header
+            with open(self.file_path, 'rb') as file:
+                file.seek(self.offset)
+                chunk = file.read(mtu)
+                self.offset += len(chunk)
+                if len(chunk) < mtu:
+                    self.offset = 0  # Reset for next read
+                print(f"Read {len(chunk)} bytes from file starting at offset {self.offset}")
+                return [dbus.Byte(b) for b in chunk]
         except Exception as e:
             print(f"Error reading file: {e}")
             return []
