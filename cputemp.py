@@ -4,7 +4,6 @@ from advertisement import Advertisement
 from service import Application, Service, Characteristic, Descriptor
 from gpiozero import CPUTemperature
 from datetime import datetime
-from pybleno import Bleno, Characteristic, Descriptor, BlenoPrimaryService
 
 
 # Constants for GATT characteristic interface and notification timeout
@@ -553,8 +552,6 @@ class UnitDescriptor(Descriptor):
     This is what will run first
 """
 def main():
-    bleno = Bleno()
-
     app = Application()
     app.add_service(ThermometerService(0))
     app.register()
