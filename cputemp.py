@@ -373,8 +373,10 @@ class FileTransferCharacteristic(Characteristic):
         self.file_data = None
         self.chunk_index = 0
 
-    def ReadValue(self):
+    def onReadRequest(self, offset):
+        print(f"Read request received. Offset: {offset}")
         if self.file_data is None:
+            print(f"Reading file: {self.file_path}")
             with open(self.file_path, 'rb') as f:
                 self.file_data = f.read()
         
@@ -387,7 +389,9 @@ class FileTransferCharacteristic(Characteristic):
         if start >= len(self.file_data):
             self.chunk_index = 0  # Reset for next read
 
+        print(f"Returning chunk {self.chunk_index - 1}: {chunk}")
         return chunk
+
         
 
 """
