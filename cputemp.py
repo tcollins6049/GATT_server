@@ -364,22 +364,35 @@ class CPUFileReadCharacteristic(Characteristic):
     !! This is just test right now, not currently working !!
 """  
 class FileTransferCharacteristic(Characteristic):
-    def __init__(self, service, uuid, file_path):
+    FILE_TRANSFER_CHARACTERISTIC_UUID = "00000011-710e-4a5b-8d75-3e5b444bc3cf"
+
+    def __init__(self, service, file_path):
         Characteristic.__init__(
             self,
-            uuid,
+            self.FILE_TRANSFER_CHARACTERISTIC_UUID,
             ['read'],
             service)
         self.file_path = file_path
-        print(f"FileTransferCharacteristic initialized with UUID: {uuid}")
+        self.file_size = os.path.getsize(file_path)
+        self.chunk_size = 512  # size of each chunk in bytes
+        self.total_chunks = math.ceil(self.file_size / self.chunk_size)
+        self.current_chunk_index = 0
+        print(f"FileTransferCharacteristic initialized with UUID: {self.FILE_TRANSFER_CHARACTERISTIC_UUID}")
 
     def ReadValue(self, options):
         print("FileTransferCharacteristic ReadValue called")
         try:
             with open(self.file_path, 'rb') as file:
-                file_data = file.read()
-            print(f"Read {len(file_data)} bytes from file")
-            return [dbus.Byte(b) for b in file_data]
+                file.seek(self.current_chunk_index * self.chunk_size)
+                chunk = file.read(self.chunk_size)
+                if chunk:
+                    print(f"Read chunk {self.current_chunk_index + 1}/{self.total_chunks} from file")
+                    self.current_chunk_index += 1
+                    return [dbus.Byte(b) for b in chunk]
+                else:
+                    print("No more chunks to read, resetting index")
+                    self.current_chunk_index = 0
+                    return []
         except Exception as e:
             print(f"Error reading file: {e}")
             return []
