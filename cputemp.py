@@ -373,24 +373,25 @@ class FileTransferCharacteristic(Characteristic):
         self.file_data = None
         self.chunk_index = 0
 
-    def onReadRequest(self, offset):
-        print(f"Read request received. Offset: {offset}")
-        if self.file_data is None:
-            print(f"Reading file: {self.file_path}")
-            with open(self.file_path, 'rb') as f:
-                self.file_data = f.read()
-        
-        start = self.chunk_index * self.FILE_CHUNK_SIZE
-        end = start + self.FILE_CHUNK_SIZE
-        chunk = self.file_data[start:end]
+    def ReadValue(self, options):
+        try:
+            if self.file_data is None:
+                with open(self.file_path, 'rb') as f:
+                    self.file_data = f.read()
 
-        self.chunk_index += 1
+            start = self.chunk_index * self.FILE_CHUNK_SIZE
+            end = start + self.FILE_CHUNK_SIZE
+            chunk = self.file_data[start:end]
 
-        if start >= len(self.file_data):
-            self.chunk_index = 0  # Reset for next read
+            self.chunk_index += 1
 
-        print(f"Returning chunk {self.chunk_index - 1}: {chunk}")
-        return chunk
+            if start >= len(self.file_data):
+                self.chunk_index = 0  # Reset for next read
+
+            return [dbus.Byte(c) for c in chunk]
+        except Exception as e:
+            print(f"Error reading file: {e}")
+            return []
 
         
 
