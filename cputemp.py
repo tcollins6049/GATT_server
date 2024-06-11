@@ -61,8 +61,7 @@ class ThermometerService(Service):
         self.add_characteristic(CPUFileReadCharacteristic(self, '00000010-710e-4a5b-8d75-3e5b444bc3cf'))
 
         # Adding a characteristic for pulling a file
-        # self.add_characteristic(FileTransferCharacteristic(self, '00000011-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/audio/2024-05-29/rpi4-60@2024-05-29@14-20-00.wav'))
-        self.add_characteristic(FileTransferCharacteristic(self))
+        self.add_characteristic(FileTransferCharacteristic(self, '00000011-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/audio/2024-05-29/rpi4-60@2024-05-29@14-20-00.wav'))
 
         # Adding file-related variable change characteristics for video
         self.add_characteristic(FileCharacteristic(self, '00000012-710e-4a5b-8d75-3e5b444bc3cf', 'video','capture_window_start_time'))
@@ -365,30 +364,24 @@ class CPUFileReadCharacteristic(Characteristic):
     !! This is just test right now, not currently working !!
 """  
 class FileTransferCharacteristic(Characteristic):
-    FILE_PATH = '/home/bee/appmais/bee_tmp/audio/2024-05-29/rpi4-60@2024-05-29@14-20-00.wav'
-    CHUNK_SIZE = 512
+    FILE_CHUNK_SIZE = 512  # Adjust this size based on your needs
 
-    def __init__(self, thermometer_service):
+    def __init__(self, service, uuid, file_path):
         Characteristic.__init__(
-            self, {
-                'uuid': '00000011-710e-4a5b-8d75-3e5b444bc3cf',
-                'properties': ['read'],
-                'value': None
-            }
-        )
+            self, uuid, ["read"], service)
+        self.file_path = file_path
         self.file_data = None
         self.chunk_index = 0
-        self.thermometer_service = thermometer_service
 
-    def onReadRequest(self, offset, callback):
+    def onReadRequest(self, offset):
         print(f"Read request received. Offset: {offset}")
         if self.file_data is None:
-            print(f"Reading file: {self.FILE_PATH}")
-            with open(self.FILE_PATH, 'rb') as f:
+            print(f"Reading file: {self.file_path}")
+            with open(self.file_path, 'rb') as f:
                 self.file_data = f.read()
-
-        start = self.chunk_index * self.CHUNK_SIZE
-        end = start + self.CHUNK_SIZE
+        
+        start = self.chunk_index * self.FILE_CHUNK_SIZE
+        end = start + self.FILE_CHUNK_SIZE
         chunk = self.file_data[start:end]
 
         self.chunk_index += 1
@@ -397,7 +390,7 @@ class FileTransferCharacteristic(Characteristic):
             self.chunk_index = 0  # Reset for next read
 
         print(f"Returning chunk {self.chunk_index - 1}: {chunk}")
-        callback(Characteristic.RESULT_SUCCESS, chunk)
+        return chunk
 
         
 
@@ -558,10 +551,6 @@ def main():
 
     adv = ThermometerAdvertisement(0)
     adv.register()
-
-    # Add the file transfer characteristic here
-    file_transfer_characteristic = FileTransferCharacteristic(app.service)
-    app.add_characteristic(file_transfer_characteristic)
 
     try:
         app.run()
