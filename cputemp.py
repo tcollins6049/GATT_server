@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-import dbus, os, socket, glob, configparser, subprocess, math
+import dbus, os, socket, glob, configparser, subprocess, math, struct
 from advertisement import Advertisement
 from service import Application, Service, Characteristic, Descriptor
 from gpiozero import CPUTemperature
@@ -364,38 +364,30 @@ class CPUFileReadCharacteristic(Characteristic):
     !! This is just test right now, not currently working !!
 """  
 class FileTransferCharacteristic(Characteristic):
-    FILE_TRANSFER_CHARACTERISTIC_UUID = "00000011-710e-4a5b-8d75-3e5b444bc3cf"
+    FILE_CHUNK_SIZE = 512  # Adjust this size based on your needs
 
-    def __init__(self, service, char_uuid, file_path):
+    def __init__(self, service, uuid, file_path):
         Characteristic.__init__(
-            self,
-            self.FILE_TRANSFER_CHARACTERISTIC_UUID,
-            ['read'],
-            service)
+            self, uuid, ["read"], service)
         self.file_path = file_path
-        self.file_size = os.path.getsize(file_path)
-        self.chunk_size = 512  # size of each chunk in bytes
-        self.total_chunks = math.ceil(self.file_size / self.chunk_size)
-        self.current_chunk_index = 0
-        print(f"FileTransferCharacteristic initialized with UUID: {self.FILE_TRANSFER_CHARACTERISTIC_UUID}")
+        self.file_data = None
+        self.chunk_index = 0
 
-    def ReadValue(self, options):
-        print("FileTransferCharacteristic ReadValue called")
-        try:
-            with open(self.file_path, 'rb') as file:
-                file.seek(self.current_chunk_index * self.chunk_size)
-                chunk = file.read(self.chunk_size)
-                if chunk:
-                    print(f"Read chunk {self.current_chunk_index + 1}/{self.total_chunks} from file")
-                    self.current_chunk_index += 1
-                    return [dbus.Byte(b) for b in chunk]
-                else:
-                    print("No more chunks to read, resetting index")
-                    self.current_chunk_index = 0
-                    return []
-        except Exception as e:
-            print(f"Error reading file: {e}")
-            return []
+    def onReadRequest(self, offset):
+        if self.file_data is None:
+            with open(self.file_path, 'rb') as f:
+                self.file_data = f.read()
+        
+        start = self.chunk_index * self.FILE_CHUNK_SIZE
+        end = start + self.FILE_CHUNK_SIZE
+        chunk = self.file_data[start:end]
+
+        self.chunk_index += 1
+
+        if start >= len(self.file_data):
+            self.chunk_index = 0  # Reset for next read
+
+        return chunk
         
 
 """
