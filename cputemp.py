@@ -404,23 +404,20 @@ class FileTransferCharacteristic(Characteristic):
 class ResetOffsetCharacteristic(Characteristic):
     def __init__(self, service, uuid, file_transfer_characteristic):
         Characteristic.__init__(
-            self,
-            uuid,
-            ['write'],
-            service)
+            self, uuid,
+            ['write'], service)
         self.file_transfer_characteristic = file_transfer_characteristic
         print(f"ResetOffsetCharacteristic initialized with UUID: {uuid}")
 
     def WriteValue(self, value, options):
-        print("ResetOffsetCharacteristic WriteValue called")
+        print("ResetOffsetCharacteristic WriteValue called with value:", value)
         try:
             self.file_transfer_characteristic.reset_offset()
             print("Offset reset")
         except Exception as e:
             print(f"Error resetting offset: {e}")
-        return []
+        return dbus.Array([], signature='y')  # Return an empty byte array with proper D-Bus signature
 
-        
 
 """
 This class is responsible for running a command on the pi sent from the app
