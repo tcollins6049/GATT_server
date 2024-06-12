@@ -378,27 +378,35 @@ class FileTransferCharacteristic(Characteristic):
         self.offset = 0
         print(f"FileTransferCharacteristic initialized with UUID: {uuid}")
 
+
     def ReadValue(self, options):
-        print("FileTransferCharacteristic ReadValue called")
         try:
             mtu = options.get('mtu', 512) - 3  # subtract 3 bytes for ATT header
-            # print(f"Negotiated MTU size: {options.get('mtu')} bytes")
 
             with open(self.file_path, 'rb') as file:
                 file.seek(self.offset)
                 chunk = file.read(mtu)
-                self.offset += len(chunk)
+                
+                print(f"Read {len(chunk)} bytes from file starting at offset {self.offset}")
                 if len(chunk) < mtu:
                     self.offset = 0  # Reset for next read if this is the last chunk
-                # print(f"Read {len(chunk)} bytes from file starting at offset {self.offset}")
+                else:
+                    self.offset += len(chunk)
+
                 return [dbus.Byte(b) for b in chunk]
         except Exception as e:
             print(f"Error reading file: {e}")
             return []
 
+
     def reset_offset(self):
         self.offset = 0
         print("FileTransferCharacteristic offset reset to 0")
+
+
+    def get_offset(self):
+        print("Getting offset: ", self.offset)
+        return [dbus.Byte(c) for c in (self.offset).encode()];
      
     
 class ResetOffsetCharacteristic(Characteristic):
@@ -408,6 +416,15 @@ class ResetOffsetCharacteristic(Characteristic):
             ['write'], service)
         self.file_transfer_characteristic = file_transfer_characteristic
         print(f"ResetOffsetCharacteristic initialized with UUID: {uuid}")
+    
+
+    def ReadValue(self, options):
+        print("Getting the offset value")
+        try:
+            return self.file_transfer_characteristic.get_offset()
+        except Exception as e:
+            print(f"Error getting offset: {e}")
+
 
     def WriteValue(self, value, options):
         print("ResetOffsetCharacteristic WriteValue called with value:", value)
