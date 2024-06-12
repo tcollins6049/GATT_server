@@ -61,7 +61,8 @@ class ThermometerService(Service):
         self.add_characteristic(CPUFileReadCharacteristic(self, '00000010-710e-4a5b-8d75-3e5b444bc3cf'))
 
         # Adding a characteristic for pulling a file
-        self.add_characteristic(FileTransferCharacteristic(self, '00000011-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/audio/2024-05-29/rpi4-60@2024-05-29@14-20-00.wav'))
+        file_transfer_characteristic = (FileTransferCharacteristic(self, '00000011-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/audio/2024-05-29/rpi4-60@2024-05-29@14-20-00.wav'))
+        self.add_characteristic(file_transfer_characteristic)
 
         # Adding file-related variable change characteristics for video
         self.add_characteristic(FileCharacteristic(self, '00000012-710e-4a5b-8d75-3e5b444bc3cf', 'video','capture_window_start_time'))
@@ -78,7 +79,7 @@ class ThermometerService(Service):
         self.add_characteristic(SensorStateCharacteristic(self, '00000021-710e-4a5b-8d75-3e5b444bc3cf', 'cpu'))
 
         # Adding characteristic to reset offset when getting file
-        self.add_characteristic(ResetOffsetCharacteristic(self))
+        self.add_characteristic(ResetOffsetCharacteristic(self, '00000022-710e-4a5b-8d75-3e5b444bc3cf', file_transfer_characteristic))
 
         # Adding the new command characteristic
         self.add_characteristic(CommandCharacteristic(self))
