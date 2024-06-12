@@ -382,7 +382,7 @@ class FileTransferCharacteristic(Characteristic):
         print("FileTransferCharacteristic ReadValue called")
         try:
             mtu = options.get('mtu', 512) - 3  # subtract 3 bytes for ATT header
-            print(f"Negotiated MTU size: {options.get('mtu')} bytes")
+            # print(f"Negotiated MTU size: {options.get('mtu')} bytes")
 
             with open(self.file_path, 'rb') as file:
                 file.seek(self.offset)
@@ -390,7 +390,7 @@ class FileTransferCharacteristic(Characteristic):
                 self.offset += len(chunk)
                 if len(chunk) < mtu:
                     self.offset = 0  # Reset for next read if this is the last chunk
-                print(f"Read {len(chunk)} bytes from file starting at offset {self.offset}")
+                # print(f"Read {len(chunk)} bytes from file starting at offset {self.offset}")
                 return [dbus.Byte(b) for b in chunk]
         except Exception as e:
             print(f"Error reading file: {e}")
