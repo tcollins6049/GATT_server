@@ -378,6 +378,8 @@ class FileTransferCharacteristic(Characteristic):
         print("FileTransferCharacteristic ReadValue called")
         try:
             mtu = options.get('mtu', 512) - 3  # subtract 3 bytes for ATT header
+            print(f"Negotiated MTU size: {options.get('mtu')} bytes")
+
             with open(self.file_path, 'rb') as file:
                 file.seek(self.offset)
                 chunk = file.read(mtu)
