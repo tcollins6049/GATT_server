@@ -387,19 +387,20 @@ class FileTransferCharacteristic(Characteristic):
             with open(self.file_path, 'rb') as file:
                 file.seek(self.offset)
                 chunk = file.read(mtu)
-                self.offset += len(chunk)
                 if len(chunk) < mtu:
-                    self.offset = 0  # Reset for next read
+                    self.offset = 0  # Reset for next read if this is the last chunk
+                else:
+                    self.offset += len(chunk)
                 print(f"Read {len(chunk)} bytes from file starting at offset {self.offset}")
                 return [dbus.Byte(b) for b in chunk]
         except Exception as e:
             print(f"Error reading file: {e}")
             return []
-    
+
     def reset_offset(self):
         self.offset = 0
-        print("Offset has been reset")
-        
+        print("FileTransferCharacteristic offset reset to 0")
+     
     
 class ResetOffsetCharacteristic(Characteristic):
     def __init__(self, service, uuid, file_transfer_characteristic):
