@@ -414,7 +414,7 @@ class ResetOffsetCharacteristic(Characteristic):
     def __init__(self, service, uuid, file_transfer_characteristic):
         Characteristic.__init__(
             self, uuid,
-            ['write'], service)
+            ['read', 'write'], service)
         self.file_transfer_characteristic = file_transfer_characteristic
         print(f"ResetOffsetCharacteristic initialized with UUID: {uuid}")
     
