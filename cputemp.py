@@ -406,7 +406,8 @@ class FileTransferCharacteristic(Characteristic):
 
     def get_offset(self):
         print("Getting offset: ", self.offset)
-        return [dbus.Byte(c) for c in (self.offset).encode()];
+        offset_bytes = self.offset.to_bytes(4, byteorder='little')
+        return [dbus.Byte(b) for b in offset_bytes]
      
     
 class ResetOffsetCharacteristic(Characteristic):
