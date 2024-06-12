@@ -406,8 +406,14 @@ class FileTransferCharacteristic(Characteristic):
 
     def get_offset(self):
         print("Getting offset: ", self.offset)
-        offset_bytes = self.offset.to_bytes(4, byteorder='little')
-        return [dbus.Byte(b) for b in offset_bytes]
+        try:
+            # Convert the offset to a 4-byte little-endian byte array
+            offset_bytes = self.offset.to_bytes(4, byteorder='little')
+            print(f"Encoded offset bytes: {list(offset_bytes)}")
+            return [dbus.Byte(b) for b in offset_bytes]
+        except Exception as e:
+            print(f"Error encoding offset: {e}")
+            return []
      
     
 class ResetOffsetCharacteristic(Characteristic):
