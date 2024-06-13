@@ -403,34 +403,15 @@ class FileTransferCharacteristic(Characteristic):
         self.offset = 0
         print("FileTransferCharacteristic offset reset to 0")
 
-
-    def get_offset(self):
-        print("Getting offset: ", self.offset)
-        try:
-            # Convert the offset to a 4-byte little-endian byte array
-            offset_bytes = self.offset.to_bytes(4, byteorder='little')
-            print(f"Encoded offset bytes: {list(offset_bytes)}")
-            return [dbus.Byte(b) for b in offset_bytes]
-        except Exception as e:
-            print(f"Error encoding offset: {e}")
-            return []
      
     
 class ResetOffsetCharacteristic(Characteristic):
     def __init__(self, service, uuid, file_transfer_characteristic):
         Characteristic.__init__(
             self, uuid,
-            ['read', 'write'], service)
+            ['write'], service)
         self.file_transfer_characteristic = file_transfer_characteristic
         print(f"ResetOffsetCharacteristic initialized with UUID: {uuid}")
-    
-
-    def ReadValue(self, options):
-        print("Getting the offset value")
-        try:
-            return self.file_transfer_characteristic.get_offset()
-        except Exception as e:
-            print(f"Error getting offset: {e}")
 
 
     def WriteValue(self, value, options):
