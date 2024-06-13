@@ -61,7 +61,7 @@ class ThermometerService(Service):
         self.add_characteristic(CPUFileReadCharacteristic(self, '00000010-710e-4a5b-8d75-3e5b444bc3cf'))
 
         # Adding a characteristic for pulling a file
-        file_transfer_characteristic = (FileTransferCharacteristic(self, '00000011-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/video/2024-06-13/rpi4-60@2024-06-13@14-40-00.h264'))
+        file_transfer_characteristic = (FileTransferCharacteristic(self, '00000011-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/video/2024-06-13/rpi4-60@2024-06-13@15-10-00.h264'))
         self.add_characteristic(file_transfer_characteristic)
 
         # Adding file-related variable change characteristics for video
