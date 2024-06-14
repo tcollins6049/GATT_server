@@ -62,7 +62,7 @@ class ThermometerService(Service):
         self.add_characteristic(CPUFileReadCharacteristic(self, '00000010-710e-4a5b-8d75-3e5b444bc3cf'))
 
         # Adding a characteristic for pulling a file
-        file_transfer_characteristic = (FileTransferCharacteristic(self, '00000011-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/video/2024-06-13/rpi4-60@2024-06-13@15-10-00.h264'))
+        file_transfer_characteristic = (FileTransferCharacteristic(self, '00000011-710e-4a5b-8d75-3e5b444bc3cf', '/home/tcollins6049/GATT_server/test_image.jpg'))
         self.add_characteristic(file_transfer_characteristic)
 
         # Adding file-related variable change characteristics for video
@@ -369,7 +369,7 @@ class CPUFileReadCharacteristic(Characteristic):
     !! This is just test right now, not currently working !!
     /home/bee/appmais/bee_tmp/audio/2024-05-29/rpi4-60@2024-05-29@14-20-00.wav
     /home/bee/appmais/bee_tmp/video/2024-06-13/rpi4-60@2024-06-13@14-40-00.h264
-  
+"""
 class FileTransferCharacteristic(Characteristic):
     def __init__(self, service, uuid, file_path):
         Characteristic.__init__(
@@ -406,74 +406,6 @@ class FileTransferCharacteristic(Characteristic):
     def reset_offset(self):
         self.offset = 0
         print("FileTransferCharacteristic offset reset to 0")
-"""
-
-class FileTransferCharacteristic(Characteristic):
-    def __init__(self, service, uuid, file_path):
-        Characteristic.__init__(
-            self,
-            uuid,
-            ['read'],
-            service)
-        self.file_path = file_path
-        self.cap = cv2.VideoCapture(self.file_path)
-        if not self.cap.isOpened():
-            raise ValueError(f"Cannot open video file: {self.file_path}")
-        print(f"FileTransferCharacteristic initialized with UUID: {uuid}")
-        self.remaining_bytes = None
-
-    def ReadValue(self, options):
-        try:
-            # Check if there are remaining bytes to send
-            if self.remaining_bytes is not None:
-                jpeg_bytes = self.remaining_bytes
-            else:
-                # Read a frame from the video file
-                ret, frame = self.cap.read()
-                if not ret:
-                    # Restart video if at the end
-                    self.cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
-                    ret, frame = self.cap.read()
-
-                if not ret:
-                    raise ValueError("Error reading frame from video")
-
-                # Encode frame as JPEG
-                ret, jpeg = cv2.imencode('.jpg', frame)
-                if not ret:
-                    raise ValueError("Error encoding frame to JPEG")
-
-                # Convert JPEG to byte array
-                jpeg_bytes = jpeg.tobytes()
-
-            # Log size of the JPEG byte array
-            print(f"JPEG size: {len(jpeg_bytes)} bytes")
-
-            # Limit size to MTU
-            mtu = options.get('mtu', 512) - 3  # subtract 3 bytes for ATT header
-
-            # Check if there are remaining bytes to send
-            if len(jpeg_bytes) > mtu:
-                # Save remaining bytes for next read
-                self.remaining_bytes = jpeg_bytes[mtu:]
-                chunk = jpeg_bytes[:mtu]
-            else:
-                # No remaining bytes
-                self.remaining_bytes = None
-                chunk = jpeg_bytes
-
-            print(f"Read {len(chunk)} bytes from frame")
-
-            # Return the chunk as a list of bytes
-            return list(chunk)
-        except Exception as e:
-            print(f"Error reading frame: {e}")
-            return []
-
-
-    def __del__(self):
-        if self.cap.isOpened():
-            self.cap.release()
      
     
 class ResetOffsetCharacteristic(Characteristic):
