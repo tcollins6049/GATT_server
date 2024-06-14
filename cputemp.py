@@ -1,9 +1,10 @@
 #!/usr/bin/python3
-import dbus, os, socket, glob, configparser, subprocess, math, struct
+import dbus, os, socket, glob, configparser, subprocess, cv2
 from advertisement import Advertisement
 from service import Application, Service, Characteristic, Descriptor
 from gpiozero import CPUTemperature
 from datetime import datetime
+
 
 
 # Constants for GATT characteristic interface and notification timeout
@@ -368,7 +369,7 @@ class CPUFileReadCharacteristic(Characteristic):
     !! This is just test right now, not currently working !!
     /home/bee/appmais/bee_tmp/audio/2024-05-29/rpi4-60@2024-05-29@14-20-00.wav
     /home/bee/appmais/bee_tmp/video/2024-06-13/rpi4-60@2024-06-13@14-40-00.h264
-"""  
+  
 class FileTransferCharacteristic(Characteristic):
     def __init__(self, service, uuid, file_path):
         Characteristic.__init__(
@@ -405,6 +406,57 @@ class FileTransferCharacteristic(Characteristic):
     def reset_offset(self):
         self.offset = 0
         print("FileTransferCharacteristic offset reset to 0")
+"""
+
+class FileTransferCharacteristic(Characteristic):
+    def __init__(self, service, uuid, file_path):
+        Characteristic.__init__(
+            self,
+            uuid,
+            ['read'],
+            service)
+        self.file_path = file_path
+        self.offset = 0
+        self.cap = cv2.VideoCapture(self.file_path)
+        if not self.cap.isOpened():
+            raise ValueError(f"Cannot open video file: {self.file_path}")
+        print(f"FileTransferCharacteristic initialized with UUID: {uuid}")
+
+    def ReadValue(self, options):
+        try:
+            # Read a frame from the video file
+            ret, frame = self.cap.read()
+            if not ret:
+                # Restart video if at the end
+                self.cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
+                ret, frame = self.cap.read()
+
+            if not ret:
+                raise ValueError("Error reading frame from video")
+
+            # Encode frame as JPEG
+            ret, jpeg = cv2.imencode('.jpg', frame)
+            if not ret:
+                raise ValueError("Error encoding frame to JPEG")
+
+            # Convert JPEG to byte array
+            jpeg_bytes = jpeg.tobytes()
+
+            # Limit size to MTU
+            mtu = options.get('mtu', 512) - 3  # subtract 3 bytes for ATT header
+            chunk = jpeg_bytes[:mtu]
+
+            print(f"Read {len(chunk)} bytes from frame")
+
+            # Return the chunk as a list of bytes
+            return list(chunk)
+        except Exception as e:
+            print(f"Error reading frame: {e}")
+            return []
+
+    def __del__(self):
+        if self.cap.isOpened():
+            self.cap.release()
 
      
     
