@@ -416,7 +416,6 @@ class FileTransferCharacteristic(Characteristic):
             ['read'],
             service)
         self.file_path = file_path
-        self.offset = 0
         self.cap = cv2.VideoCapture(self.file_path)
         if not self.cap.isOpened():
             raise ValueError(f"Cannot open video file: {self.file_path}")
@@ -441,6 +440,9 @@ class FileTransferCharacteristic(Characteristic):
 
             # Convert JPEG to byte array
             jpeg_bytes = jpeg.tobytes()
+
+            # Log size of the JPEG byte array
+            print(f"JPEG size: {len(jpeg_bytes)} bytes")
 
             # Limit size to MTU
             mtu = options.get('mtu', 512) - 3  # subtract 3 bytes for ATT header
