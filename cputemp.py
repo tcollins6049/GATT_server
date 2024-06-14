@@ -433,7 +433,7 @@ This class is responsible for running a command on the pi sent from the app
 !! This is just test right now, not currently working !!
 """
 class CommandCharacteristic(Characteristic):
-    COMMAND_CHARACTERISTIC_UUID = "00000022-710e-4a5b-8d75-3e5b444bc3cf"
+    COMMAND_CHARACTERISTIC_UUID = "00000023-710e-4a5b-8d75-3e5b444bc3cf"
 
     def __init__(self, service):
         Characteristic.__init__(
