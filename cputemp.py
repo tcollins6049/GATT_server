@@ -420,33 +420,47 @@ class FileTransferCharacteristic(Characteristic):
         if not self.cap.isOpened():
             raise ValueError(f"Cannot open video file: {self.file_path}")
         print(f"FileTransferCharacteristic initialized with UUID: {uuid}")
+        self.remaining_bytes = None
 
     def ReadValue(self, options):
         try:
-            # Read a frame from the video file
-            ret, frame = self.cap.read()
-            if not ret:
-                # Restart video if at the end
-                self.cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
+            # Check if there are remaining bytes to send
+            if self.remaining_bytes is not None:
+                jpeg_bytes = self.remaining_bytes
+            else:
+                # Read a frame from the video file
                 ret, frame = self.cap.read()
+                if not ret:
+                    # Restart video if at the end
+                    self.cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
+                    ret, frame = self.cap.read()
 
-            if not ret:
-                raise ValueError("Error reading frame from video")
+                if not ret:
+                    raise ValueError("Error reading frame from video")
 
-            # Encode frame as JPEG
-            ret, jpeg = cv2.imencode('.jpg', frame)
-            if not ret:
-                raise ValueError("Error encoding frame to JPEG")
+                # Encode frame as JPEG
+                ret, jpeg = cv2.imencode('.jpg', frame)
+                if not ret:
+                    raise ValueError("Error encoding frame to JPEG")
 
-            # Convert JPEG to byte array
-            jpeg_bytes = jpeg.tobytes()
+                # Convert JPEG to byte array
+                jpeg_bytes = jpeg.tobytes()
 
             # Log size of the JPEG byte array
             print(f"JPEG size: {len(jpeg_bytes)} bytes")
 
             # Limit size to MTU
             mtu = options.get('mtu', 512) - 3  # subtract 3 bytes for ATT header
-            chunk = jpeg_bytes[:mtu]
+
+            # Check if there are remaining bytes to send
+            if len(jpeg_bytes) > mtu:
+                # Save remaining bytes for next read
+                self.remaining_bytes = jpeg_bytes[mtu:]
+                chunk = jpeg_bytes[:mtu]
+            else:
+                # No remaining bytes
+                self.remaining_bytes = None
+                chunk = jpeg_bytes
 
             print(f"Read {len(chunk)} bytes from frame")
 
@@ -459,6 +473,7 @@ class FileTransferCharacteristic(Characteristic):
     def __del__(self):
         if self.cap.isOpened():
             self.cap.release()
+
 
      
     
