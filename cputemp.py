@@ -470,11 +470,10 @@ class FileTransferCharacteristic(Characteristic):
             print(f"Error reading frame: {e}")
             return []
 
+
     def __del__(self):
         if self.cap.isOpened():
             self.cap.release()
-
-
      
     
 class ResetOffsetCharacteristic(Characteristic):
