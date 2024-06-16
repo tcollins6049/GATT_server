@@ -367,8 +367,10 @@ class CPUFileReadCharacteristic(Characteristic):
             try:
                 with open(self.file_path, 'r') as file:
                     last_line = file.readlines()[-1]
-                print(f"Returning data: {last_line}")
-                return [dbus.Byte(b) for b in last_line.encode()]
+                
+                returned_data = f"{last_line.strip()}|{self.file_path}"
+                print(f"Returning data: {returned_data}")
+                return [dbus.Byte(b) for b in returned_data.encode()]
             except Exception as e:
                 print(f"Error occurred while reading the file: {e}")
                 return []
