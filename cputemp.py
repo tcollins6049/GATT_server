@@ -355,7 +355,7 @@ class CPUFileReadCharacteristic(Characteristic):
             raise ValueError(f"Expected exactly one file in directory {full_path}, found {len(files)}")
         
         # Get full path of the file
-        return full_path + files[0]
+        return full_path + '/' + files[0]
 
 
 
