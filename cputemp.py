@@ -325,30 +325,37 @@ class CPUFileReadCharacteristic(Characteristic):
         self.folder_path = '/home/bee/appmais/bee_tmp/cpu/'
         print(f"Characteristic initialized with UUID: {uuid}")
 
-    def get_most_recent_file(self):
+    def get_most_recent_file(self, base_path):
         print("Getting most recent file")
-        try:
-            dirs = [d for d in os.listdir(self.folder_path) if os.path.isdir(os.path.join(self.folder_path, d))]
-            print(f"Directories found: {dirs}")
-            dirs.sort(key=lambda x: datetime.strptime(x, '%Y-%m-%d'), reverse=True)
-            print(f"Sorted directories: {dirs}")
-            for d in dirs:
-                files = glob.glob(os.path.join(self.folder_path, d, '*.csv'))
-                print(f"Files in {d}: {files}")
-                files.sort(key=os.path.getmtime, reverse=True)
-                print(f"Sorted files in {d}: {files}")
-                if files:
-                    print("FILES[0]", files[0])
-                    return files[0]
-        except Exception as e:
-            print(f"Error occurred while getting most recent file: {e}")
-        print("GONNA RETURN NONE")
-        return None
+        # List all directories in the base path
+        entries = os.listdir(base_path)
+        
+        # Filter out possible non directory entries or directories which dont match the data format
+        date_dirs = []
+        for entry in entries:
+            entry_path = os.path.join(base_path, entry)
+            if os.path.isdir(entry_path):
+                try:
+                    # Try to parse the directory name as a date
+                    date = datetime.strptime(entry, "%Y-%m-%d")
+                    date_dirs.append((entry, date))
+                except ValueError:
+                    # Skip directories that don't match the date format
+                    pass
+        if not date_dirs:
+            return None
+
+        # Find most recent date
+        most_recent_dir = max(date_dirs, key=lambda x: x[1])[0]
+
+        print(most_recent_dir)
 
 
     def ReadValue(self, options):
         print("ReadValue called")
-        self.file_path = self.get_most_recent_file()
+        # self.file_path = self.get_most_recent_file('/home/bee/appmais/bee_tmp/cpu/')
+        self.get_most_recent_file('/home/bee/appmais/bee_tmp/cpu/')
+        '''
         if self.file_path is not None:
             try:
                 with open(self.file_path, 'r') as file:
@@ -361,6 +368,7 @@ class CPUFileReadCharacteristic(Characteristic):
         else:
             print("No file found")
             return []
+        '''
 
 
 """
