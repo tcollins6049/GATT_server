@@ -348,14 +348,13 @@ class CPUFileReadCharacteristic(Characteristic):
         # Find most recent date
         most_recent_dir = max(date_dirs, key=lambda x: x[1])[0]
 
-        print(most_recent_dir)
+        return os.path.join(base_path, most_recent_dir)
 
 
     def ReadValue(self, options):
         print("ReadValue called")
-        # self.file_path = self.get_most_recent_file('/home/bee/appmais/bee_tmp/cpu/')
-        self.get_most_recent_file('/home/bee/appmais/bee_tmp/cpu/')
-        '''
+        self.file_path = self.get_most_recent_file('/home/bee/appmais/bee_tmp/cpu/')
+        
         if self.file_path is not None:
             try:
                 with open(self.file_path, 'r') as file:
@@ -368,7 +367,7 @@ class CPUFileReadCharacteristic(Characteristic):
         else:
             print("No file found")
             return []
-        '''
+        
 
 
 """
