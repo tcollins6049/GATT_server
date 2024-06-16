@@ -347,8 +347,16 @@ class CPUFileReadCharacteristic(Characteristic):
 
         # Find most recent date
         most_recent_dir = max(date_dirs, key=lambda x: x[1])[0]
+        full_path = os.path.join(base_path, most_recent_dir)
 
-        return os.path.join(base_path, most_recent_dir)
+        # List files in this directory
+        files = os.listdir(full_path)
+        if (len(files) != 1):
+            raise ValueError(f"Expected exactly one file in directory {full_path}, found {len(files)}")
+        
+        # Get full path of the file
+        return full_path + files[0]
+
 
 
     def ReadValue(self, options):
