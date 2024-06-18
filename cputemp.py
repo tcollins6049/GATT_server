@@ -386,7 +386,7 @@ class CPUFileReadCharacteristic(Characteristic):
         if 'nan' not in last_line:
             # Text returned will just contain the update date and time
             print("last_line: ", last_line)
-            print("path: ", self.folder_path)
+            print("path: ", self.file_path)
         else:
             # Text will contain when nan values started being recorded
             pass
