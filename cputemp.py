@@ -361,7 +361,23 @@ class CPUFileReadCharacteristic(Characteristic):
 
     def get_relevant_line(self):
         with open(self.file_path, 'r') as file:
-            last_line = file.readlines()[-1]
+            # last_line = file.readlines()[-1]
+            lines = file.readlines()
+
+            if ('nan' in lines[-1]):
+                last_valid_line = None
+                for line in reversed(lines):
+                    if 'nan' not in line:
+                        last_valid_line = line
+                        break
+                if last_valid_line is None:
+                    print('No valid readings found in the file')
+                    last_line = lines[0]
+                else:
+                    print("last valid before nan: ", last_valid_line)
+                    last_line = last_valid_line
+            else:
+                last_line = lines[-1]
         
         return last_line
 
