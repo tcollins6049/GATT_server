@@ -359,6 +359,12 @@ class CPUFileReadCharacteristic(Characteristic):
         return full_path + '/' + files[0]
 
 
+    def get_relevant_line(self):
+        with open(self.file_path, 'r') as file:
+            last_line = file.readlines()[-1]
+        
+        return last_line
+
 
     def ReadValue(self, options):
         print("ReadValue called")
@@ -366,8 +372,9 @@ class CPUFileReadCharacteristic(Characteristic):
 
         if self.file_path is not None:
             try:
-                with open(self.file_path, 'r') as file:
-                    last_line = file.readlines()[-1]
+                # with open(self.file_path, 'r') as file:
+                #    last_line = file.readlines()[-1]
+                last_line = self.get_relevant_line()
                 
                 returned_data = f"{last_line.strip()}|{self.file_path}"
                 print(f"Returning data: {returned_data}")
