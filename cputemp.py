@@ -59,7 +59,7 @@ class ThermometerService(Service):
         self.add_characteristic(FileInfoCharacteristic(self, '00000009-710e-4a5b-8d75-3e5b444bc3cf'));
     
         # Adding a characterisitc for cpu file data
-        self.add_characteristic(CPUFileReadCharacteristic(self, '00000010-710e-4a5b-8d75-3e5b444bc3cf'))
+        self.add_characteristic(CPUFileReadCharacteristic(self, '00000010-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/cpu/'))
 
         # Adding a characteristic for pulling a file
         file_transfer_characteristic = (FileTransferCharacteristic(self, '00000011-710e-4a5b-8d75-3e5b444bc3cf', '/home/tcollins6049/GATT_server/test_image.jpg'))
@@ -316,13 +316,13 @@ class FileInfoCharacteristic(Characteristic):
     !! Need to add update functionality !!
 """
 class CPUFileReadCharacteristic(Characteristic):
-    def __init__(self, service, uuid):
+    def __init__(self, service, uuid, base_path):
         Characteristic.__init__(
             self,
             uuid,
             ['read'],
             service)
-        self.folder_path = '/home/bee/appmais/bee_tmp/cpu/'
+        self.folder_path = base_path
         print(f"Characteristic initialized with UUID: {uuid}")
 
     def get_most_recent_file(self, base_path):
@@ -361,8 +361,8 @@ class CPUFileReadCharacteristic(Characteristic):
 
     def ReadValue(self, options):
         print("ReadValue called")
-        self.file_path = self.get_most_recent_file('/home/bee/appmais/bee_tmp/cpu/')
-        
+        self.file_path = self.get_most_recent_file(self.folder_path)
+
         if self.file_path is not None:
             try:
                 with open(self.file_path, 'r') as file:
