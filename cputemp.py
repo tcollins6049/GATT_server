@@ -388,7 +388,8 @@ class CPUFileReadCharacteristic(Characteristic):
             print("last_line: ", last_line)
             print("path: ", self.file_path)
             unformatted_time = (last_line.split(',')[0]).replace('"','')
-            print('Unformatted Line: ', unformatted_time)
+            date = (self.file_path.split('/')[5])
+            print("DATE: ", date)
         else:
             # Text will contain when nan values started being recorded
             pass
