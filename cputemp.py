@@ -391,7 +391,8 @@ class CPUFileReadCharacteristic(Characteristic):
             date = (self.file_path.split('/')[6])
             
             update_text = (f"Updated on {date} at {formatted_time}")
-            print("NOT NAN: ", update_text)
+            return update_text
+            
         else:
             # Text will contain when nan values started being recorded
             unformatted_time = (last_line.split(',')[0]).replace('"','')
@@ -399,8 +400,9 @@ class CPUFileReadCharacteristic(Characteristic):
             formatted_time = time_obj.strftime('%I-%M-%S %p')
             date = (self.file_path.split('/')[6])
             
-            update_text = (f"Updated on {date} at {formatted_time}")
-            print("NAN: ", update_text)
+            update_text = (f"Returning nan values since {formatted_time} on {date}")
+            return update_text
+           
 
 
     def ReadValue(self, options):
@@ -412,7 +414,7 @@ class CPUFileReadCharacteristic(Characteristic):
                 last_line = self.get_relevant_line()
                 update_text = self.get_update_text(last_line)
                 
-                returned_data = f"{last_line.strip()}|{self.file_path}"
+                returned_data = f"{last_line.strip()}|{update_text}"
                 print(f"Returning data: {returned_data}")
                 return [dbus.Byte(b) for b in returned_data.encode()]
             except Exception as e:
