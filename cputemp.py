@@ -459,6 +459,7 @@ class FileTransferCharacteristic(Characteristic):
                 else:
                     self.offset += len(chunk)
 
+                print([dbus.Byte(b) for b in chunk])
                 return [dbus.Byte(b) for b in chunk]
                 # return list(chunk)
         except Exception as e:
