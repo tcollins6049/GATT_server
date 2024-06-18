@@ -387,6 +387,8 @@ class CPUFileReadCharacteristic(Characteristic):
             # Text returned will just contain the update date and time
             print("last_line: ", last_line)
             print("path: ", self.file_path)
+            unformatted_time = (last_line.split(',')[0]).replace('"','')
+            print('Unformatted Line: ', unformatted_time)
         else:
             # Text will contain when nan values started being recorded
             pass
