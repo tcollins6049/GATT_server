@@ -380,6 +380,16 @@ class CPUFileReadCharacteristic(Characteristic):
                 last_line = lines[-1]
         
         return last_line
+    
+
+    def get_update_text(self, last_line):
+        if 'nan' not in last_line:
+            # Text returned will just contain the update date and time
+            print("last_line: ", last_line)
+            print("path: ", self.folder_path)
+        else:
+            # Text will contain when nan values started being recorded
+            pass
 
 
     def ReadValue(self, options):
@@ -388,9 +398,8 @@ class CPUFileReadCharacteristic(Characteristic):
 
         if self.file_path is not None:
             try:
-                # with open(self.file_path, 'r') as file:
-                #    last_line = file.readlines()[-1]
                 last_line = self.get_relevant_line()
+                update_text = self.get_update_text(last_line)
                 
                 returned_data = f"{last_line.strip()}|{self.file_path}"
                 print(f"Returning data: {returned_data}")
