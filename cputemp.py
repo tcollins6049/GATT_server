@@ -500,8 +500,17 @@ class FileTransferCharacteristic(Characteristic):
             cap.release()
             return None
 
-        # Release the video capture object
-        # cap.release()
+
+    def delete_file(self, file_path):
+        try:
+            os.remove(file_path)
+            print(f"Deleted file: {file_path}")
+        except FileNotFoundError:
+            print(f"Error: File '{file_path}' not found")
+        except PermissionError:
+            print(f"Error: Permission denied to delete file '{file_path}'")
+        except Exception as e:
+            print(f"Error: {e}")
         
     
     def ReadValue(self, options):
@@ -521,7 +530,7 @@ class FileTransferCharacteristic(Characteristic):
                 else:
                     self.offset += len(chunk)
 
-                # print(chunk)
+                self.delete_file(image_path)
                 return [dbus.Byte(b) for b in chunk]
                 
         except Exception as e:
