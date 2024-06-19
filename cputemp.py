@@ -444,25 +444,6 @@ class FileTransferCharacteristic(Characteristic):
         self.offset = 0
         print(f"FileTransferCharacteristic initialized with UUID: {uuid}")
 
-
-    def test_save_to_temp_directory(self):
-        try:
-            # Create a temporary directory
-            temp_dir = tempfile.mkdtemp()
-
-            # File path to save
-            file_path = os.path.join(temp_dir, 'test_file.txt')
-
-            # Write some content to the file
-            with open(file_path, 'w') as f:
-                f.write("This is a test file.\n")
-
-            print(f"File saved successfully to: {file_path}")
-            return file_path
-
-        except Exception as e:
-            print(f"Error saving file: {e}")
-            return None
         
     
     def extract_frame(self, video_file):
@@ -497,12 +478,9 @@ class FileTransferCharacteristic(Characteristic):
             mtu = 512
 
             image_path = self.extract_frame(self.file_path)
-            # saved_file_path = self.test_save_to_temp_directory()
-
-            # if saved_file_path:
-            #     print(f"Test file saved successfully at: {saved_file_path}")
-            # else:
-            #     print("Failed to save test file.")
+            if image_path is None:
+                print("Failed to extract frame.")
+                return []
 
 
             with open(image_path, 'rb') as file:
