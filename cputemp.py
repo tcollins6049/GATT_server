@@ -511,10 +511,6 @@ class FileTransferCharacteristic(Characteristic):
 
             image_path = self.extract_frame(self.file_path, 100, '/home/tcollins6049/GATT_server/output_frame.jpg')
 
-            # image_path = self.extract_frame(self.file_path)
-            # image_path = 'none'
-
-
             with open(image_path, 'rb') as file:
                 file.seek(self.offset)
                 chunk = file.read(mtu)
