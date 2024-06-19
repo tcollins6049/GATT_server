@@ -526,14 +526,15 @@ class FileTransferCharacteristic(Characteristic):
         
     
     def ReadValue(self, options):
-        try:
+        # try:
             # mtu = options.get('mtu', 512) - 3  # subtract 3 bytes for ATT header
             mtu = 512
 
             base_path = self.get_most_recent_file(self.file_path)
             print("BASE_PATH: ", base_path)
-            image_path = self.extract_frame(base_path, 100, '/home/tcollins6049/GATT_server/output_frame.jpg')
+            # image_path = self.extract_frame(base_path, 100, '/home/tcollins6049/GATT_server/output_frame.jpg')
 
+            '''
             with open(image_path, 'rb') as file:
                 file.seek(self.offset)
                 chunk = file.read(mtu)
@@ -546,10 +547,11 @@ class FileTransferCharacteristic(Characteristic):
 
                 self.delete_file(image_path)
                 return [dbus.Byte(b) for b in chunk]
+            '''
                 
-        except Exception as e:
-            print(f"Error reading file: {e}")
-            return []
+        # except Exception as e:
+        #     print(f"Error reading file: {e}")
+        #     return []
 
 
     def reset_offset(self):
