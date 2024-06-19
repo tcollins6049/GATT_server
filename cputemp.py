@@ -447,7 +447,8 @@ class FileTransferCharacteristic(Characteristic):
 
     def ReadValue(self, options):
         try:
-            mtu = options.get('mtu', 512) - 3  # subtract 3 bytes for ATT header
+            # mtu = options.get('mtu', 512) - 3  # subtract 3 bytes for ATT header
+            mtu = 512
 
             with open(self.file_path, 'rb') as file:
                 file.seek(self.offset)
