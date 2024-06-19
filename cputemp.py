@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-import dbus, os, socket, glob, configparser, subprocess, ffmpeg, tempfile
+import dbus, os, socket, glob, configparser, subprocess, cv2
 from advertisement import Advertisement
 from service import Application, Service, Characteristic, Descriptor
 from gpiozero import CPUTemperature
@@ -465,27 +465,34 @@ class FileTransferCharacteristic(Characteristic):
             return None
         
     
-    def extract_frame(self, video_file):
-        try:
-            # Create a temporary directory for storing extracted frames
-            temp_dir = '/home/tcollins6049/GATT_server'
+    def extract_frame(self, video_file, frame_number, output_file):
+        # Open the video file
+        cap = cv2.VideoCapture(video_file)
 
-            # Output file path for the extracted frame
-            temp_frame_file = os.path.join(temp_dir, 'extracted_frame.jpg')
+        # Check if the video file was opened successfully
+        if not cap.isOpened():
+            print(f"Error: Could not open video file '{video_file}'")
+            return
 
-            (
-                ffmpeg
-                .input(video_file, ss='0')            # Seek to the first frame
-                .output(temp_frame_file, vframes=1)   # Output only one frame
-                .run(capture_stdout=True, capture_stderr=True)
-            )
-            print(f"Extracted frame from {video_file} to {temp_frame_file}")
+        # Get total number of frames in the video
+        total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+        print(f"Total frames in the video: {total_frames}")
 
-            return temp_frame_file  # Return the path to the extracted frame
+        # Set the desired frame number
+        cap.set(cv2.CAP_PROP_POS_FRAMES, frame_number)
 
-        except ffmpeg.Error as e:
-            print(f"Error extracting frame: {e}")
-            return None
+        # Read the frame
+        ret, frame = cap.read()
+
+        if ret:
+            # Save the frame as an image file
+            cv2.imwrite(output_file, frame)
+            print(f"Frame {frame_number} saved as {output_file}")
+        else:
+            print(f"Error: Could not read frame {frame_number} from video")
+
+        # Release the video capture object
+        cap.release()
         
     
     def ReadValue(self, options):
@@ -493,13 +500,10 @@ class FileTransferCharacteristic(Characteristic):
             # mtu = options.get('mtu', 512) - 3  # subtract 3 bytes for ATT header
             mtu = 512
 
-            directory_path = '/home/tcollins6049/GATT_server'
-            dummy_file_path = self.create_dummy_file(directory_path)
+            self.extract_frame(self.file_path, 100, '/home/tcollins6049/GATT_server/output_frame.jpg')
 
-            image_path = self.extract_frame(self.file_path)
-            if not os.path.exists(image_path):
-                print(f"Error: File {image_path} does not exist.")
-                return []
+            # image_path = self.extract_frame(self.file_path)
+            image_path = 'none'
 
 
             with open(image_path, 'rb') as file:
