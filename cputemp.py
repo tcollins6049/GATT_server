@@ -445,13 +445,13 @@ class FileTransferCharacteristic(Characteristic):
         print(f"FileTransferCharacteristic initialized with UUID: {uuid}")
 
 
-    def test_save_to_directory(self, directory):
+    def test_save_to_temp_directory(self):
         try:
-            # Ensure directory exists
-            os.makedirs(directory, exist_ok=True)
+            # Create a temporary directory
+            temp_dir = tempfile.mkdtemp()
 
             # File path to save
-            file_path = os.path.join(directory, 'test_file.txt')
+            file_path = os.path.join(temp_dir, 'test_file.txt')
 
             # Write some content to the file
             with open(file_path, 'w') as f:
@@ -472,7 +472,6 @@ class FileTransferCharacteristic(Characteristic):
             temp_dir = '/home/tcollins6049/GATT_server'
             # os.makedirs(temp_dir, exist_ok=True)
             directory_path = '/home/tcollins6049/GATT_server'
-            saved_file_path = self.test_save_to_directory(directory_path)
 
             # Output file path for the extracted frame
             temp_frame_file = os.path.join(temp_dir, 'extracted_frame.jpg')
@@ -497,7 +496,13 @@ class FileTransferCharacteristic(Characteristic):
             # mtu = options.get('mtu', 512) - 3  # subtract 3 bytes for ATT header
             mtu = 512
 
-            image_path = self.extract_frame(self.file_path)
+            # image_path = self.extract_frame(self.file_path)
+            saved_file_path = self.test_save_to_temp_directory()
+
+            if saved_file_path:
+                print(f"Test file saved successfully at: {saved_file_path}")
+            else:
+                print("Failed to save test file.")
 
             with open(image_path, 'rb') as file:
                 file.seek(self.offset)
