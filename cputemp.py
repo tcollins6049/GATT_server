@@ -531,6 +531,7 @@ class FileTransferCharacteristic(Characteristic):
             mtu = 512
 
             base_path = self.get_most_recent_file(self.file_path)
+            print("BASE_PATH: ", base_path)
             image_path = self.extract_frame(base_path, 100, '/home/tcollins6049/GATT_server/output_frame.jpg')
 
             with open(image_path, 'rb') as file:
