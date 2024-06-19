@@ -445,7 +445,7 @@ class FileTransferCharacteristic(Characteristic):
         print(f"FileTransferCharacteristic initialized with UUID: {uuid}")
 
 
-    def test_save_to_directory(directory):
+    def test_save_to_directory(self, directory):
         try:
             # Ensure directory exists
             os.makedirs(directory, exist_ok=True)
