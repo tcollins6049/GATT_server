@@ -468,8 +468,8 @@ class FileTransferCharacteristic(Characteristic):
     def extract_frame(self, video_file):
         try:
             # Create a temporary directory for storing extracted frames
-            # temp_dir = tempfile.mkdtemp()
-            temp_dir = '/home/tcollins6049/GATT_server'
+            temp_dir = tempfile.mkdtemp()
+            # temp_dir = '/home/tcollins6049/GATT_server'
             # os.makedirs(temp_dir, exist_ok=True)
             directory_path = '/home/tcollins6049/GATT_server'
 
@@ -496,13 +496,14 @@ class FileTransferCharacteristic(Characteristic):
             # mtu = options.get('mtu', 512) - 3  # subtract 3 bytes for ATT header
             mtu = 512
 
-            # image_path = self.extract_frame(self.file_path)
-            saved_file_path = self.test_save_to_temp_directory()
+            image_path = self.extract_frame(self.file_path)
+            # saved_file_path = self.test_save_to_temp_directory()
 
-            if saved_file_path:
-                print(f"Test file saved successfully at: {saved_file_path}")
-            else:
-                print("Failed to save test file.")
+            # if saved_file_path:
+            #     print(f"Test file saved successfully at: {saved_file_path}")
+            # else:
+            #     print("Failed to save test file.")
+
 
             with open(image_path, 'rb') as file:
                 file.seek(self.offset)
