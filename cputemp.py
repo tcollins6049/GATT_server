@@ -449,10 +449,7 @@ class FileTransferCharacteristic(Characteristic):
     def extract_frame(self, video_file):
         try:
             # Create a temporary directory for storing extracted frames
-            temp_dir = tempfile.mkdtemp()
-            # temp_dir = '/home/tcollins6049/GATT_server'
-            # os.makedirs(temp_dir, exist_ok=True)
-            directory_path = '/home/tcollins6049/GATT_server'
+            temp_dir = '/home/tcollins6049/GATT_server'
 
             # Output file path for the extracted frame
             temp_frame_file = os.path.join(temp_dir, 'extracted_frame.jpg')
