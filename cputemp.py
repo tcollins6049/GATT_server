@@ -444,12 +444,35 @@ class FileTransferCharacteristic(Characteristic):
         self.offset = 0
         print(f"FileTransferCharacteristic initialized with UUID: {uuid}")
 
+
+    def test_save_to_directory(directory):
+        try:
+            # Ensure directory exists
+            os.makedirs(directory, exist_ok=True)
+
+            # File path to save
+            file_path = os.path.join(directory, 'test_file.txt')
+
+            # Write some content to the file
+            with open(file_path, 'w') as f:
+                f.write("This is a test file.\n")
+
+            print(f"File saved successfully to: {file_path}")
+            return file_path
+
+        except Exception as e:
+            print(f"Error saving file: {e}")
+            return None
+        
+    
     def extract_frame(self, video_file):
         try:
             # Create a temporary directory for storing extracted frames
             # temp_dir = tempfile.mkdtemp()
             temp_dir = '/home/tcollins6049/GATT_server'
-            os.makedirs(temp_dir, exist_ok=True)
+            # os.makedirs(temp_dir, exist_ok=True)
+            directory_path = '/home/tcollins6049/GATT_server'
+            saved_file_path = self.test_save_to_directory(directory_path)
 
             # Output file path for the extracted frame
             temp_frame_file = os.path.join(temp_dir, 'extracted_frame.jpg')
