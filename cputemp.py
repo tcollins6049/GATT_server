@@ -63,7 +63,7 @@ class ThermometerService(Service):
         self.add_characteristic(CPUFileReadCharacteristic(self, '00000024-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/temp/'))
 
         # Adding a characteristic for pulling a file
-        file_transfer_characteristic = (FileTransferCharacteristic(self, '00000011-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/video/'))
+        file_transfer_characteristic = (FileTransferCharacteristic(self, '00000011-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/video/2024-06-13/rpi4-60@2024-06-13@15-10-00.h264'))
 
         # Adding file-related variable change characteristics for video
         self.add_characteristic(FileCharacteristic(self, '00000012-710e-4a5b-8d75-3e5b444bc3cf', 'video','capture_window_start_time'))
@@ -526,15 +526,15 @@ class FileTransferCharacteristic(Characteristic):
         
     
     def ReadValue(self, options):
-        # try:
+        try:
             # mtu = options.get('mtu', 512) - 3  # subtract 3 bytes for ATT header
             mtu = 512
 
-            base_path = self.get_most_recent_file(self.file_path)
-            print("BASE_PATH: ", base_path)
-            # image_path = self.extract_frame(base_path, 100, '/home/tcollins6049/GATT_server/output_frame.jpg')
+            # base_path = self.get_most_recent_file(self.file_path)
+            # print("BASE_PATH: ", base_path)
+            image_path = self.extract_frame(self.file_path, 100, '/home/tcollins6049/GATT_server/output_frame.jpg')
 
-            '''
+            
             with open(image_path, 'rb') as file:
                 file.seek(self.offset)
                 chunk = file.read(mtu)
@@ -547,11 +547,11 @@ class FileTransferCharacteristic(Characteristic):
 
                 self.delete_file(image_path)
                 return [dbus.Byte(b) for b in chunk]
-            '''
+            
                 
-        # except Exception as e:
-        #     print(f"Error reading file: {e}")
-        #     return []
+        except Exception as e:
+            print(f"Error reading file: {e}")
+            return []
 
 
     def reset_offset(self):
