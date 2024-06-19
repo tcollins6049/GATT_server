@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-import dbus, os, socket, glob, configparser, subprocess
+import dbus, os, socket, glob, configparser, subprocess, ffmpeg
 from advertisement import Advertisement
 from service import Application, Service, Characteristic, Descriptor
 from gpiozero import CPUTemperature
@@ -63,7 +63,7 @@ class ThermometerService(Service):
         self.add_characteristic(CPUFileReadCharacteristic(self, '00000024-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/temp/'))
 
         # Adding a characteristic for pulling a file
-        file_transfer_characteristic = (FileTransferCharacteristic(self, '00000011-710e-4a5b-8d75-3e5b444bc3cf', '/home/tcollins6049/GATT_server/test_image.jpg'))
+        file_transfer_characteristic = (FileTransferCharacteristic(self, '00000011-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/video/2024-06-13/rpi4-60@2024-06-13@15-10-00.h264'))
         self.add_characteristic(file_transfer_characteristic)
 
         # Adding file-related variable change characteristics for video
@@ -444,13 +444,37 @@ class FileTransferCharacteristic(Characteristic):
         self.offset = 0
         print(f"FileTransferCharacteristic initialized with UUID: {uuid}")
 
+    def extract_frame(self, video_file):
+        try:
+            # Create a temporary directory for storing extracted frames
+            temp_dir = tempfile.mkdtemp()
 
+            # Output file path for the extracted frame
+            temp_frame_file = os.path.join(temp_dir, 'extracted_frame.jpg')
+
+            (
+                ffmpeg
+                .input(video_file, ss='0')            # Seek to the first frame
+                .output(temp_frame_file, vframes=1)   # Output only one frame
+                .run(capture_stdout=True, capture_stderr=True)
+            )
+            print(f"Extracted frame from {video_file} to {temp_frame_file}")
+
+            return temp_frame_file  # Return the path to the extracted frame
+
+        except ffmpeg.Error as e:
+            print(f"Error extracting frame: {e}")
+            return None
+        
+    
     def ReadValue(self, options):
         try:
             # mtu = options.get('mtu', 512) - 3  # subtract 3 bytes for ATT header
             mtu = 512
 
-            with open(self.file_path, 'rb') as file:
+            image_path = self.extract_frame(self.file_path)
+
+            with open(image_path, 'rb') as file:
                 file.seek(self.offset)
                 chunk = file.read(mtu)
                 
