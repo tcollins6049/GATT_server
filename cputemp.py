@@ -449,6 +449,7 @@ class FileTransferCharacteristic(Characteristic):
             # Create a temporary directory for storing extracted frames
             # temp_dir = tempfile.mkdtemp()
             temp_dir = '/home/tcollins6049/GATT_server'
+            os.makedirs(temp_dir, exist_ok=True)
 
             # Output file path for the extracted frame
             temp_frame_file = os.path.join(temp_dir, 'extracted_frame.jpg')
