@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-import dbus, os, socket, glob, configparser, subprocess, ffmpeg
+import dbus, os, socket, glob, configparser, subprocess, ffmpeg, tempfile
 from advertisement import Advertisement
 from service import Application, Service, Characteristic, Descriptor
 from gpiozero import CPUTemperature
