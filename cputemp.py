@@ -63,7 +63,7 @@ class ThermometerService(Service):
         self.add_characteristic(CPUFileReadCharacteristic(self, '00000024-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/temp/'))
 
         # Adding a characteristic for pulling a file
-        file_transfer_characteristic = (FileTransferCharacteristic(self, '00000011-710e-4a5b-8d75-3e5b444bc3cf', '/home/tcollins6049/GATT_server/solid-color-image.jpeg'))
+        file_transfer_characteristic = (FileTransferCharacteristic(self, '00000011-710e-4a5b-8d75-3e5b444bc3cf', '/home/tcollins6049/GATT_server/test_image.jpg'))
         self.add_characteristic(file_transfer_characteristic)
 
         # Adding file-related variable change characteristics for video
@@ -460,9 +460,9 @@ class FileTransferCharacteristic(Characteristic):
                 else:
                     self.offset += len(chunk)
 
-                print(chunk)
+                # print(chunk)
                 return [dbus.Byte(b) for b in chunk]
-                # return chunk
+                
         except Exception as e:
             print(f"Error reading file: {e}")
             return []
