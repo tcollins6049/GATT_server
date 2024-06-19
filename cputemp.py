@@ -445,6 +445,25 @@ class FileTransferCharacteristic(Characteristic):
         print(f"FileTransferCharacteristic initialized with UUID: {uuid}")
 
         
+    def create_dummy_file(self, directory):
+        try:
+            # Ensure the directory exists
+            os.makedirs(directory, exist_ok=True)
+
+            # Create a dummy file path
+            dummy_file_path = os.path.join(directory, 'dummy_file.txt')
+
+            # Write some content to the dummy file
+            with open(dummy_file_path, 'w') as f:
+                f.write("This is a dummy file created for testing purposes.\n")
+
+            print(f"Dummy file created successfully at: {dummy_file_path}")
+            return dummy_file_path
+
+        except Exception as e:
+            print(f"Error creating dummy file: {e}")
+            return None
+        
     
     def extract_frame(self, video_file):
         try:
@@ -474,9 +493,12 @@ class FileTransferCharacteristic(Characteristic):
             # mtu = options.get('mtu', 512) - 3  # subtract 3 bytes for ATT header
             mtu = 512
 
+            directory_path = '/home/tcollins6049/GATT_server'
+            dummy_file_path = self.create_dummy_file(directory_path)
+
             image_path = self.extract_frame(self.file_path)
-            if image_path is None:
-                print("Failed to extract frame.")
+            if not os.path.exists(image_path):
+                print(f"Error: File {image_path} does not exist.")
                 return []
 
 
