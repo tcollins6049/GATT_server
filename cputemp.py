@@ -488,6 +488,10 @@ class FileTransferCharacteristic(Characteristic):
             # Save the frame as an image file
             cv2.imwrite(output_file, frame)
             print(f"Frame {frame_number} saved as {output_file}")
+
+            # Get size of the saved image file
+            file_size = os.path.getsize(output_file)
+            print(f"Size of {output_file}: {file_size} bytes")
         else:
             print(f"Error: Could not read frame {frame_number} from video")
 
