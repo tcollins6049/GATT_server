@@ -492,11 +492,16 @@ class FileTransferCharacteristic(Characteristic):
             # Get size of the saved image file
             file_size = os.path.getsize(output_file)
             print(f"Size of {output_file}: {file_size} bytes")
+
+            cap.release()
+            return output_file
         else:
             print(f"Error: Could not read frame {frame_number} from video")
+            cap.release()
+            return None
 
         # Release the video capture object
-        cap.release()
+        # cap.release()
         
     
     def ReadValue(self, options):
@@ -504,10 +509,10 @@ class FileTransferCharacteristic(Characteristic):
             # mtu = options.get('mtu', 512) - 3  # subtract 3 bytes for ATT header
             mtu = 512
 
-            self.extract_frame(self.file_path, 100, '/home/tcollins6049/GATT_server/output_frame.jpg')
+            image_path = self.extract_frame(self.file_path, 100, '/home/tcollins6049/GATT_server/output_frame.jpg')
 
             # image_path = self.extract_frame(self.file_path)
-            image_path = 'none'
+            # image_path = 'none'
 
 
             with open(image_path, 'rb') as file:
