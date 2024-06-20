@@ -472,10 +472,11 @@ class FileTransferCharacteristic(Characteristic):
         print("Directories in video folder: ", full_path)
 
         # List files in this directory
-        # files = os.listdir(full_path)
-        # if (len(files) != 1):
-        #     raise ValueError(f"Expected exactly one file in directory {full_path}, found {len(files)}")
+        files = os.listdir(full_path)
+        if (len(files) != 1):
+            raise ValueError(f"Expected exactly one file in directory {full_path}, found {len(files)}")
         
+        print("FILES in video directory: ", files)
         # Get full path of the file
         # return full_path + '/' + files[0]
         
@@ -491,7 +492,7 @@ class FileTransferCharacteristic(Characteristic):
 
         # Get total number of frames in the video
         total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
-        print(f"Total frames in the video: {total_frames}")
+        # print(f"Total frames in the video: {total_frames}")
 
         # Set the desired frame number
         cap.set(cv2.CAP_PROP_POS_FRAMES, frame_number)
@@ -506,7 +507,7 @@ class FileTransferCharacteristic(Characteristic):
 
             # Get size of the saved image file
             file_size = os.path.getsize(output_file)
-            print(f"Size of {output_file}: {file_size} bytes")
+            # print(f"Size of {output_file}: {file_size} bytes")
 
             cap.release()
             return output_file
@@ -519,7 +520,7 @@ class FileTransferCharacteristic(Characteristic):
     def delete_file(self, file_path):
         try:
             os.remove(file_path)
-            print(f"Deleted file: {file_path}")
+            # print(f"Deleted file: {file_path}")
         except FileNotFoundError:
             print(f"Error: File '{file_path}' not found")
         except PermissionError:
