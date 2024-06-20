@@ -472,7 +472,10 @@ class FileTransferCharacteristic(Characteristic):
         print("Directories in video folder: ", full_path)
 
         # List files in this directory
-        files = os.listdir(full_path)
+        files = []
+        for file in os.listdir(full_path):
+            if file.endswith('.txt'):
+                files.append(file)
         if (len(files) < 1):
             raise ValueError(f"No files in the directory {full_path}, found {len(files)}")
         
