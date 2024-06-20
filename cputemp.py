@@ -63,7 +63,7 @@ class ThermometerService(Service):
         self.add_characteristic(CPUFileReadCharacteristic(self, '00000024-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/temp/'))
 
         # Adding a characteristic for pulling a file
-        file_transfer_characteristic = (FileTransferCharacteristic(self, '00000011-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/video/2024-06-13/rpi4-60@2024-06-13@15-10-00.h264'))
+        file_transfer_characteristic = (FileTransferCharacteristic(self, '00000011-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/video/'))
         self.add_characteristic(file_transfer_characteristic)
 
         # Adding file-related variable change characteristics for video
@@ -469,8 +469,6 @@ class FileTransferCharacteristic(Characteristic):
         most_recent_dir = max(date_dirs, key=lambda x: x[1])[0]
         full_path = os.path.join(base_path, most_recent_dir)
 
-        print("Directories in video folder: ", full_path)
-
         # List files in this directory
         files = []
         most_recent_file = '';
@@ -491,10 +489,8 @@ class FileTransferCharacteristic(Characteristic):
         if (len(files) < 1):
             raise ValueError(f"No files in the directory {full_path}, found {len(files)}")
         
-        # print("MOST_RECENT: ", most_recent_file)
-
         # Get full path of the file
-        print(full_path + '/' + most_recent_file)
+        return (full_path + '/' + most_recent_file)
         
     
     def extract_frame(self, video_file, frame_number, output_file):
@@ -547,15 +543,11 @@ class FileTransferCharacteristic(Characteristic):
     
     def ReadValue(self, options):
         try:
-            temp_base_path = '/home/bee/appmais/bee_tmp/video/'
-            self.get_most_recent_file(temp_base_path)
+            base_path = self.get_most_recent_file(self.file_path)
 
-
-
-            # mtu = options.get('mtu', 512) - 3  # subtract 3 bytes for ATT header
             mtu = 512
 
-            image_path = self.extract_frame(self.file_path, 100, '/home/tcollins6049/GATT_server/output_frame.jpg')
+            image_path = self.extract_frame(base_path, 100, '/home/tcollins6049/GATT_server/output_frame.jpg')
 
             with open(image_path, 'rb') as file:
                 file.seek(self.offset)
