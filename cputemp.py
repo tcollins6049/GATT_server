@@ -4,6 +4,7 @@ from advertisement import Advertisement
 from service import Application, Service, Characteristic, Descriptor
 from gpiozero import CPUTemperature
 from datetime import datetime
+from helper_methods import help
 
 
 
@@ -407,7 +408,8 @@ class CPUFileReadCharacteristic(Characteristic):
 
     def ReadValue(self, options):
         print("ReadValue called")
-        self.file_path = self.get_most_recent_file(self.folder_path)
+        # self.file_path = self.get_most_recent_file(self.folder_path)
+        self.file_path = help.get_most_recent_sensor_file(self.folder_path)
 
         if self.file_path is not None:
             try:
