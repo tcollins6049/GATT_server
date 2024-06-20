@@ -4,7 +4,7 @@ from advertisement import Advertisement
 from service import Application, Service, Characteristic, Descriptor
 from gpiozero import CPUTemperature
 from datetime import datetime
-from helper_methods import help
+import helper_methods as help
 
 
 
