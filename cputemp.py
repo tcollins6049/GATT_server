@@ -491,14 +491,10 @@ class FileTransferCharacteristic(Characteristic):
         if (len(files) < 1):
             raise ValueError(f"No files in the directory {full_path}, found {len(files)}")
         
-        print("MOST_RECENT: ", most_recent_file)
-        
-        #most_recent_file = ''
-        #for file in files:
-
+        # print("MOST_RECENT: ", most_recent_file)
 
         # Get full path of the file
-        # return full_path + '/' + files[0]
+        print(full_path + '/' + most_recent_file)
         
     
     def extract_frame(self, video_file, frame_number, output_file):
