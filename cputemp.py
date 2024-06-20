@@ -473,14 +473,25 @@ class FileTransferCharacteristic(Characteristic):
 
         # List files in this directory
         files = []
+        most_recent_file = '';
         for file in os.listdir(full_path):
             if file.endswith('.h264'):
                 files.append(file)
-                print(file.split('@')[-1].split('.')[0])
+                if most_recent_file == '':
+                    most_recent_file = file
+                else:
+                    split_file = (file.split('@')[-1].split('.')[0].split('-'))
+                    split_mr_file = (most_recent_file.split('@')[-1].split('.')[0].split('-'))
+                    print("File: ", split_file[0], "MR: ", split_mr_file[0])
+
+                # print(file.split('@')[-1].split('.')[0])
         if (len(files) < 1):
             raise ValueError(f"No files in the directory {full_path}, found {len(files)}")
         
-        # print("FILES in video directory: ", files)
+        #most_recent_file = ''
+        #for file in files:
+
+
         # Get full path of the file
         # return full_path + '/' + files[0]
         
