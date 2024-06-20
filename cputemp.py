@@ -476,10 +476,11 @@ class FileTransferCharacteristic(Characteristic):
         for file in os.listdir(full_path):
             if file.endswith('.h264'):
                 files.append(file)
+                print(file.split('@')[-1])
         if (len(files) < 1):
             raise ValueError(f"No files in the directory {full_path}, found {len(files)}")
         
-        print("FILES in video directory: ", files)
+        # print("FILES in video directory: ", files)
         # Get full path of the file
         # return full_path + '/' + files[0]
         
