@@ -473,8 +473,8 @@ class FileTransferCharacteristic(Characteristic):
 
         # List files in this directory
         files = os.listdir(full_path)
-        if (len(files) != 1):
-            raise ValueError(f"Expected exactly one file in directory {full_path}, found {len(files)}")
+        if (len(files) < 1):
+            raise ValueError(f"No files in the directory {full_path}, found {len(files)}")
         
         print("FILES in video directory: ", files)
         # Get full path of the file
