@@ -482,11 +482,16 @@ class FileTransferCharacteristic(Characteristic):
                 else:
                     split_file = (file.split('@')[-1].split('.')[0].split('-'))
                     split_mr_file = (most_recent_file.split('@')[-1].split('.')[0].split('-'))
-                    print("File: ", split_file[0], "MR: ", split_mr_file[0])
+                    
+                    if split_file[0] > split_mr_file[0]:
+                        most_recent_file = file
+                    elif split_file[0] == split_mr_file[0] and split_file[1] > split_mr_file[1]:
+                        most_recent_file = file
 
-                # print(file.split('@')[-1].split('.')[0])
         if (len(files) < 1):
             raise ValueError(f"No files in the directory {full_path}, found {len(files)}")
+        
+        print("MOST_RECENT: ", most_recent_file)
         
         #most_recent_file = ''
         #for file in files:
