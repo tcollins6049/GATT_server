@@ -239,6 +239,10 @@ class FileTransferCharacteristic(Characteristic):
     
 
     def ReadValue(self, options):
+        return self.ReadVideoFile()
+    
+
+    def ReadVideoFile(self):
         try:
             base_path = help.get_most_recent_video_file(self.file_path)
 
