@@ -276,6 +276,7 @@ class FileTransferCharacteristic(Characteristic):
         try:
             mtu = 512
             image_path = help.create_waveform_file(self.file_path)
+            print("IMAGE PATH: ", image_path)
 
             '''
             with open(image_path, 'rb') as file:
