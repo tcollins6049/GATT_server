@@ -3,7 +3,7 @@ from datetime import datetime
 
 import librosa
 import librosa.display
-# import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 
 
 def get_most_recent_sensor_file(base_path):
