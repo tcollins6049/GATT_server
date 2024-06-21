@@ -39,11 +39,7 @@ def get_most_recent_sensor_file(base_path):
     return full_path + '/' + files[0]
 
 
-'''
-def create_waveform_file(base_path):
-     # Path to your audio file (.mp3)
-    audio_file = base_path
-
+def create_waveform_file(audio_file):
     # Load the audio file
     y, sr = librosa.load(audio_file)
 
@@ -60,4 +56,17 @@ def create_waveform_file(base_path):
     plt.savefig(output_file)
 
     print(f'Waveform image saved as {output_file}')
-'''
+    return output_file
+
+
+def delete_file(file_path):
+        try:
+            os.remove(file_path)
+            # print(f"Deleted file: {file_path}")
+        except FileNotFoundError:
+            print(f"Error: File '{file_path}' not found")
+        except PermissionError:
+            print(f"Error: Permission denied to delete file '{file_path}'")
+        except Exception as e:
+            print(f"Error: {e}")
+            
