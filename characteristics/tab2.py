@@ -227,19 +227,23 @@ class WaveformFileCharacteristic(Characteristic):
 
 
 class FileTransferCharacteristic(Characteristic):
-    def __init__(self, service, uuid, file_path):
+    def __init__(self, service, uuid, file_path, file_type):
         Characteristic.__init__(
             self,
             uuid,
             ['read'],
             service)
+        self.file_type = file_type
         self.file_path = file_path
         self.offset = 0
         print(f"FileTransferCharacteristic initialized with UUID: {uuid}")
     
 
     def ReadValue(self, options):
-        return self.ReadVideoFile()
+        if self.file_type == 'video':
+            return self.ReadVideoFile()
+        elif self.file_type == 'audio':
+            return self.readWaveformFile()
     
 
     def ReadVideoFile(self):
@@ -263,6 +267,29 @@ class FileTransferCharacteristic(Characteristic):
                 help.delete_file(image_path)
                 return [dbus.Byte(b) for b in chunk]
                 
+        except Exception as e:
+            print(f"Error reading file: {e}")
+            return []
+    
+
+    def readWaveformFile(self):
+        try:
+            mtu = 512
+            image_path = help.create_waveform_file(self.file_path)
+
+            with open(image_path, 'rb') as file:
+                file.seek(self.offset)
+                chunk = file.read(mtu)
+                
+                print(f"Read {len(chunk)} bytes from file starting at offset {self.offset}")
+                if len(chunk) < mtu:
+                    self.offset = 0  # Reset for next read if this is the last chunk
+                else:
+                    self.offset += len(chunk)
+
+                help.delete_file(image_path)
+                return [dbus.Byte(b) for b in chunk]
+
         except Exception as e:
             print(f"Error reading file: {e}")
             return []

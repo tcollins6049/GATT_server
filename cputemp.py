@@ -64,10 +64,13 @@ class ThermometerService(Service):
         # Adding a characteristic for file information (e.g., file size)
         self.add_characteristic(FileInfoCharacteristic(self, '00000009-710e-4a5b-8d75-3e5b444bc3cf'));
         # Adding a characteristic for pulling a file
-        file_transfer_characteristic = (FileTransferCharacteristic(self, '00000011-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/video/'))
-        self.add_characteristic(file_transfer_characteristic)
-        # Adding characteristic to reset offset when getting file
-        self.add_characteristic(ResetOffsetCharacteristic(self, '00000022-710e-4a5b-8d75-3e5b444bc3cf', file_transfer_characteristic))
+        video_file_transfer_characteristic = (FileTransferCharacteristic(self, '00000011-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/video/', 'video'))
+        self.add_characteristic(video_file_transfer_characteristic)
+        self.add_characteristic(ResetOffsetCharacteristic(self, '00000022-710e-4a5b-8d75-3e5b444bc3cf', video_file_transfer_characteristic))
+
+        audio_file_transfer_characteristic = (FileTransferCharacteristic(self, '00000025-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/audio/2024-05-29/rpi4-60@2024-05-29@14-20-00.wav', 'video'))
+        self.add_characteristic(audio_file_transfer_characteristic)
+        self.add_characteristic(ResetOffsetCharacteristic(self, '00000024-710e-4a5b-8d75-3e5b444bc3cf', audio_file_transfer_characteristic))
 
         # --------------- Tab 3: Sensor data -- Characteristics ----------------- #
         # Adding a characterisitc for cpu file data
