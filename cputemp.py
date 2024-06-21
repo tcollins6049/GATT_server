@@ -7,15 +7,15 @@ from datetime import datetime
 import helper_methods as help
 
 # Characteristic Imports
-from characteristics import FileInfoCharacteristic
-from characteristics import FileCharacteristic
-from characteristics import SensorStateCharacteristic
-from characteristics import CPUFileReadCharacteristic
-from characteristics import FileTransferCharacteristic
-from characteristics import ResetOffsetCharacteristic
-from characteristics import CommandCharacteristic
-from characteristics import TempCharacteristic
-from characteristics import UnitCharacteristic
+from characteristics.all_char import FileInfoCharacteristic
+from characteristics.all_char import FileCharacteristic
+from characteristics.all_char import SensorStateCharacteristic
+from characteristics.all_char import CPUFileReadCharacteristic
+from characteristics.all_char import FileTransferCharacteristic
+from characteristics.all_char import ResetOffsetCharacteristic
+from characteristics.all_char import CommandCharacteristic
+from characteristics.all_char import TempCharacteristic
+from characteristics.all_char import UnitCharacteristic
 
 """
     Advertisement class for the Thermometer service
