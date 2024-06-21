@@ -1,9 +1,9 @@
 import os
 from datetime import datetime
 
-import librosa
-import librosa.display
-import matplotlib.pyplot as plt
+# import librosa
+# import librosa.display
+# import matplotlib.pyplot as plt
 
 
 def get_most_recent_sensor_file(base_path):
@@ -39,6 +39,7 @@ def get_most_recent_sensor_file(base_path):
     return full_path + '/' + files[0]
 
 
+'''
 def create_waveform_file(base_path):
      # Path to your audio file (.mp3)
     audio_file = base_path
@@ -59,3 +60,4 @@ def create_waveform_file(base_path):
     plt.savefig(output_file)
 
     print(f'Waveform image saved as {output_file}')
+'''
