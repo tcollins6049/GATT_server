@@ -51,7 +51,7 @@ class ResetOffsetCharacteristic(Characteristic):
     !! This is just test right now, not currently working !!
     /home/bee/appmais/bee_tmp/audio/2024-05-29/rpi4-60@2024-05-29@14-20-00.wav
     /home/bee/appmais/bee_tmp/video/2024-06-13/rpi4-60@2024-06-13@14-40-00.h264
-"""
+
 class FileTransferCharacteristic(Characteristic):
     def __init__(self, service, uuid, file_path):
         Characteristic.__init__(
@@ -189,7 +189,7 @@ class FileTransferCharacteristic(Characteristic):
     def reset_offset(self):
         self.offset = 0
         print("FileTransferCharacteristic offset reset to 0")
-     
+"""   
 
 """
     Gets the waveform for an audio file.
@@ -223,3 +223,47 @@ class WaveformFileCharacteristic(Characteristic):
                 return [dbus.Byte(b) for b in chunk]
         # return [dbus.Byte(c) for c in file_info.encode()]
 """
+
+
+
+class FileTransferCharacteristic(Characteristic):
+    def __init__(self, service, uuid, file_path):
+        Characteristic.__init__(
+            self,
+            uuid,
+            ['read'],
+            service)
+        self.file_path = file_path
+        self.offset = 0
+        print(f"FileTransferCharacteristic initialized with UUID: {uuid}")
+    
+
+    def ReadValue(self, options):
+        try:
+            base_path = help.get_most_recent_video_file(self.file_path)
+
+            mtu = 512
+
+            image_path = help.extract_frame(base_path, 100, '/home/tcollins6049/GATT_server/output_frame.jpg')
+
+            with open(image_path, 'rb') as file:
+                file.seek(self.offset)
+                chunk = file.read(mtu)
+                
+                print(f"Read {len(chunk)} bytes from file starting at offset {self.offset}")
+                if len(chunk) < mtu:
+                    self.offset = 0  # Reset for next read if this is the last chunk
+                else:
+                    self.offset += len(chunk)
+
+                help.delete_file(image_path)
+                return [dbus.Byte(b) for b in chunk]
+                
+        except Exception as e:
+            print(f"Error reading file: {e}")
+            return []
+
+
+    def reset_offset(self):
+        self.offset = 0
+        print("FileTransferCharacteristic offset reset to 0")
