@@ -7,15 +7,16 @@ from datetime import datetime
 import helper_methods as help
 
 # Characteristic Imports
-from characteristics.all_char import FileInfoCharacteristic
-from characteristics.all_char import FileCharacteristic
+from characteristics.tab1Variables import FileCharacteristic
+from characteristics.tab2 import FileInfoCharacteristic
+from characteristics.tab2 import FileTransferCharacteristic
+from characteristics.tab2 import ResetOffsetCharacteristic
 from characteristics.all_char import SensorStateCharacteristic
 from characteristics.all_char import CPUFileReadCharacteristic
-from characteristics.all_char import FileTransferCharacteristic
-from characteristics.all_char import ResetOffsetCharacteristic
 from characteristics.all_char import CommandCharacteristic
 from characteristics.all_char import TempCharacteristic
 from characteristics.all_char import UnitCharacteristic
+
 
 """
     Advertisement class for the Thermometer service
@@ -52,14 +53,10 @@ class ThermometerService(Service):
         self.add_characteristic(UnitCharacteristic(self))
         
         # Adding file-related variable change characteristics
-        cap_start = FileCharacteristic(self, '00000005-710e-4a5b-8d75-3e5b444bc3cf', 'global','capture_window_start_time')
-        self.add_characteristic(cap_start)
-        cap_end = FileCharacteristic(self, '00000006-710e-4a5b-8d75-3e5b444bc3cf', 'global', 'capture_window_end_time')
-        self.add_characteristic(cap_end)
-        cap_duration = FileCharacteristic(self, '00000007-710e-4a5b-8d75-3e5b444bc3cf', 'global', 'capture_duration_seconds')
-        self.add_characteristic(cap_duration)
-        cap_interval = FileCharacteristic(self, '00000008-710e-4a5b-8d75-3e5b444bc3cf', 'global', 'capture_interval_seconds')
-        self.add_characteristic(cap_interval)
+        self.add_characteristic(FileCharacteristic(self, '00000005-710e-4a5b-8d75-3e5b444bc3cf', 'global','capture_window_start_time'))
+        self.add_characteristic(FileCharacteristic(self, '00000006-710e-4a5b-8d75-3e5b444bc3cf', 'global', 'capture_window_end_time'))
+        self.add_characteristic(FileCharacteristic(self, '00000007-710e-4a5b-8d75-3e5b444bc3cf', 'global', 'capture_duration_seconds'))
+        self.add_characteristic(FileCharacteristic(self, '00000008-710e-4a5b-8d75-3e5b444bc3cf', 'global', 'capture_interval_seconds'))
 
         # Adding a characteristic for file information (e.g., file size)
         self.add_characteristic(FileInfoCharacteristic(self, '00000009-710e-4a5b-8d75-3e5b444bc3cf'));
