@@ -277,6 +277,7 @@ class FileTransferCharacteristic(Characteristic):
             mtu = 512
             image_path = help.create_waveform_file(self.file_path)
 
+            '''
             with open(image_path, 'rb') as file:
                 file.seek(self.offset)
                 chunk = file.read(mtu)
@@ -289,6 +290,7 @@ class FileTransferCharacteristic(Characteristic):
 
                 help.delete_file(image_path)
                 return [dbus.Byte(b) for b in chunk]
+            '''
 
         except Exception as e:
             print(f"Error reading file: {e}")
