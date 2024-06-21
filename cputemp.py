@@ -14,8 +14,8 @@ from characteristics.tab2 import ResetOffsetCharacteristic
 from characteristics.tab3 import CPUFileReadCharacteristic
 from characteristics.tab4 import SensorStateCharacteristic
 from characteristics.tab5 import CommandCharacteristic
-from characteristics.all_char import TempCharacteristic
-from characteristics.all_char import UnitCharacteristic
+from characteristics.sensorReadings import TempCharacteristic
+from characteristics.sensorReadings import UnitCharacteristic
 
 
 """

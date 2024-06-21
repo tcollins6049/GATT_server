@@ -132,4 +132,3 @@ class UnitDescriptor(Descriptor):
             value.append(dbus.Byte(c.encode()))
 
         return value
-
