@@ -277,9 +277,9 @@ class FileTransferCharacteristic(Characteristic):
             mtu = 512
             
             if self.offset == 0:
-                image_path = help.create_waveform_file(self.file_path)
-                print("IMAGE PATH: ", image_path)
-                print("IMAGE SIZE: ", os.path.getsize(image_path))
+                self.image_path = help.create_waveform_file(self.file_path)
+                print("IMAGE PATH: ", self.image_path)
+                print("IMAGE SIZE: ", os.path.getsize(self.image_path))
 
             
             with open('/home/tcollins6049/GATT_server/waveform.jpg', 'rb') as file:
@@ -289,7 +289,7 @@ class FileTransferCharacteristic(Characteristic):
                 print(f"Read {len(chunk)} bytes from file starting at offset {self.offset}")
                 if len(chunk) < mtu:
                     self.offset = 0  # Reset for next read if this is the last chunk
-                    help.delete_file(image_path)
+                    help.delete_file(self.image_path)
                 else:
                     self.offset += len(chunk)
 
