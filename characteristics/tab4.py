@@ -32,7 +32,7 @@ class SensorStateCharacteristic(Characteristic):
 
         :param options: Additional options for reading the value.
         :return: The value of the variable encoded in bytes.
-    """
+    
     def ReadValue(self, options):
         try:
             # Cretae a config parser and read the file
@@ -61,6 +61,7 @@ class SensorStateCharacteristic(Characteristic):
         except Exception as e:
             print(f"Error Reading File: {e}")
             return []
+    """
         
     """
         Writes the provided value to the configuration file, updating the variable.
@@ -97,6 +98,40 @@ class SensorStateCharacteristic(Characteristic):
         except Exception as e:
             print(f"Error Writing File: {e}")
     """
+    def ReadValue(self, options):
+        try:
+            # Create a config parser and read the file
+            config = configparser.ConfigParser()
+            config.read(self.file_path)
+
+            values = []
+
+            # Check if the section exists and auto_start is explicitly set to False
+            if self.section_name in config and self.variable_name in config[self.section_name]:
+                value = config[self.section_name][self.variable_name]
+                if value.lower() == 'true':
+                    values.append(f"{self.section_name}: True")
+                elif value.lower() == 'false':
+                    # Don't append anything if auto_start is explicitly set to False
+                    pass
+            else:
+                # If auto_start variable is not found in the section, consider it True
+                values.append(f"{self.section_name}: True")
+
+            if values:
+                captured_data = '\n'.join(values)
+                
+                print(f"FileCharacteristic Read: {captured_data}")
+                return [dbus.Byte(c) for c in captured_data.encode()]
+            else:
+                print(f"Variable {self.variable_name} not found in any applicable section")
+                return []
+
+        except Exception as e:
+            print(f"Error Reading File: {e}")
+            return []
+
+
     def WriteValue(self, value, options):
         try:
             # Convert the byte values to a string
