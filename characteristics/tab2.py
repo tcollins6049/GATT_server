@@ -282,7 +282,7 @@ class FileTransferCharacteristic(Characteristic):
                 print("IMAGE SIZE: ", os.path.getsize(self.image_path))
 
             
-            with open('/home/tcollins6049/GATT_server/waveform.jpg', 'rb') as file:
+            with open(self.image_path, 'rb') as file:
                 file.seek(self.offset)
                 chunk = file.read(mtu)
                 
