@@ -106,17 +106,22 @@ class SensorStateCharacteristic(Characteristic):
 
             values = []
 
-            # Check if the section exists and auto_start is explicitly set to False
-            if self.section_name in config and self.variable_name in config[self.section_name]:
-                value = config[self.section_name][self.variable_name]
-                if value.lower() == 'true':
-                    values.append(f"{self.section_name}: True")
-                elif value.lower() == 'false':
-                    # Don't append anything if auto_start is explicitly set to False
-                    pass
+            # Check if the section exists
+            if self.section_name in config:
+                # Check if the variable exists in the section
+                if self.variable_name in config[self.section_name]:
+                    value = config[self.section_name][self.variable_name]
+                    if value.lower() == 'true':
+                        values.append(f"{self.variable_name}: True")
+                    elif value.lower() == 'false':
+                        # Don't append anything if auto_start is explicitly set to False
+                        pass
+                else:
+                    # If auto_start variable is not found in the section, consider it True
+                    values.append(f"{self.variable_name}: True")
             else:
-                # If auto_start variable is not found in the section, consider it True
-                values.append(f"{self.section_name}: True")
+                # If the section itself is not found, consider it True
+                values.append(f"Section {self.section_name}: True")
 
             if values:
                 captured_data = '\n'.join(values)
