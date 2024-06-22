@@ -254,7 +254,7 @@ class FileTransferCharacteristic(Characteristic):
 
             image_path = help.extract_frame(base_path, 100, '/home/tcollins6049/GATT_server/output_frame.jpg')
 
-            with open(image_path, 'rb') as file:
+            with open('/home/tcollins6049/GATT_server/waveform.jpg', 'rb') as file:
                 file.seek(self.offset)
                 chunk = file.read(mtu)
                 
