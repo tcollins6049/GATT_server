@@ -132,6 +132,7 @@ class SensorStateCharacteristic(Characteristic):
             return []
 
 
+
     def WriteValue(self, value, options):
         try:
             # Convert the byte values to a string
