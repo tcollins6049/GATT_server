@@ -104,33 +104,19 @@ class SensorStateCharacteristic(Characteristic):
             config = configparser.ConfigParser()
             config.read(self.file_path)
 
-            values = []
-
-            # Check if the section exists
-            if self.section_name in config:
-                # Check if the variable exists in the section
-                if self.variable_name in config[self.section_name]:
-                    value = config[self.section_name][self.variable_name]
-                    if value.lower() == 'true':
-                        values.append(f"{self.variable_name}: True")
-                    elif value.lower() == 'false':
-                        # Don't append anything if auto_start is explicitly set to False
-                        pass
+            if self.section_name in config and self.variable_name in config[self.section_name]:
+                value = config[self.section_name][self.variable_name].lower()
+                if value == 'true':
+                    captured_data = f"{self.section_name}: True"
+                elif value == 'false':
+                    captured_data = f"{self.section_name}: False"
                 else:
-                    # If auto_start variable is not found in the section, consider it True
-                    values.append(f"{self.variable_name}: True")
+                    captured_data = f"{self.section_name}: True"  # Default to True if value is not recognized
             else:
-                # If the section itself is not found, consider it True
-                values.append(f"Section {self.section_name}: True")
+                captured_data = f"{self.section_name}: True"  # Default to True if section or variable is not found
 
-            if values:
-                captured_data = '\n'.join(values)
-                
-                print(f"FileCharacteristic Read: {captured_data}")
-                return [dbus.Byte(c) for c in captured_data.encode()]
-            else:
-                print(f"Variable {self.variable_name} not found in any applicable section")
-                return []
+            print(f"FileCharacteristic Read: {captured_data}")
+            return [dbus.Byte(c) for c in captured_data.encode()]
 
         except Exception as e:
             print(f"Error Reading File: {e}")
