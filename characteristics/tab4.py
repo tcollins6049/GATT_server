@@ -104,28 +104,22 @@ class SensorStateCharacteristic(Characteristic):
             config = configparser.ConfigParser()
             config.read(self.file_path)
 
-            values = []
-
-            # Iterate through all sections in the configuration
-            for section in config.sections():
+            # Check if the section corresponding to this characteristic exists
+            if self.section_name in config:
                 # Check if the auto_start variable exists in the section
-                if self.variable_name in config[section]:
-                    value = config[section][self.variable_name]
-                    if value.lower() == 'true':
-                        values.append(f"{section}: True")
-                    elif value.lower() == 'false':
-                        values.append(f"{section}: False")
+                if self.variable_name in config[self.section_name]:
+                    value = config[self.section_name][self.variable_name].strip().lower()
+                    if value == 'true':
+                        return [dbus.Byte(ord('1'))]  # Return '1' if auto_start is True
+                    elif value == 'false':
+                        return [dbus.Byte(ord('0'))]  # Return '0' if auto_start is False
                 else:
-                    # If auto_start variable is not found in the section, consider it True
-                    values.append(f"{section}: True")
+                    # If auto_start variable is not found in the section, consider it as True
+                    return [dbus.Byte(ord('1'))]  # Default to '1' (True)
 
-            if values:
-                captured_data = '\n'.join(values)
-                print(f"FileCharacteristic Read:\n{captured_data}")
-                return [dbus.Byte(c) for c in captured_data.encode()]
-            else:
-                print(f"Variable {self.variable_name} not found in any applicable section")
-                return []
+            # If section or variable not found, handle accordingly (returning empty or default value)
+            print(f"Variable {self.variable_name} not found in section {self.section_name}")
+            return []
 
         except Exception as e:
             print(f"Error Reading File: {e}")
