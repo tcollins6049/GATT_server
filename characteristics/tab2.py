@@ -300,6 +300,10 @@ class FileTransferCharacteristic(Characteristic):
         except Exception as e:
             print(f"Error reading file: {e}")
             return []
+    
+
+    def send_picture(self):
+        result = subprocess.run(['libcamera ,-still, -o /home/tcollins6049/GATT_server/test_picture.jpg'])
 
 
     def reset_offset(self):
