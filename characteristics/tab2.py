@@ -254,7 +254,7 @@ class FileTransferCharacteristic(Characteristic):
 
             image_path = help.extract_frame(base_path, 100, '/home/tcollins6049/GATT_server/output_frame.jpg')
 
-            with open('/home/tcollins6049/GATT_server/waveform.jpg', 'rb') as file:
+            with open(image_path, 'rb') as file:
                 file.seek(self.offset)
                 chunk = file.read(mtu)
                 
@@ -279,8 +279,8 @@ class FileTransferCharacteristic(Characteristic):
             print("IMAGE PATH: ", image_path)
             print("IMAGE SIZE: ", os.path.getsize(image_path))
 
-            '''
-            with open(image_path, 'rb') as file:
+            
+            with open('/home/tcollins6049/GATT_server/waveform.jpg', 'rb') as file:
                 file.seek(self.offset)
                 chunk = file.read(mtu)
                 
@@ -292,7 +292,7 @@ class FileTransferCharacteristic(Characteristic):
 
                 help.delete_file(image_path)
                 return [dbus.Byte(b) for b in chunk]
-            '''
+            
 
         except Exception as e:
             print(f"Error reading file: {e}")
