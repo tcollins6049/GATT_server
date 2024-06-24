@@ -24,10 +24,11 @@ class FileInfoCharacteristic(Characteristic):
     def ReadValue(self, options):
         # if self.file_type == 'audio':
         #     self.file_path = help.get_most_recent_audio_file(self.file_path)
+        temp_file_path = self.file_path
         if self.file_type == 'video':
-            self.file_path = self.get_most_recent_video_file()
+            temp_file_path = self.get_most_recent_video_file()
 
-        file_size = os.path.getsize(self.file_path)
+        file_size = os.path.getsize(temp_file_path)
         file_info = f"File Size: {file_size} bytes"
         print('FileInfoCharacteristic Read: {}'.format(file_info))
         return [dbus.Byte(c) for c in file_info.encode()]
