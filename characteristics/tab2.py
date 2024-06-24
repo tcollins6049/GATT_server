@@ -22,9 +22,9 @@ class FileInfoCharacteristic(Characteristic):
         # self.file_path = '/home/bee/appmais/bee_tmp/audio/2024-05-29/rpi4-60@2024-05-29@14-20-00.wav'
 
     def ReadValue(self, options):
-        # if self.file_type == 'audio':
-        #     self.file_path = help.get_most_recent_audio_file(self.file_path)
         temp_file_path = self.file_path
+        if self.file_type == 'audio':
+            temp_file_path = help.get_most_recent_audio_file(temp_file_path)
         if self.file_type == 'video':
             temp_file_path = self.get_most_recent_video_file()
             print("FILE PATH: ", temp_file_path)
@@ -82,7 +82,6 @@ class FileInfoCharacteristic(Characteristic):
         
         # Get full path of the file
         return (full_path + '/' + most_recent_file)
-
 
 
 class ResetOffsetCharacteristic(Characteristic):
