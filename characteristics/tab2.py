@@ -11,15 +11,21 @@ import helper_methods as help
     !! Need to change file path to be a parameter !!
 """
 class FileInfoCharacteristic(Characteristic):
-    def __init__(self, service, uuid):
+    def __init__(self, service, uuid, file_path, file_type):
         Characteristic.__init__(
             self,
             uuid,
             ['read'],
             service)
-        self.file_path = '/home/bee/appmais/bee_tmp/audio/2024-05-29/rpi4-60@2024-05-29@14-20-00.wav'
+        self.file_path = file_path
+        self.file_type = file_type
+        # self.file_path = '/home/bee/appmais/bee_tmp/audio/2024-05-29/rpi4-60@2024-05-29@14-20-00.wav'
 
     def ReadValue(self, options):
+        if self.file_type == 'audio':
+            self.file_path = help.get_most_recent_audio_file(self.file_path)
+        if self.file_type == 'video':
+            self.file_path = help.get_most_recent_video_file(self.file_path)
         file_size = os.path.getsize(self.file_path)
         file_info = f"File Size: {file_size} bytes"
         print('FileInfoCharacteristic Read: {}'.format(file_info))
@@ -190,40 +196,6 @@ class FileTransferCharacteristic(Characteristic):
         self.offset = 0
         print("FileTransferCharacteristic offset reset to 0")
 """   
-
-"""
-    Gets the waveform for an audio file.
-
-class WaveformFileCharacteristic(Characteristic):
-    def __init__(self, service, uuid):
-        Characteristic.__init__(
-            self,
-            uuid,
-            ['read'],
-            service)
-        
-        self.img_offset = 0
-        self.file_path = '/home/bee/appmais/bee_tmp/audio/2024-05-29/rpi4-60@2024-05-29@14-20-00.wav'
-
-    def ReadValue(self, options):
-        waveImage_path = help.create_waveform_file(self.file_path)
-
-        mtu = 512
-        with open(waveImage_path, 'rb') as file:
-                file.seek(self.img_offset)
-                chunk = file.read(mtu)
-                
-                print(f"Read {len(chunk)} bytes from file starting at offset {self.img_offset}")
-                if len(chunk) < mtu:
-                    self.img_offset = 0  # Reset for next read if this is the last chunk
-                else:
-                    self.img_offset += len(chunk)
-
-                help.delete_file(waveImage_path)
-                return [dbus.Byte(b) for b in chunk]
-        # return [dbus.Byte(c) for c in file_info.encode()]
-"""
-
 
 
 class FileTransferCharacteristic(Characteristic):

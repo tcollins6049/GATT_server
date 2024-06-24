@@ -62,7 +62,8 @@ class ThermometerService(Service):
 
         # ------------- Tab 2: Audio + Video -- Characteristics ------------------ #
         # Adding a characteristic for file information (e.g., file size)
-        self.add_characteristic(FileInfoCharacteristic(self, '00000009-710e-4a5b-8d75-3e5b444bc3cf'));
+        self.add_characteristic(FileInfoCharacteristic(self, '00000009-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/audio/', 'audio'));
+        self.add_characteristic(FileInfoCharacteristic(self, '00000030-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/video/', 'video'));
         # Adding a characteristic for pulling a file
         video_file_transfer_characteristic = (FileTransferCharacteristic(self, '00000011-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/video/', 'video'))
         self.add_characteristic(video_file_transfer_characteristic)

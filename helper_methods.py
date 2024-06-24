@@ -119,6 +119,54 @@ def get_most_recent_video_file(base_path):
         return (full_path + '/' + most_recent_file)
 
 
+def get_most_recent_audio_file(base_path):
+        print("Getting most recent file")
+        # List all directories in the base path
+        entries = os.listdir(base_path)
+        
+        # Filter out possible non directory entries or directories which dont match the data format
+        date_dirs = []
+        for entry in entries:
+            entry_path = os.path.join(base_path, entry)
+            if os.path.isdir(entry_path):
+                try:
+                    # Try to parse the directory name as a date
+                    date = datetime.strptime(entry, "%Y-%m-%d")
+                    date_dirs.append((entry, date))
+                except ValueError:
+                    # Skip directories that don't match the date format
+                    pass
+        if not date_dirs:
+            return None
+
+        # Find most recent date
+        most_recent_dir = max(date_dirs, key=lambda x: x[1])[0]
+        full_path = os.path.join(base_path, most_recent_dir)
+
+        # List files in this directory
+        files = []
+        most_recent_file = '';
+        for file in os.listdir(full_path):
+            if file.endswith('.wav'):
+                files.append(file)
+                if most_recent_file == '':
+                    most_recent_file = file
+                else:
+                    split_file = (file.split('@')[-1].split('.')[0].split('-'))
+                    split_mr_file = (most_recent_file.split('@')[-1].split('.')[0].split('-'))
+                    
+                    if split_file[0] > split_mr_file[0]:
+                        most_recent_file = file
+                    elif split_file[0] == split_mr_file[0] and split_file[1] > split_mr_file[1]:
+                        most_recent_file = file
+
+        if (len(files) < 1):
+            raise ValueError(f"No files in the directory {full_path}, found {len(files)}")
+        
+        # Get full path of the file
+        return (full_path + '/' + most_recent_file)
+
+
 def extract_frame(video_file, frame_number, output_file):
         # Open the video file
         cap = cv2.VideoCapture(video_file)
