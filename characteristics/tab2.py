@@ -17,9 +17,9 @@ class FileInfoCharacteristic(Characteristic):
             uuid,
             ['read'],
             service)
-        # self.file_path = file_path
+        self.file_path = file_path
         self.file_type = file_type
-        self.file_path = '/home/bee/appmais/bee_tmp/audio/2024-05-29/rpi4-60@2024-05-29@14-20-00.wav'
+        # self.file_path = '/home/bee/appmais/bee_tmp/audio/2024-05-29/rpi4-60@2024-05-29@14-20-00.wav'
 
     def ReadValue(self, options):
         # if self.file_type == 'audio':
@@ -27,6 +27,7 @@ class FileInfoCharacteristic(Characteristic):
         temp_file_path = self.file_path
         if self.file_type == 'video':
             temp_file_path = self.get_most_recent_video_file()
+            print("FILE PATH: ", temp_file_path)
 
         file_size = os.path.getsize(temp_file_path)
         file_info = f"File Size: {file_size} bytes"
