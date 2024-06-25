@@ -30,7 +30,7 @@ class FileInfoCharacteristic(Characteristic):
             print("FILE PATH: ", temp_file_path)
 
         file_size = os.path.getsize(temp_file_path)
-        file_info = f"File Size: {file_size} bytes"
+        file_info = f"{temp_file_path}, File Size: {file_size} bytes"
         print('FileInfoCharacteristic Read: {}'.format(file_info))
         return [dbus.Byte(c) for c in file_info.encode()]
     
