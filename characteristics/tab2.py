@@ -26,7 +26,7 @@ class FileInfoCharacteristic(Characteristic):
         if self.file_type == 'audio':
             temp_file_path = help.get_most_recent_audio_file(temp_file_path)
         if self.file_type == 'video':
-            temp_file_path = self.get_most_recent_video_file()
+            temp_file_path = help.get_most_recent_video_file(temp_file_path)
             print("FILE PATH: ", temp_file_path)
 
         file_size = os.path.getsize(temp_file_path)
