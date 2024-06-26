@@ -40,12 +40,14 @@ def get_most_recent_sensor_file(base_path):
 
 
 def create_waveform_file(audio_file):
+    bgcolor = '#e0e0e0'
     # Load the audio file
     y, sr = librosa.load(audio_file)
 
     # Plot the waveform
-    plt.figure(figsize=(14, 5))
+    plt.figure(figsize=(14, 5), facecolor=bgcolor)
     librosa.display.waveshow(y, sr=sr)
+    plt.gca().set_facecolor(bgcolor)
     plt.title('Waveform of Audio File')
     plt.xlabel('Time (seconds)')
     plt.ylabel('Amplitude')
@@ -53,7 +55,7 @@ def create_waveform_file(audio_file):
 
     # Save the plot as a JPG file
     output_file = '/home/tcollins6049/GATT_server/waveform.jpg'
-    plt.savefig(output_file)
+    plt.savefig(output_file, facecolor=bgcolor)
 
     print(f'Waveform image saved as {output_file}')
     return output_file
