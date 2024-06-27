@@ -89,7 +89,7 @@ class ThermometerService(Service):
 
         # --------------- Tab 5: Commands -- Characteristics ---------------- #
         # Adding the new command characteristic
-        self.add_characteristic(CommandCharacteristic(self))
+        self.add_characteristic(CommandCharacteristic(self, '00000023-710e-4a5b-8d75-3e5b444bc3cf'))
 
         # -------------- Sensor Readings -- Characteristics ---------------- #
         # Add characteristics to the service

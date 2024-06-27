@@ -9,15 +9,13 @@ import helper_methods as help
 # ---------------- Tab 5: Command Characteristics ---------------------- #
 """
 This class is responsible for running a command on the pi sent from the app
-
-!! This is just test right now, not currently working !!
 """
 class CommandCharacteristic(Characteristic):
-    COMMAND_CHARACTERISTIC_UUID = "00000023-710e-4a5b-8d75-3e5b444bc3cf"
+    # COMMAND_CHARACTERISTIC_UUID = "00000023-710e-4a5b-8d75-3e5b444bc3cf"
 
-    def __init__(self, service):
+    def __init__(self, service, uuid):
         Characteristic.__init__(
-            self, self.COMMAND_CHARACTERISTIC_UUID,
+            self, uuid,
             ["write"], service)
     
     def WriteValue(self, value, options):

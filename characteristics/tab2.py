@@ -19,7 +19,7 @@ class FileInfoCharacteristic(Characteristic):
             service)
         self.file_path = file_path
         self.file_type = file_type
-        # self.file_path = '/home/bee/appmais/bee_tmp/audio/2024-05-29/rpi4-60@2024-05-29@14-20-00.wav'
+        
 
     def ReadValue(self, options):
         temp_file_path = self.file_path
