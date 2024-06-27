@@ -62,16 +62,16 @@ class ThermometerService(Service):
 
         # ------------- Tab 2: Audio + Video -- Characteristics ------------------ #
         # Adding a characteristic for file information (e.g., file size)
-        self.add_characteristic(FileInfoCharacteristic(self, '00000009-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/audio/', 'audio'));
-        self.add_characteristic(FileInfoCharacteristic(self, '00000030-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/video/', 'video'));
+        self.add_characteristic(FileInfoCharacteristic(self, '00000201-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/audio/', 'audio'));
+        self.add_characteristic(FileInfoCharacteristic(self, '00000202-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/video/', 'video'));
         # Adding a characteristic for pulling a file
-        video_file_transfer_characteristic = (FileTransferCharacteristic(self, '00000011-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/video/', 'video'))
+        video_file_transfer_characteristic = (FileTransferCharacteristic(self, '00000203-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/video/', 'video'))
         self.add_characteristic(video_file_transfer_characteristic)
-        self.add_characteristic(ResetOffsetCharacteristic(self, '00000022-710e-4a5b-8d75-3e5b444bc3cf', video_file_transfer_characteristic))
+        self.add_characteristic(ResetOffsetCharacteristic(self, '00000204-710e-4a5b-8d75-3e5b444bc3cf', video_file_transfer_characteristic))
 
-        audio_file_transfer_characteristic = (FileTransferCharacteristic(self, '00000025-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/audio/2024-05-29/rpi4-60@2024-05-29@14-20-00.wav', 'audio'))
+        audio_file_transfer_characteristic = (FileTransferCharacteristic(self, '00000205-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/audio/2024-05-29/rpi4-60@2024-05-29@14-20-00.wav', 'audio'))
         self.add_characteristic(audio_file_transfer_characteristic)
-        self.add_characteristic(ResetOffsetCharacteristic(self, '00000026-710e-4a5b-8d75-3e5b444bc3cf', audio_file_transfer_characteristic))
+        self.add_characteristic(ResetOffsetCharacteristic(self, '00000206-710e-4a5b-8d75-3e5b444bc3cf', audio_file_transfer_characteristic))
 
         # --------------- Tab 3: Sensor data -- Characteristics ----------------- #
         # Adding a characterisitc for cpu file data
