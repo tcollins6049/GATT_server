@@ -50,15 +50,15 @@ class ThermometerService(Service):
 
         # -------------- Tab 1: Variables -- Characteristics ------------------- #
         # Adding file-related variable change characteristics
-        self.add_characteristic(FileCharacteristic(self, '00000005-710e-4a5b-8d75-3e5b444bc3cf', 'global','capture_window_start_time'))
-        self.add_characteristic(FileCharacteristic(self, '00000006-710e-4a5b-8d75-3e5b444bc3cf', 'global', 'capture_window_end_time'))
-        self.add_characteristic(FileCharacteristic(self, '00000007-710e-4a5b-8d75-3e5b444bc3cf', 'global', 'capture_duration_seconds'))
-        self.add_characteristic(FileCharacteristic(self, '00000008-710e-4a5b-8d75-3e5b444bc3cf', 'global', 'capture_interval_seconds'))
+        self.add_characteristic(FileCharacteristic(self, '00000101-710e-4a5b-8d75-3e5b444bc3cf', 'global','capture_window_start_time'))
+        self.add_characteristic(FileCharacteristic(self, '00000102-710e-4a5b-8d75-3e5b444bc3cf', 'global', 'capture_window_end_time'))
+        self.add_characteristic(FileCharacteristic(self, '00000103-710e-4a5b-8d75-3e5b444bc3cf', 'global', 'capture_duration_seconds'))
+        self.add_characteristic(FileCharacteristic(self, '00000104-710e-4a5b-8d75-3e5b444bc3cf', 'global', 'capture_interval_seconds'))
         # Adding file-related variable change characteristics for video
-        self.add_characteristic(FileCharacteristic(self, '00000012-710e-4a5b-8d75-3e5b444bc3cf', 'video','capture_window_start_time'))
-        self.add_characteristic(FileCharacteristic(self, '00000013-710e-4a5b-8d75-3e5b444bc3cf', 'video', 'capture_window_end_time'))
-        self.add_characteristic(FileCharacteristic(self, '00000014-710e-4a5b-8d75-3e5b444bc3cf', 'video', 'capture_duration_seconds'))
-        self.add_characteristic(FileCharacteristic(self, '00000015-710e-4a5b-8d75-3e5b444bc3cf', 'video', 'capture_interval_seconds'))
+        self.add_characteristic(FileCharacteristic(self, '00000105-710e-4a5b-8d75-3e5b444bc3cf', 'video','capture_window_start_time'))
+        self.add_characteristic(FileCharacteristic(self, '00000106-710e-4a5b-8d75-3e5b444bc3cf', 'video', 'capture_window_end_time'))
+        self.add_characteristic(FileCharacteristic(self, '00000107-710e-4a5b-8d75-3e5b444bc3cf', 'video', 'capture_duration_seconds'))
+        self.add_characteristic(FileCharacteristic(self, '00000108-710e-4a5b-8d75-3e5b444bc3cf', 'video', 'capture_interval_seconds'))
 
         # ------------- Tab 2: Audio + Video -- Characteristics ------------------ #
         # Adding a characteristic for file information (e.g., file size)
