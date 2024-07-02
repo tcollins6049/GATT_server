@@ -8,7 +8,6 @@ import helper_methods as help
 # ---------------- Tab 2: Audio + Video Characteristics ---------------------- #
 """
     Reads the file size of file located at given path.
-    !! Need to change file path to be a parameter !!
 """
 class FileInfoCharacteristic(Characteristic):
     def __init__(self, service, uuid, file_path, file_type):
@@ -129,7 +128,7 @@ class FileTransferCharacteristic(Characteristic):
 
             mtu = 512
 
-            image_path = help.extract_frame(base_path, 100, '/home/tcollins6049/GATT_server/output_frame.jpg')
+            image_path = help.extract_frame(base_path, 100, '/home/bee/GATT_server/output_frame.jpg')
 
             with open(image_path, 'rb') as file:
                 file.seek(self.offset)
@@ -180,7 +179,7 @@ class FileTransferCharacteristic(Characteristic):
     
 
     def send_picture(self):
-        result = subprocess.run(['libcamera ,-still, -o /home/tcollins6049/GATT_server/test_picture.jpg'])
+        result = subprocess.run(['libcamera ,-still, -o /home/bee/GATT_server/test_picture.jpg'])
 
 
     def reset_offset(self):
