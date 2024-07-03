@@ -54,7 +54,7 @@ def create_waveform_file(audio_file):
     plt.tight_layout()
 
     # Save the plot as a JPG file
-    output_file = '/home/tcollins6049/GATT_server/waveform.jpg'
+    output_file = '/home/bee/GATT_server/waveform.jpg'
     plt.savefig(output_file, facecolor=bgcolor)
 
     print(f'Waveform image saved as {output_file}')
