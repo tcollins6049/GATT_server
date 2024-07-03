@@ -151,9 +151,10 @@ class FileTransferCharacteristic(Characteristic):
     def readWaveformFile(self):
         try:
             mtu = 512
+            base_path = help.get_most_recent_audio_file(self.file_path)
             
             if self.offset == 0:
-                self.image_path = help.create_waveform_file(self.file_path)
+                self.image_path = help.create_waveform_file(base_path)
                 print("IMAGE PATH: ", self.image_path)
                 print("IMAGE SIZE: ", os.path.getsize(self.image_path))
 
