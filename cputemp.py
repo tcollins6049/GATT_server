@@ -124,6 +124,11 @@ class PasswordVerificationCharacteristic(Characteristic):
         self.password_file = password_file
         print(f"PasswordVerificationCharacteristic initialized with UUID: {uuid}")
 
+
+    def ReadValue(self, options):
+        return [dbus.Byte(1) if self.is_correct_password else dbus.Byte(0)]
+    
+    
     def WriteValue(self, value, options):
         input_password = bytes(value).decode()
         with open(self.password_file, 'r') as file:
