@@ -97,6 +97,10 @@ class ThermometerService(Service):
         self.add_characteristic(UnitCharacteristic(self))
 
 
+        # Password Verification
+        self.add_characteristic(PasswordVerificationCharacteristic(self, '00000601-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/GATT_server/password.txt'))
+
+
     # Method to check if the temperature unit is Fahrenheit
     def is_farenheit(self):
         return self.farenheit
@@ -104,6 +108,35 @@ class ThermometerService(Service):
     # Method to set the temperature unit to Fahrenheit or Celsius
     def set_farenheit(self, farenheit):
         self.farenheit = farenheit
+
+
+
+
+"""
+    !! Temp characteristic, testing for password entry !!
+    Will be moved after collection
+"""
+class PasswordVerificationCharacteristic(Characteristic):
+    def __init__(self, service, uuid, password_file):
+        Characteristic.__init__(
+            self, uuid,
+            ['write'], service)
+        self.password_file = password_file
+        print(f"PasswordVerificationCharacteristic initialized with UUID: {uuid}")
+
+    def WriteValue(self, value, options):
+        input_password = bytes(value).decode()
+        with open(self.password_file, 'r') as file:
+            stored_password = file.read().strip()
+        
+        if input_password == stored_password:
+            print("Password is correct")
+            return [dbus.Byte(1)]
+        else:
+            print("Password is incorrect")
+            return [dbus.Byte(0)]
+
+
 
 
 """
