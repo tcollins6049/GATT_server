@@ -138,11 +138,11 @@ class PasswordVerificationCharacteristic(Characteristic):
         if input_password == stored_password:
             print("Password is correct")
             self.is_correct_password = True
-            # return [dbus.Byte(1)]
+            return [dbus.Byte(1)]
         else:
             print("Password is incorrect")
             self.is_correct_password = False
-            # return [dbus.Byte(0)]
+            return [dbus.Byte(0)]
 
 
 
