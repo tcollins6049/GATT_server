@@ -35,13 +35,30 @@ class FileInfoCharacteristic(Characteristic):
             audio.export(mp3_file_path, format='mp3')
             file_size_mp3 = os.path.getsize(mp3_file_path)
             os.remove(mp3_file_path)
+
+            rms_level, silence_detected = self.calculate_rms_and_check_silence(audio)
         else:
             file_size_mp3 = 0
+            rms_level = 0
+            silence_detected = False
 
-        file_info = f"{temp_file_path}, File Size: {file_size_wav} bytes, File Size: {file_size_mp3} bytes"
+        file_info = (f"{temp_file_path}, File Size: {file_size_wav} bytes, File Size: {file_size_mp3} bytes"
+                     f"RMS Level: {rms_level}, Silence Detected: {'Yes' if silence_detected else 'No'}")
         print('FileInfoCharacteristic Read: {}'.format(file_info))
 
         return [dbus.Byte(c) for c in file_info.encode()]
+    
+
+    def calculate_rms_and_check_silence(self, audio_segment):
+        rms_level = audio_segment.rms
+        print('RMS Level: {}'.format(rms_level))
+        
+        # Define a suitable threshold based on your requirements
+        silence_threshold = 100
+        silence_detected = rms_level < silence_threshold
+        print('Silence detected' if silence_detected else 'Sound detected')
+
+        return rms_level, silence_detected
 
 # ---------------- Tab 2: Audio + Video Characteristics ---------------------- #
 """
