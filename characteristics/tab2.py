@@ -42,7 +42,7 @@ class FileInfoCharacteristic(Characteristic):
             rms_level = 0
             silence_detected = False
 
-        file_info = (f"{temp_file_path}, File Size: {file_size_wav} bytes, File Size: {file_size_mp3} bytes"
+        file_info = (f"{temp_file_path}, File Size: {file_size_wav} bytes, File Size: {file_size_mp3} bytes, "
                      f"RMS Level: {rms_level}, Silence Detected: {'Yes' if silence_detected else 'No'}")
         print('FileInfoCharacteristic Read: {}'.format(file_info))
 
