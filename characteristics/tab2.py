@@ -4,11 +4,50 @@ from service import Application, Service, Characteristic, Descriptor
 from gpiozero import CPUTemperature
 from datetime import datetime
 import helper_methods as help
+from pydub import AudioSegment
+
+
+class FileInfoCharacteristic(Characteristic):
+    def __init__(self, service, uuid, file_path, file_type):
+        super().__init__(
+            uuid,
+            ['read'],
+            service)
+        self.file_path = file_path
+        self.file_type = file_type
+
+    def ReadValue(self, options):
+        temp_file_path = self.file_path
+
+        if self.file_type == 'audio':
+            temp_file_path = help.get_most_recent_audio_file(temp_file_path)
+        elif self.file_type == 'video':
+            temp_file_path = help.get_most_recent_video_file(temp_file_path)
+        
+        print("FILE PATH: ", temp_file_path)
+
+        file_size_wav = os.path.getsize(temp_file_path)
+
+        if temp_file_path.endswith('.wav'):
+            audio = AudioSegment.from_wav(temp_file_path)
+            mp3_file_name = os.path.basename(temp_file_path).replace('.wav', '.mp3')
+            mp3_file_path = os.path.join('/home/bee/GATT_server', mp3_file_name)
+            audio.export(mp3_file_path, format='mp3')
+            file_size_mp3 = os.path.getsize(mp3_file_path)
+            os.remove(mp3_file_path)
+        else:
+            file_size_mp3 = 0
+
+        file_info = f"{temp_file_path}, WAV File Size: {file_size_wav} bytes, MP3 File Size: {file_size_mp3} bytes"
+        print('FileInfoCharacteristic Read: {}'.format(file_info))
+
+        return [dbus.Byte(c) for c in file_info.encode()]
 
 # ---------------- Tab 2: Audio + Video Characteristics ---------------------- #
 """
     Reads the file size of file located at given path.
 """
+'''
 class FileInfoCharacteristic(Characteristic):
     def __init__(self, service, uuid, file_path, file_type):
         Characteristic.__init__(
@@ -33,7 +72,7 @@ class FileInfoCharacteristic(Characteristic):
         print('FileInfoCharacteristic Read: {}'.format(file_info))
         return [dbus.Byte(c) for c in file_info.encode()]
     
-
+    
     def get_most_recent_video_file(self):
         print("Getting most recent file")
         base_path = self.file_path
@@ -81,6 +120,7 @@ class FileInfoCharacteristic(Characteristic):
         
         # Get full path of the file
         return (full_path + '/' + most_recent_file)
+    '''
 
 
 class ResetOffsetCharacteristic(Characteristic):
