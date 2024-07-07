@@ -38,7 +38,7 @@ class FileInfoCharacteristic(Characteristic):
         else:
             file_size_mp3 = 0
 
-        file_info = f"{temp_file_path}, WAV File Size: {file_size_wav} bytes, MP3 File Size: {file_size_mp3} bytes"
+        file_info = f"{temp_file_path}, File Size: {file_size_wav} bytes, File Size: {file_size_mp3} bytes"
         print('FileInfoCharacteristic Read: {}'.format(file_info))
 
         return [dbus.Byte(c) for c in file_info.encode()]
