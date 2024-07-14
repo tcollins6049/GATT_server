@@ -199,7 +199,7 @@ class FileTransferCharacteristic(Characteristic):
             self.image_path = self.file_path
             
             if self.offset == 0:
-                self.capture_picture()
+                self.capturePicture()
                 print("IMAGE PATH: ", self.image_path)
                 print("IMAGE SIZE: ", os.path.getsize(self.image_path))
 
