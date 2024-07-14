@@ -5,6 +5,7 @@ from gpiozero import CPUTemperature
 from datetime import datetime
 import helper_methods as help
 from pydub import AudioSegment
+import time
 
 
 class FileInfoCharacteristic(Characteristic):
@@ -181,6 +182,7 @@ class FileTransferCharacteristic(Characteristic):
         elif self.file_type == 'other':
             if not os.path.exists(self.file_path):
                 self.capturePicture()
+                time.sleep(10)
             return self.ReadStaticFile()
     
 
