@@ -5,6 +5,10 @@ from gpiozero import CPUTemperature
 from datetime import datetime
 import helper_methods as help
 
+import subprocess
+from gi.repository import GLib
+from dbus.service import Object, method, signal
+
 
 # ---------------- Tab 5: Command Characteristics ---------------------- #
 """
@@ -29,21 +33,42 @@ class CommandCharacteristic(Characteristic):
             print("Command failed:", e)
     
 
-class CommandCharacteristicWResponse(Characteristic):
-    def __init__(self, service, uuid):
-        Characteristic.__init__(self, uuid, ["write", "read"], service)
-        self.result = ""
+class CommandCharacteristicWResponse(Object):
+    def __init__(self, bus, index):
+        Object.__init__(self, bus, f"/org/example/service{index}/characteristic0")
+        self.value = []
+        self.index = index
+        self.bus = bus
+        self.loop = GLib.MainLoop()
 
-    def WriteValue(self, value, options):
-        command = ''.join([chr(b) for b in value])
+    @method(dbus_interface='org.example.service1.characteristic0', in_signature='s', out_signature='ay')
+    def WriteValue(self, value):
+        command = value.decode('utf-8')  # Convert byte array to string
         print(f"Received command: {command}")
+        
         try:
             result = subprocess.run(command, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            self.result = result.stdout.decode('utf-8') + result.stderr.decode('utf-8')
-            print("Command output:", self.result)
+            output = result.stdout + result.stderr
+            print("Command output:", output.decode('utf-8'))
+            return output  # Return command output as byte array
         except subprocess.CalledProcessError as e:
-            self.result = f"Command failed: {e}"
-            print("Command failed:", e)
+            error_msg = f"Command failed: {e}"
+            print("Command failed:", error_msg)
+            return error_msg.encode('utf-8')  # Return error message as byte array
 
-    def ReadValue(self, options):
-        return [dbus.Byte(c) for c in self.result]
+    @method(dbus_interface='org.example.service1.characteristic0', out_signature='ay')
+    def ReadValue(self):
+        return self.value
+
+DBusGMainLoop(set_as_default=True)
+bus = dbus.SystemBus()
+mainloop = GLib.MainLoop()
+
+# Replace '1' with the appropriate service index for your characteristic
+characteristic = CommandCharacteristicWResponse(bus, 1)
+
+try:
+    mainloop.run()
+except KeyboardInterrupt:
+    mainloop.quit()
+    
