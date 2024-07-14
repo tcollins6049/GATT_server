@@ -203,6 +203,7 @@ class FileTransferCharacteristic(Characteristic):
                 print("IMAGE PATH: ", self.image_path)
                 print("IMAGE SIZE: ", os.path.getsize(self.image_path))
 
+            time.sleep(10)
             if os.path.exists(self.image_path):
                 with open(self.image_path, 'rb') as file:
                     file.seek(self.offset)
