@@ -23,6 +23,7 @@ class FileInfoCharacteristic(Characteristic):
             temp_file_path = help.get_most_recent_audio_file(temp_file_path)
         elif self.file_type == 'video':
             temp_file_path = help.get_most_recent_video_file(temp_file_path)
+
         
         print("FILE PATH: ", temp_file_path)
 
@@ -177,6 +178,39 @@ class FileTransferCharacteristic(Characteristic):
             return self.ReadVideoFile()
         elif self.file_type == 'audio':
             return self.readWaveformFile()
+        elif self.file_type == 'other':
+            return self.ReadStaticFile()
+        
+
+    def ReadStaticFile(self):
+        try:
+            mtu = 512
+            base_path = self.file_path
+            
+            if self.offset == 0:
+                result = subprocess.run(['libcamera-still, -o /home/bee/GATT_server/picture.jpg'])
+                print("IMAGE PATH: ", self.image_path)
+                print("IMAGE SIZE: ", os.path.getsize(self.image_path))
+
+            
+            with open(self.image_path, 'rb') as file:
+                file.seek(self.offset)
+                chunk = file.read(mtu)
+                
+                print(f"Read {len(chunk)} bytes from file starting at offset {self.offset}")
+                if len(chunk) < mtu:
+                    self.offset = 0  # Reset for next read if this is the last chunk
+                    help.delete_file(self.image_path)
+                else:
+                    self.offset += len(chunk)
+
+                # help.delete_file(image_path)
+                return [dbus.Byte(b) for b in chunk]
+            
+
+        except Exception as e:
+            print(f"Error reading file: {e}")
+            return []
     
 
     def ReadVideoFile(self):

@@ -74,6 +74,10 @@ class ThermometerService(Service):
         self.add_characteristic(audio_file_transfer_characteristic)
         self.add_characteristic(ResetOffsetCharacteristic(self, '00000206-710e-4a5b-8d75-3e5b444bc3cf', audio_file_transfer_characteristic))
 
+        static_file_transfer_characteristic = (FileTransferCharacteristic(self, '00000207-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/GATT_server/picture.jpg', 'other'))
+        self.add_characteristic(static_file_transfer_characteristic)
+        self.add_characteristic(ResetOffsetCharacteristic(self, '00000208-710e-4a5b-8d75-3e5b444bc3cf', static_file_transfer_characteristic))
+
         # --------------- Tab 3: Sensor data -- Characteristics ----------------- #
         # Adding a characterisitc for cpu file data
         self.add_characteristic(CPUFileReadCharacteristic(self, '00000301-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/cpu/'))
