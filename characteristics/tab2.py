@@ -180,9 +180,6 @@ class FileTransferCharacteristic(Characteristic):
         elif self.file_type == 'audio':
             return self.readWaveformFile()
         elif self.file_type == 'other':
-            if not os.path.exists(self.file_path):
-                self.capturePicture()
-                time.sleep(10)
             return self.ReadStaticFile()
     
 
@@ -202,7 +199,7 @@ class FileTransferCharacteristic(Characteristic):
             self.image_path = self.file_path
             
             if self.offset == 0:
-                # result = subprocess.run(['libcamera-still, -o /home/bee/GATT_server/picture.jpg'])
+                self.capture_picture()
                 print("IMAGE PATH: ", self.image_path)
                 print("IMAGE SIZE: ", os.path.getsize(self.image_path))
 
