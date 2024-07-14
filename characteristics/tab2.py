@@ -185,7 +185,7 @@ class FileTransferCharacteristic(Characteristic):
     def ReadStaticFile(self):
         try:
             mtu = 512
-            base_path = self.file_path
+            self.image_path = self.file_path
             
             if self.offset == 0:
                 # result = subprocess.run(['libcamera-still, -o /home/bee/GATT_server/picture.jpg'])
