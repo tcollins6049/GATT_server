@@ -14,6 +14,7 @@ from characteristics.tab2 import ResetOffsetCharacteristic
 from characteristics.tab3 import CPUFileReadCharacteristic
 from characteristics.tab4 import SensorStateCharacteristic
 from characteristics.tab5 import CommandCharacteristic
+from characteristics.tab5 import CommandCharacteristicWResponse
 from characteristics.sensorReadings import TempCharacteristic
 from characteristics.sensorReadings import UnitCharacteristic
 
@@ -90,6 +91,7 @@ class ThermometerService(Service):
         # --------------- Tab 5: Commands -- Characteristics ---------------- #
         # Adding the new command characteristic
         self.add_characteristic(CommandCharacteristic(self, '00000023-710e-4a5b-8d75-3e5b444bc3cf'))
+        self.add_characteristic(CommandCharacteristicWResponse(self, '00000502-710e-4a5b-8d75-3e5b444bc3cf'))
 
         # -------------- Sensor Readings -- Characteristics ---------------- #
         # Add characteristics to the service
