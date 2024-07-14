@@ -203,20 +203,22 @@ class FileTransferCharacteristic(Characteristic):
                 print("IMAGE PATH: ", self.image_path)
                 print("IMAGE SIZE: ", os.path.getsize(self.image_path))
 
-            
-            with open(self.image_path, 'rb') as file:
-                file.seek(self.offset)
-                chunk = file.read(mtu)
-                
-                print(f"Read {len(chunk)} bytes from file starting at offset {self.offset}")
-                if len(chunk) < mtu:
-                    self.offset = 0  # Reset for next read if this is the last chunk
-                    help.delete_file(self.image_path)
-                else:
-                    self.offset += len(chunk)
+            if os.path.exists(self.image_path):
+                with open(self.image_path, 'rb') as file:
+                    file.seek(self.offset)
+                    chunk = file.read(mtu)
+                    
+                    print(f"Read {len(chunk)} bytes from file starting at offset {self.offset}")
+                    if len(chunk) < mtu:
+                        self.offset = 0  # Reset for next read if this is the last chunk
+                        help.delete_file(self.image_path)
+                    else:
+                        self.offset += len(chunk)
 
-                # help.delete_file(image_path)
-                return [dbus.Byte(b) for b in chunk]
+                    # help.delete_file(image_path)
+                    return [dbus.Byte(b) for b in chunk]
+            else:
+                print("No file exists for picture")
             
 
         except Exception as e:
