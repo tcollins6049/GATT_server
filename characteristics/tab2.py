@@ -179,7 +179,19 @@ class FileTransferCharacteristic(Characteristic):
         elif self.file_type == 'audio':
             return self.readWaveformFile()
         elif self.file_type == 'other':
+            if not os.path.exists(self.file_path):
+                self.capturePicture()
             return self.ReadStaticFile()
+    
+
+    def capturePicture(self):
+        try:
+            # Run the command to capture picture using libcamera-still
+            command = 'libcamera-still -o /home/bee/GATT_server/picture.jpg'
+            subprocess.run(command, shell=True, check=True)
+            print('Picture captured successfully.')
+        except subprocess.CalledProcessError as e:
+            print(f'Error capturing picture: {e}')
         
 
     def ReadStaticFile(self):
