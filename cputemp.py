@@ -12,6 +12,7 @@ from characteristics.tab2 import FileInfoCharacteristic
 from characteristics.tab2 import FileTransferCharacteristic
 from characteristics.tab2 import ResetOffsetCharacteristic
 from characteristics.tab3 import CPUFileReadCharacteristic
+from characteristics.tab3 import CPUFileReadAllCharacteristic
 from characteristics.tab4 import SensorStateCharacteristic
 from characteristics.tab5 import CommandCharacteristic
 from characteristics.tab5 import CommandCharacteristicWResponse
@@ -81,6 +82,7 @@ class ThermometerService(Service):
         # --------------- Tab 3: Sensor data -- Characteristics ----------------- #
         # Adding a characterisitc for cpu file data
         self.add_characteristic(CPUFileReadCharacteristic(self, '00000301-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/cpu/'))
+        self.add_characteristic(CPUFileReadAllCharacteristic(self, '00000303-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/cpu/'))
         self.add_characteristic(CPUFileReadCharacteristic(self, '00000302-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/temp/'))
 
         # --------------- Tab 4: Sensor State Management -- Characteristics ----------------- #
