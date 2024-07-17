@@ -18,6 +18,8 @@ from characteristics.tab5 import CommandCharacteristic
 from characteristics.tab5 import CommandCharacteristicWResponse
 from characteristics.sensorReadings import TempCharacteristic
 from characteristics.sensorReadings import UnitCharacteristic
+from characteristics.sensorReadings import TempHumidityCharacteristic
+from characteristics.sensorReadings import TempHumidityDescriptor
 
 
 """
@@ -103,6 +105,7 @@ class ThermometerService(Service):
         # Add characteristics to the service
         self.add_characteristic(TempCharacteristic(self))
         self.add_characteristic(UnitCharacteristic(self))
+        self.add_characteristic(TempHumidityCharacteristic(self))
 
 
         # Password Verification

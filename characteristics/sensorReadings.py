@@ -132,3 +132,61 @@ class UnitDescriptor(Descriptor):
             value.append(dbus.Byte(c.encode()))
 
         return value
+
+
+
+
+#------------- Humidity / temp sensor testing -------------------#
+class TempHumidityCharacteristic(Characteristic):
+    TEMP_HUMIDITY_CHARACTERISTIC_UUID = "00000004-710e-4a5b-8d75-3e5b444bc3cf"
+
+    def __init__(self, service):
+        Characteristic.__init__(
+            self, self.TEMP_HUMIDITY_CHARACTERISTIC_UUID,
+            ["read"], service)
+        self.add_descriptor(TempHumidityDescriptor(self))
+
+    def get_temp_humidity(self):
+        value = []
+        unit_temp = "C"
+        unit_humidity = "%"
+
+        # Replace these lines with your actual sensor reading logic
+        temperature = 25.0  # Dummy value for temperature
+        humidity = 60.0     # Dummy value for humidity
+
+        if self.service.is_fahrenheit():
+            temperature = (temperature * 1.8) + 32
+            unit_temp = "F"
+
+        strtemp = f"Temp: {round(temperature, 1)} {unit_temp}"
+        strhumidity = f"Humidity: {round(humidity, 1)} {unit_humidity}"
+        sensor_data = f"{strtemp}, {strhumidity}"
+
+        for c in sensor_data:
+            value.append(dbus.Byte(c.encode()))
+
+        return value
+
+    def ReadValue(self, options):
+        value = self.get_temp_humidity()
+        return value
+
+class TempHumidityDescriptor(Descriptor):
+    TEMP_HUMIDITY_DESCRIPTOR_UUID = "2901"
+    TEMP_HUMIDITY_DESCRIPTOR_VALUE = "Temperature and Humidity Sensor"
+
+    def __init__(self, characteristic):
+        Descriptor.__init__(
+            self, self.TEMP_HUMIDITY_DESCRIPTOR_UUID,
+            ["read"],
+            characteristic)
+
+    def ReadValue(self, options):
+        value = []
+        desc = self.TEMP_HUMIDITY_DESCRIPTOR_VALUE
+
+        for c in desc:
+            value.append(dbus.Byte(c.encode()))
+
+        return value
