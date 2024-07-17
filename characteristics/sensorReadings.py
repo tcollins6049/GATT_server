@@ -152,22 +152,26 @@ class TempHumidityCharacteristic(Characteristic):
         unit_humidity = "%"
 
         # Replace these lines with your actual sensor reading logic
-        temperature = 25.0  # Dummy value for temperature
-        humidity = 60.0     # Dummy value for humidity
+        try:
+            temperature = 25.0  # Dummy value for temperature
+            humidity = 60.0     # Dummy value for humidity
 
-        if self.service.is_fahrenheit():
-            temperature = (temperature * 1.8) + 32
-            unit_temp = "F"
+            if self.service.is_fahrenheit():
+                temperature = (temperature * 1.8) + 32
+                unit_temp = "F"
 
-        strtemp = f"Temp: {round(temperature, 1)} {unit_temp}"
-        strhumidity = f"Humidity: {round(humidity, 1)} {unit_humidity}"
-        sensor_data = f"{strtemp}, {strhumidity}"
+            strtemp = f"Temp: {round(temperature, 1)} {unit_temp}"
+            strhumidity = f"Humidity: {round(humidity, 1)} {unit_humidity}"
+            sensor_data = f"{strtemp}, {strhumidity}"
 
-        for c in sensor_data:
-            value.append(dbus.Byte(c.encode()))
+            for c in sensor_data:
+                value.append(dbus.Byte(c.encode()))
 
-        print("THIS IS THE VALUE OF THE TEMP/HUM: ", value)
-        return value
+            print("THIS IS THE VALUE OF THE TEMP/HUM: ", value)
+            return value
+        except Exception as e:
+            print(f"Error in get_temp_humidity: {e}")
+            return []
 
     def ReadValue(self, options):
         print("INSIDE THE READ VALUE WITHIN TEMP/HUM")
