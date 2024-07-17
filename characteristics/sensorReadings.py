@@ -166,6 +166,7 @@ class TempHumidityCharacteristic(Characteristic):
         for c in sensor_data:
             value.append(dbus.Byte(c.encode()))
 
+        print("THIS IS THE VALUE OF THE TEMP/HUM: ", value)
         return value
 
     def ReadValue(self, options):
