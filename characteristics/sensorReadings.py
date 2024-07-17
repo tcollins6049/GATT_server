@@ -172,6 +172,7 @@ class TempHumidityCharacteristic(Characteristic):
     def ReadValue(self, options):
         print("INSIDE THE READ VALUE WITHIN TEMP/HUM")
         value = self.get_temp_humidity()
+        print("VALUE WITHIN READ FOR TEMP / HUM", value)
         return value
 
 class TempHumidityDescriptor(Descriptor):
