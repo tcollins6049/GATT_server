@@ -5,6 +5,7 @@ from gpiozero import CPUTemperature
 from datetime import datetime
 import helper_methods as help
 
+import Adafruit_DHT
 
 # Constants for GATT characteristic interface and notification timeout
 GATT_CHRC_IFACE = "org.bluez.GattCharacteristic1"
@@ -137,6 +138,10 @@ class UnitDescriptor(Descriptor):
 
 
 #------------- Humidity / temp sensor testing -------------------#
+# Define the sensor type and the GPIO pin
+DHT_SENSOR = Adafruit_DHT.AM2302
+DHT_PIN = 4  # Replace with the GPIO pin you are using
+
 class TempHumidityCharacteristic(Characteristic):
     TEMP_HUMIDITY_CHARACTERISTIC_UUID = "00000004-710e-4a5b-8d75-3e5b444bc3cf"
 
@@ -147,41 +152,32 @@ class TempHumidityCharacteristic(Characteristic):
         self.add_descriptor(TempHumidityDescriptor(self))
 
     def get_temp_humidity(self):
+        # Read the sensor data
+        humidity, temperature = Adafruit_DHT.read_retry(DHT_SENSOR, DHT_PIN)
+        
+        # Format the value
+        if humidity is not None and temperature is not None:
+            strvalue = "Temp: {} C, Humidity: {}%".format(round(temperature, 1), round(humidity, 1))
+        else:
+            strvalue = "Sensor error"
+        
+        # Convert to dbus.Byte format
         value = []
-        unit_temp = "C"
-        unit_humidity = "%"
+        for c in strvalue:
+            value.append(dbus.Byte(c.encode()))
 
-        # Replace these lines with your actual sensor reading logic
-        try:
-            temperature = 25.0  # Dummy value for temperature
-            humidity = 60.0     # Dummy value for humidity
-
-            if self.service.is_fahrenheit():
-                temperature = (temperature * 1.8) + 32
-                unit_temp = "F"
-
-            strtemp = f"Temp: {round(temperature, 1)} {unit_temp}"
-            strhumidity = f"Humidity: {round(humidity, 1)} {unit_humidity}"
-            sensor_data = f"{strtemp}, {strhumidity}"
-
-            for c in sensor_data:
-                value.append(dbus.Byte(c.encode()))
-
-            print("THIS IS THE VALUE OF THE TEMP/HUM: ", value)
-            return value
-        except Exception as e:
-            print(f"Error in get_temp_humidity: {e}")
-            return []
+        return value
 
     def ReadValue(self, options):
-        print("INSIDE THE READ VALUE WITHIN TEMP/HUM")
+        print("IN READVALUE FOR TEMP / HUM")
         value = self.get_temp_humidity()
-        print("VALUE WITHIN READ FOR TEMP / HUM", value)
+        print("trying to print the value")
+        print("Value: ", value);
         return value
 
 class TempHumidityDescriptor(Descriptor):
     TEMP_HUMIDITY_DESCRIPTOR_UUID = "2901"
-    TEMP_HUMIDITY_DESCRIPTOR_VALUE = "Temperature and Humidity Sensor"
+    TEMP_HUMIDITY_DESCRIPTOR_VALUE = "Temperature and Humidity"
 
     def __init__(self, characteristic):
         Descriptor.__init__(
@@ -197,3 +193,4 @@ class TempHumidityDescriptor(Descriptor):
             value.append(dbus.Byte(c.encode()))
 
         return value
+    
