@@ -197,9 +197,6 @@ class CPUReadLineByLineCharacteristic(Characteristic):
             ['read'],
             service)
         self.folder_path = base_path
-        self.line_offset = 0
-        self.file_path = None
-        self.lines = []
         print(f"Characteristic initialized with UUID: {uuid}")
     
 
