@@ -251,4 +251,3 @@ class CPUReadLineByLineCharacteristic(Characteristic):
         else:
             print("No file found")
             return []
-
