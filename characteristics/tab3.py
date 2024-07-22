@@ -243,6 +243,7 @@ class CPUReadLineByLineCharacteristic(Characteristic):
                     lines = file.readlines()
                     all_data = ''.join(lines)
                     print(f"Returning data: {all_data}")
+                    print("IN THE RIGHT METHOD")
                     return [dbus.Byte(b) for b in all_data.encode()]
             except Exception as e:
                 print(f"Error occurred while reading the file: {e}")
