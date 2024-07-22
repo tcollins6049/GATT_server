@@ -203,11 +203,11 @@ class CPUReadLineByLineCharacteristic(Characteristic):
         print(f"Characteristic initialized with UUID: {uuid}")
     
     def get_most_recent_file(self, base_path):
-        print("Getting most recent file 2")
+        print("Getting most recent file")
         # List all directories in the base path
         entries = os.listdir(base_path)
         
-        # Filter out possible non directory entries or directories which dont match the data format
+        # Filter out possible non-directory entries or directories which don't match the date format
         date_dirs = []
         for entry in entries:
             entry_path = os.path.join(base_path, entry)
@@ -220,7 +220,7 @@ class CPUReadLineByLineCharacteristic(Characteristic):
                     # Skip directories that don't match the date format
                     pass
         if not date_dirs:
-            print("Getting most recent file: returned None")
+            print("No directories matching the date format were found")
             return None
 
         # Find most recent date
@@ -229,24 +229,28 @@ class CPUReadLineByLineCharacteristic(Characteristic):
 
         # List files in this directory
         files = os.listdir(full_path)
-        if (len(files) != 1):
+        if len(files) != 1:
             raise ValueError(f"Expected exactly one file in directory {full_path}, found {len(files)}")
         
-        print("FULL RETURNED BELOW")
-        print("FULL returned path: ", full_path, '/', files[0])
         # Get full path of the file
-        return full_path + '/' + files[0]
-
+        file_path = os.path.join(full_path, files[0])
+        print(f"Most recent file found: {file_path}")
+        return file_path
 
     def ReadValue(self, options):
-        print("ReadValue called 2")
-        self.file_path = self.get_most_recent_file(self.folder_path)
+        print("ReadValue called")
+        if self.file_path is None:
+            self.file_path = self.get_most_recent_file(self.folder_path)
+            if self.file_path is None:
+                print("No valid file found to read")
+                return []
 
-        # If file_path is None, find the most recent file and read all lines
-        if self.file_path is not None:
+        # If file_path is not None, read all lines
+        if not self.lines:
             try:
                 with open(self.file_path, 'r') as file:
                     self.lines = file.readlines()
+                print(f"File {self.file_path} read successfully, {len(self.lines)} lines found")
             except Exception as e:
                 print(f"Error occurred while reading the file: {e}")
                 return []
@@ -267,4 +271,5 @@ class CPUReadLineByLineCharacteristic(Characteristic):
         self.line_offset = 0
         self.file_path = None
         self.lines = []
+        print("Resetting characteristic state")
 
