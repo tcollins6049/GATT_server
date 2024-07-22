@@ -20,10 +20,10 @@ class CPUFileReadCharacteristic(Characteristic):
             ['read'],
             service)
         self.folder_path = base_path
-        print(f"Characteristic initialized with UUID: {uuid}")
+        # print(f"Characteristic initialized with UUID: {uuid}")
 
     def get_most_recent_file(self, base_path):
-        print("Getting most recent file")
+        # print("Getting most recent file")
         # List all directories in the base path
         entries = os.listdir(base_path)
         
@@ -67,7 +67,7 @@ class CPUFileReadCharacteristic(Characteristic):
                         last_valid_line = line
                         break
                 if last_valid_line is None:
-                    print('No valid readings found in the file')
+                    # print('No valid readings found in the file')
                     last_line = lines[0]
                 else:
                     print("last valid before nan: ", last_valid_line)
@@ -102,7 +102,7 @@ class CPUFileReadCharacteristic(Characteristic):
 
 
     def ReadValue(self, options):
-        print("ReadValue called")
+        # print("ReadValue called")
         # self.file_path = self.get_most_recent_file(self.folder_path)
         self.file_path = help.get_most_recent_sensor_file(self.folder_path)
 
@@ -112,10 +112,10 @@ class CPUFileReadCharacteristic(Characteristic):
                 update_text = self.get_update_text(last_line)
                 
                 returned_data = f"{last_line.strip()}|{update_text}"
-                print(f"Returning data: {returned_data}")
+                # print(f"Returning data: {returned_data}")
                 return [dbus.Byte(b) for b in returned_data.encode()]
             except Exception as e:
-                print(f"Error occurred while reading the file: {e}")
+                # print(f"Error occurred while reading the file: {e}")
                 return []
         else:
             print("No file found")
@@ -130,11 +130,11 @@ class CPUFileReadAllCharacteristic(Characteristic):
             ['read'],
             service)
         self.folder_path = base_path
-        print(f"Characteristic initialized with UUID: {uuid}")
+        # print(f"Characteristic initialized with UUID: {uuid}")
     
 
     def get_most_recent_file(self, base_path):
-        print("Getting most recent file")
+        # print("Getting most recent file")
         # List all directories in the base path
         entries = os.listdir(base_path)
         
@@ -167,7 +167,7 @@ class CPUFileReadAllCharacteristic(Characteristic):
 
 
     def ReadValue(self, options):
-        print("ReadValue called")
+        # print("ReadValue called")
         self.file_path = self.get_most_recent_file(self.folder_path)
 
         if self.file_path is not None:
@@ -175,13 +175,13 @@ class CPUFileReadAllCharacteristic(Characteristic):
                 with open(self.file_path, 'r') as file:
                     lines = file.readlines()
                     all_data = ''.join(lines)
-                    print(f"Returning data: {all_data}")
+                    # print(f"Returning data: {all_data}")
                     return [dbus.Byte(b) for b in all_data.encode()]
             except Exception as e:
-                print(f"Error occurred while reading the file: {e}")
+                # print(f"Error occurred while reading the file: {e}")
                 return []
         else:
-            print("No file found")
+            # print("No file found")
             return []
 
 
@@ -244,6 +244,8 @@ class CPUReadLineByLineCharacteristic(Characteristic):
                 print("No valid file found to read")
                 return []
 
+        print(f"File path: {self.file_path}")
+
         # If file_path is not None, read all lines
         if not self.lines:
             try:
@@ -253,6 +255,9 @@ class CPUReadLineByLineCharacteristic(Characteristic):
             except Exception as e:
                 print(f"Error occurred while reading the file: {e}")
                 return []
+
+        print(f"Line offset: {self.line_offset}")
+        print(f"Lines available: {len(self.lines)}")
 
         # If lines are available, read the current line based on offset
         if self.lines and self.line_offset < len(self.lines):
