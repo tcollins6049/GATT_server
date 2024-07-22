@@ -70,7 +70,7 @@ class CPUFileReadCharacteristic(Characteristic):
                     # print('No valid readings found in the file')
                     last_line = lines[0]
                 else:
-                    print("last valid before nan: ", last_valid_line)
+                    # print("last valid before nan: ", last_valid_line)
                     last_line = last_valid_line
             else:
                 last_line = lines[-1]
@@ -118,7 +118,7 @@ class CPUFileReadCharacteristic(Characteristic):
                 # print(f"Error occurred while reading the file: {e}")
                 return []
         else:
-            print("No file found")
+            # print("No file found")
             return []
         
 
@@ -238,41 +238,20 @@ class CPUReadLineByLineCharacteristic(Characteristic):
 
     def ReadValue(self, options):
         print("ReadValue called")
-        if self.file_path is None:
-            self.file_path = self.get_most_recent_file(self.folder_path)
-            if self.file_path is None:
-                print("No valid file found to read")
-                return []
+        self.file_path = self.get_most_recent_file(self.folder_path)
 
-        print(f"File path: {self.file_path}")
-
-        # If file_path is not None, read all lines
-        if not self.lines:
+        if self.file_path is not None:
             try:
                 with open(self.file_path, 'r') as file:
-                    self.lines = file.readlines()
-                print(f"File {self.file_path} read successfully, {len(self.lines)} lines found")
+                    lines = file.readlines()
+                    all_data = ''.join(lines)
+                    # print(f"Returning data: {all_data}")
+                    return [dbus.Byte(b) for b in all_data.encode()]
             except Exception as e:
-                print(f"Error occurred while reading the file: {e}")
+                # print(f"Error occurred while reading the file: {e}")
                 return []
-
-        print(f"Line offset: {self.line_offset}")
-        print(f"Lines available: {len(self.lines)}")
-
-        # If lines are available, read the current line based on offset
-        if self.lines and self.line_offset < len(self.lines):
-            print("LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL")
-            print(self.lines)
-            print("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH")
-            print(len(self.lines))
-            line_data = self.lines[self.line_offset].strip()
-            self.line_offset += 1
-            print(f"Returning line {self.line_offset}: {line_data}")
-            return [dbus.Byte(b) for b in line_data.encode()]
         else:
-            # No more lines to read or file not found
-            print("No more lines to read or file not found")
-            self.reset()
+            # print("No file found")
             return []
         
     def reset(self):
