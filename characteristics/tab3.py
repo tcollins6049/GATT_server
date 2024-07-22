@@ -203,7 +203,7 @@ class CPUReadLineByLineCharacteristic(Characteristic):
         print(f"Characteristic initialized with UUID: {uuid}")
     
     def get_most_recent_file(self, base_path):
-        print("Getting most recent file")
+        print("Getting most recent file 2")
         # List all directories in the base path
         entries = os.listdir(base_path)
         
@@ -238,7 +238,7 @@ class CPUReadLineByLineCharacteristic(Characteristic):
 
 
     def ReadValue(self, options):
-        print("ReadValue called")
+        print("ReadValue called 2")
         self.file_path = self.get_most_recent_file(self.folder_path)
 
         # If file_path is None, find the most recent file and read all lines
