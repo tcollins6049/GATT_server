@@ -241,6 +241,7 @@ class CPUReadLineByLineCharacteristic(Characteristic):
         print("ReadValue called")
         if self.file_path is None:
             self.file_path = self.get_most_recent_file(self.folder_path)
+            print("GOT THE FILE PATH")
             if self.file_path is None:
                 print("No valid file found to read")
                 return []
