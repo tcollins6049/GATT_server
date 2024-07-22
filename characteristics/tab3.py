@@ -232,6 +232,7 @@ class CPUReadLineByLineCharacteristic(Characteristic):
         if (len(files) != 1):
             raise ValueError(f"Expected exactly one file in directory {full_path}, found {len(files)}")
         
+        print("FULL RETURNED BELOW")
         print("FULL returned path: ", full_path, '/', files[0])
         # Get full path of the file
         return full_path + '/' + files[0]
