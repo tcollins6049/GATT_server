@@ -197,6 +197,9 @@ class CPUReadLineByLineCharacteristic(Characteristic):
             ['read'],
             service)
         self.folder_path = base_path
+        self.line_offset = 0
+        self.file_path = None
+        self.lines = []
         print(f"Characteristic initialized with UUID: {uuid}")
     
 
@@ -235,19 +238,36 @@ class CPUReadLineByLineCharacteristic(Characteristic):
 
     def ReadValue(self, options):
         print("ReadValue called")
-        self.file_path = self.get_most_recent_file(self.folder_path)
+        if self.file_path is None:
+            self.file_path = self.get_most_recent_file(self.folder_path)
+            if self.file_path is None:
+                print("No valid file found to read")
+                return []
 
-        if self.file_path is not None:
+        # If file_path is not None, read all lines
+        if not self.lines:
             try:
                 with open(self.file_path, 'r') as file:
-                    lines = file.readlines()
-                    all_data = ''.join(lines)
-                    print(f"Returning data: {all_data}")
-                    print("IN THE RIGHT METHOD")
-                    return [dbus.Byte(b) for b in all_data.encode()]
+                    self.lines = file.readlines()
+                print(f"File {self.file_path} read successfully, {len(self.lines)} lines found")
             except Exception as e:
                 print(f"Error occurred while reading the file: {e}")
                 return []
+
+        # If lines are available, read the current line based on offset
+        if self.lines and self.line_offset < len(self.lines):
+            line_data = self.lines[self.line_offset].strip()
+            self.line_offset += 1
+            print(f"Returning line {self.line_offset}: {line_data}")
+            return [dbus.Byte(b) for b in line_data.encode()]
         else:
-            print("No file found")
+            # No more lines to read or file not found
+            print("No more lines to read or file not found")
+            self.reset()
             return []
+        
+    def reset(self):
+        self.line_offset = 0
+        self.file_path = None
+        self.lines = []
+        print("Resetting characteristic state")
