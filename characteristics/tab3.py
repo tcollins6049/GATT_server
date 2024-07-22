@@ -239,17 +239,16 @@ class CPUReadLineByLineCharacteristic(Characteristic):
 
     def ReadValue(self, options):
         print("ReadValue called")
+        self.file_path = self.get_most_recent_file(self.folder_path)
 
         # If file_path is None, find the most recent file and read all lines
-        if self.file_path is None:
-            self.file_path = self.get_most_recent_file(self.folder_path)
-            if self.file_path is not None:
-                try:
-                    with open(self.file_path, 'r') as file:
-                        self.lines = file.readlines()
-                except Exception as e:
-                    print(f"Error occurred while reading the file: {e}")
-                    return []
+        if self.file_path is not None:
+            try:
+                with open(self.file_path, 'r') as file:
+                    self.lines = file.readlines()
+            except Exception as e:
+                print(f"Error occurred while reading the file: {e}")
+                return []
 
         # If lines are available, read the current line based on offset
         if self.lines and self.line_offset < len(self.lines):
