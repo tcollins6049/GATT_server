@@ -256,6 +256,10 @@ class CPUReadLineByLineCharacteristic(Characteristic):
 
         # If lines are available, read the current line based on offset
         if self.lines and self.line_offset < len(self.lines):
+            print("LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL")
+            print(self.lines)
+            print("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH")
+            print(len(self.lines))
             line_data = self.lines[self.line_offset].strip()
             self.line_offset += 1
             print(f"Returning line {self.line_offset}: {line_data}")
