@@ -197,17 +197,15 @@ class CPUReadLineByLineCharacteristic(Characteristic):
             ['read'],
             service)
         self.folder_path = base_path
-        self.line_offset = 0
-        self.file_path = None
-        self.lines = []
         print(f"Characteristic initialized with UUID: {uuid}")
     
+
     def get_most_recent_file(self, base_path):
         print("Getting most recent file")
         # List all directories in the base path
         entries = os.listdir(base_path)
         
-        # Filter out possible non-directory entries or directories which don't match the date format
+        # Filter out possible non directory entries or directories which dont match the data format
         date_dirs = []
         for entry in entries:
             entry_path = os.path.join(base_path, entry)
@@ -220,7 +218,6 @@ class CPUReadLineByLineCharacteristic(Characteristic):
                     # Skip directories that don't match the date format
                     pass
         if not date_dirs:
-            print("No directories matching the date format were found")
             return None
 
         # Find most recent date
@@ -229,17 +226,15 @@ class CPUReadLineByLineCharacteristic(Characteristic):
 
         # List files in this directory
         files = os.listdir(full_path)
-        if len(files) != 1:
+        if (len(files) != 1):
             raise ValueError(f"Expected exactly one file in directory {full_path}, found {len(files)}")
         
         # Get full path of the file
-        file_path = os.path.join(full_path, files[0])
-        print(f"Most recent file found: {file_path}")
-        return file_path
+        return full_path + '/' + files[0]
+
 
     def ReadValue(self, options):
         print("ReadValue called")
-
         self.file_path = self.get_most_recent_file(self.folder_path)
 
         if self.file_path is not None:
@@ -255,11 +250,4 @@ class CPUReadLineByLineCharacteristic(Characteristic):
         else:
             print("No file found")
             return []
-        
-
-    def reset(self):
-        self.line_offset = 0
-        self.file_path = None
-        self.lines = []
-        print("Resetting characteristic state")
 
