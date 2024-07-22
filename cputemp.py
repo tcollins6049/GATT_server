@@ -13,13 +13,13 @@ from characteristics.tab2 import FileTransferCharacteristic
 from characteristics.tab2 import ResetOffsetCharacteristic
 from characteristics.tab3 import CPUFileReadCharacteristic
 from characteristics.tab3 import CPUFileReadAllCharacteristic
+from characteristics.tab3 import CPUReadLineByLineCharacteristic
 from characteristics.tab4 import SensorStateCharacteristic
 from characteristics.tab5 import CommandCharacteristic
 from characteristics.tab5 import CommandCharacteristicWResponse
 from characteristics.sensorReadings import TempCharacteristic
 from characteristics.sensorReadings import UnitCharacteristic
 from characteristics.sensorReadings import TempHumidityCharacteristic
-from characteristics.sensorReadings import TempHumidityDescriptor
 
 
 """
@@ -86,6 +86,8 @@ class ThermometerService(Service):
         self.add_characteristic(CPUFileReadCharacteristic(self, '00000301-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/cpu/'))
         self.add_characteristic(CPUFileReadAllCharacteristic(self, '00000303-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/cpu/'))
         self.add_characteristic(CPUFileReadCharacteristic(self, '00000302-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/temp/'))
+
+        self.add_characteristic(CPUReadLineByLineCharacteristic(self, '00000304-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmaid/bee_tmp/cpu/'))
 
         # --------------- Tab 4: Sensor State Management -- Characteristics ----------------- #
         # Adding characteristics for enabling and disabling sensors

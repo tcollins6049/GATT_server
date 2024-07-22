@@ -183,4 +183,74 @@ class CPUFileReadAllCharacteristic(Characteristic):
         else:
             print("No file found")
             return []
-        
+
+
+
+'''
+This method is being used for testing, this will be used to read one line at a time throughout a file
+'''
+class CPUReadLineByLineCharacteristic(Characteristic):
+    def __init__(self, service, uuid, base_path):
+        Characteristic.__init__(
+            self,
+            uuid,
+            ['read'],
+            service)
+        self.folder_path = base_path
+        self.line_offset = 0
+        self.file_path = None
+        self.lines = []
+        print(f"Characteristic initialized with UUID: {uuid}")
+    
+    def get_most_recent_file(self, base_path):
+        print("Getting most recent file")
+        entries = os.listdir(base_path)
+        date_dirs = []
+        for entry in entries:
+            entry_path = os.path.join(base_path, entry)
+            if os.path.isdir(entry_path):
+                try:
+                    date = datetime.strptime(entry, "%Y-%m-%d")
+                    date_dirs.append((entry, date))
+                except ValueError:
+                    pass
+        if not date_dirs:
+            return None
+        most_recent_dir = max(date_dirs, key=lambda x: x[1])[0]
+        full_path = os.path.join(base_path, most_recent_dir)
+        files = os.listdir(full_path)
+        if len(files) != 1:
+            raise ValueError(f"Expected exactly one file in directory {full_path}, found {len(files)}")
+        return os.path.join(full_path, files[0])
+
+    def ReadValue(self, options):
+        print("ReadValue called")
+
+        # If file_path is None, find the most recent file and read all lines
+        if self.file_path is None:
+            self.file_path = self.get_most_recent_file(self.folder_path)
+            if self.file_path is not None:
+                try:
+                    with open(self.file_path, 'r') as file:
+                        self.lines = file.readlines()
+                except Exception as e:
+                    print(f"Error occurred while reading the file: {e}")
+                    return []
+
+        # If lines are available, read the current line based on offset
+        if self.lines and self.line_offset < len(self.lines):
+            line_data = self.lines[self.line_offset].strip()
+            self.line_offset += 1
+            print(f"Returning line {self.line_offset}: {line_data}")
+            return [dbus.Byte(b) for b in line_data.encode()]
+        else:
+            # No more lines to read or file not found
+            print("No more lines to read or file not found")
+            self.reset()
+            return []
+
+    def reset(self):
+        self.line_offset = 0
+        self.file_path = None
+        self.lines = []
+
