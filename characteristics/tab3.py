@@ -239,34 +239,23 @@ class CPUReadLineByLineCharacteristic(Characteristic):
 
     def ReadValue(self, options):
         print("ReadValue called")
-        if self.file_path is None:
-            self.file_path = self.get_most_recent_file(self.folder_path)
-            print("GOT THE FILE PATH")
-            if self.file_path is None:
-                print("No valid file found to read")
-                return []
 
-        # If file_path is not None, read all lines
-        if not self.lines:
+        self.file_path = self.get_most_recent_file(self.folder_path)
+
+        if self.file_path is not None:
             try:
                 with open(self.file_path, 'r') as file:
-                    self.lines = file.readlines()
-                print(f"File {self.file_path} read successfully, {len(self.lines)} lines found")
+                    lines = file.readlines()
+                    all_data = ''.join(lines)
+                    print(f"Returning data: {all_data}")
+                    return [dbus.Byte(b) for b in all_data.encode()]
             except Exception as e:
                 print(f"Error occurred while reading the file: {e}")
                 return []
-
-        # If lines are available, read the current line based on offset
-        if self.lines and self.line_offset < len(self.lines):
-            line_data = self.lines[self.line_offset].strip()
-            self.line_offset += 1
-            print(f"Returning line {self.line_offset}: {line_data}")
-            return [dbus.Byte(b) for b in line_data.encode()]
         else:
-            # No more lines to read or file not found
-            print("No more lines to read or file not found")
-            self.reset()
+            print("No file found")
             return []
+        
 
     def reset(self):
         self.line_offset = 0
