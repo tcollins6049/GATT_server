@@ -197,6 +197,7 @@ class CPUReadLineByLineCharacteristic(Characteristic):
             ['read'],
             service)
         self.folder_path = base_path
+        self.line_offset = 0
         print(f"Characteristic initialized with UUID: {uuid}")
     
 
@@ -243,7 +244,12 @@ class CPUReadLineByLineCharacteristic(Characteristic):
                     lines = file.readlines()
                     all_data = ''.join(lines)
                     # print(f"Returning data: {all_data}")
-                    return [dbus.Byte(b) for b in lines[0].encode()]
+                    if (self.line_offset >= len(lines)):
+                        self.line_offset = 0
+                        return [dbus.Byte(b) for b in 'EOF'.encode()]
+                    
+                    self.line_offset += 1
+                    return [dbus.Byte(b) for b in lines[self.line_offset].encode()]
             except Exception as e:
                 # print(f"Error occurred while reading the file: {e}")
                 return []
