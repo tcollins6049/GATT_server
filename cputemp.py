@@ -14,6 +14,7 @@ from characteristics.tab2 import ResetOffsetCharacteristic
 from characteristics.tab3 import CPUFileReadCharacteristic
 from characteristics.tab3 import CPUFileReadAllCharacteristic
 from characteristics.tab3 import CPUReadLineByLineCharacteristic
+from characteristics.tab3 import ResetLineOffsetCharacteristic
 from characteristics.tab4 import SensorStateCharacteristic
 from characteristics.tab5 import CommandCharacteristic
 from characteristics.tab5 import CommandCharacteristicWResponse
@@ -88,7 +89,7 @@ class ThermometerService(Service):
         self.add_characteristic(CPUFileReadCharacteristic(self, '00000302-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/temp/'))
 
         read_line_by_line_characteristic = CPUReadLineByLineCharacteristic(self, '00000304-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/cpu/')
-        reset_offset_characteristic = ResetOffsetCharacteristic(self, '00000305-710e-4a5b-8d75-3e5b444bc3cf', read_line_by_line_characteristic)
+        reset_offset_characteristic = ResetLineOffsetCharacteristic(self, '00000305-710e-4a5b-8d75-3e5b444bc3cf', read_line_by_line_characteristic)
         self.add_characteristic(read_line_by_line_characteristic)
         self.add_characteristic(reset_offset_characteristic)
 

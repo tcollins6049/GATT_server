@@ -265,7 +265,7 @@ class CPUReadLineByLineCharacteristic(Characteristic):
         print("Resetting characteristic state")
 
 
-class ResetOffsetCharacteristic(Characteristic):
+class ResetLineOffsetCharacteristic(Characteristic):
     def __init__(self, service, uuid, read_line_by_line_characteristic):
         Characteristic.__init__(
             self,
