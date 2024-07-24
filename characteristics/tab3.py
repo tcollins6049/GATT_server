@@ -257,8 +257,26 @@ class CPUReadLineByLineCharacteristic(Characteristic):
             # print("No file found")
             return []
         
+
     def reset(self):
         self.line_offset = 0
         self.file_path = None
         self.lines = []
         print("Resetting characteristic state")
+
+
+class ResetOffsetCharacteristic(Characteristic):
+    def __init__(self, service, uuid, read_line_by_line_characteristic):
+        Characteristic.__init__(
+            self,
+            uuid,
+            ['write'],
+            service)
+        self.read_line_by_line_characteristic = read_line_by_line_characteristic
+
+    def WriteValue(self, value, options):
+        print("WriteValue called")
+        command = bytes(value).decode('utf-8')
+        if command == 'reset':
+            self.read_line_by_line_characteristic.reset()
+            print("Offset reset command received")
