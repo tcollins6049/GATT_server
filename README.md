@@ -5,14 +5,16 @@ A GATT (Generic Attribute Profile) server is a key componenet in Bluetooth Low E
 ### Current Structure
 - **bt_hive_app**: This folder contains the service, advertisment, and characteristics for the Bluetooth Hive Connection application. This application manages the Bluetooth communication for monitoring and interacting with a hive. It enables the user to view real time data from sensors and to manage hive properties such as config file variables or enabling and disabling sensors.
 
-## Features
-
 ## Installation
 ### Required Libraries
 
 ### Steps
-
+1. **Clone the Repository:** Run the following command to clone this repo on a Raspberry Pi at the path '/home/bee'.
+```
+git clone https://github.com/tcollins6049/GATT_server.git
+```
+   
 ## Code Structure
 
 ## Additions
-1. **Clone the Repository:**
+
