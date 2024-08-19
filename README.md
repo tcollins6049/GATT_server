@@ -9,7 +9,7 @@ A GATT (Generic Attribute Profile) server is a key componenet in Bluetooth Low E
 ### Required Libraries
 
 ### Steps
-1. **Clone the Repository:** Run the following command to clone this repo on a Raspberry Pi at the path '/home/bee'.
+**Clone the Repository:** Navigate to /home/bee on a Raspberry Pi and run the following command.
 ```
 git clone https://github.com/tcollins6049/GATT_server.git
 ```
