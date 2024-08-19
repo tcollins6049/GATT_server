@@ -19,6 +19,7 @@ from characteristics.file_sensor_data import CPUFileReadCharacteristic, CPUFileR
 from characteristics.sensor_states import SensorStateCharacteristic
 from characteristics.commands import CommandCharacteristic, CommandCharacteristicWResponse
 from characteristics.sensorReadings import TempCharacteristic, UnitCharacteristic, TempHumidityCharacteristic
+from characteristics.password_char import PasswordVerificationCharacteristic
 
 
 BLE_SVC_UUID = "00000001-710e-4a5b-8d75-3e5b444bc3cf"
@@ -133,7 +134,7 @@ class BLEService(Service):
 
 """
     Characteristic for password verification
-"""
+
 class PasswordVerificationCharacteristic(Characteristic):
     def __init__(self, service, uuid, password_file):
         Characteristic.__init__(
@@ -161,6 +162,7 @@ class PasswordVerificationCharacteristic(Characteristic):
             print("Password is incorrect")
             self.is_correct_password = False
             return [dbus.Byte(0)]
+"""
 
 
 def main():
