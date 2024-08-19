@@ -47,7 +47,7 @@ class BLEService(Service):
         self.farenheit = True
 
         # Initialize the base Service class with the service UUID
-        Service.__init__(self, index, self.BLE_SVC_UUID, True)
+        Service.__init__(self, index, BLE_SVC_UUID, True)
 
         self.add_modification_tab_characteristics()
         self.add_audio_video_characteristics()
