@@ -13,11 +13,11 @@ from service import Application, Service, Characteristic, Descriptor
 import helper_methods as help
 
 # Characteristic Imports
-from characteristics.tab1Variables import FileCharacteristic
-from characteristics.tab2 import FileInfoCharacteristic, FileTransferCharacteristic, ResetOffsetCharacteristic
-from characteristics.tab3 import CPUFileReadCharacteristic, CPUFileReadAllCharacteristic, CPUReadLineByLineCharacteristic, ResetLineOffsetCharacteristic
-from characteristics.tab4 import SensorStateCharacteristic
-from characteristics.tab5 import CommandCharacteristic, CommandCharacteristicWResponse
+from characteristics.modifications_tab import FileCharacteristic
+from characteristics.audio_video import FileInfoCharacteristic, FileTransferCharacteristic, ResetOffsetCharacteristic
+from characteristics.file_sensor_data import CPUFileReadCharacteristic, CPUFileReadAllCharacteristic, CPUReadLineByLineCharacteristic, ResetLineOffsetCharacteristic
+from characteristics.sensor_states import SensorStateCharacteristic
+from characteristics.commands import CommandCharacteristic, CommandCharacteristicWResponse
 from characteristics.sensorReadings import TempCharacteristic, UnitCharacteristic, TempHumidityCharacteristic
 
 
@@ -37,11 +37,10 @@ class BLEAdvertisement(Advertisement):
         print(f"Local name set to: {system_name}")
 
 
-"""
-    Class to establish the provided service, this service is responsible for all characteristics so far
-"""
 class BLEService(Service):
-    # UUID for the BLE project service
+    """
+    Class to establish the provided service, this service is responsible for all characteristics so far
+    """
     def __init__(self, index):
         # Initialize the temperature unit to Fahrenheit
         self.farenheit = True
@@ -164,11 +163,6 @@ class PasswordVerificationCharacteristic(Characteristic):
             return [dbus.Byte(0)]
 
 
-
-
-"""
-    This is what will run first
-"""
 def main():
     app = Application()
     app.add_service(BLEService(0))
