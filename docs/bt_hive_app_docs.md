@@ -21,7 +21,7 @@ bt_hive_app
 ```
 ### Code Overview
 - **BLEAppServiceAndAdvertisement.py:** Provides the service and advertisment for the application. These will be called by the GATT server.
-- **characteristics directory:** Contains files for all characteristics used in the application. The application has seperate views so the characteristics are organized into files based on the view those characteristics show up in. 
+- **Characteristics Directory:** Contains files for all characteristics used in the application. The application has seperate views so the characteristics are organized into files based on the view those characteristics show up in. 
 
 ## Additions
 ### 1. Changing Password
