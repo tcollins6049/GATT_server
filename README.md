@@ -33,10 +33,12 @@ GATT_Server
 
 ```
 ### Core Files
-- **cputemp.py:**
-- **advertisment.py:**
-- **service.py:**
-- **bletools.py:**
+- **cputemp.py:** Serves as an entry point for the GATT server. It initializes and registers services and advertisments.
+- **advertisment.py:** Responsible for managing BLE advertisements. Utilizes D-Bus for communication with the BlueZ service and allows for configuration of various advertisment properties such as local name and service UUIDs.
+- **service.py:** Defines the core components for the GATT server. It includes classes for managing GATT services, characteristics, and descriptors. This enables communication between BLE devices.
+- **bletools.py:** Provides functions used for interacting with the BLE stack.
 
 ## Additions
+### 1. Adding a new service and advertisment
 
+### 2. Creating new characteristics
