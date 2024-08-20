@@ -3,7 +3,7 @@ from advertisement import Advertisement
 from service import Application, Service, Characteristic, Descriptor
 from gpiozero import CPUTemperature
 from datetime import datetime
-import helper_methods as help
+# import helper_methods as help
 
 
 # Constants for GATT characteristic interface and notification timeout
