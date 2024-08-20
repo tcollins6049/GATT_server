@@ -20,6 +20,18 @@ python3 cputemp.py
 ```
    
 ## Code Structure
+```
+GATT_Server
+│   README.md  
+│   advertisment.py
+|   bletools.py
+|   cputemp.py
+|   service.py
+└───bt_hive_app
+└───docs
+    │   bt_hive_app_docs.md
+
+```
 
 ## Additions
 
