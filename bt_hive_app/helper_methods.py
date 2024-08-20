@@ -203,3 +203,4 @@ def extract_frame(video_file, frame_number, output_file):
             print(f"Error: Could not read frame {frame_number} from video")
             cap.release()
             return None
+        
