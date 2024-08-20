@@ -32,6 +32,11 @@ GATT_Server
     │   bt_hive_app_docs.md
 
 ```
+### Core Files
+- **cputemp.py:**
+- **advertisment.py:**
+- **service.py:**
+- **bletools.py:**
 
 ## Additions
 
