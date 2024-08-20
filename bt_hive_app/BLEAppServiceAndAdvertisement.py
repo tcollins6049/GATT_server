@@ -14,12 +14,12 @@ from service import Application, Service, Characteristic, Descriptor
 
 # Characteristic Imports
 from bt_hive_app.characteristics.modifications_tab import FileCharacteristic
-from characteristics.audio_video import FileInfoCharacteristic, FileTransferCharacteristic, ResetOffsetCharacteristic
-from characteristics.file_sensor_data import CPUFileReadCharacteristic, CPUFileReadAllCharacteristic, CPUReadLineByLineCharacteristic, ResetLineOffsetCharacteristic
-from characteristics.sensor_states import SensorStateCharacteristic
-from characteristics.commands import CommandCharacteristic, CommandCharacteristicWResponse
-from characteristics.sensor_readings import TempCharacteristic, UnitCharacteristic, TempHumidityCharacteristic
-from characteristics.password_char import PasswordVerificationCharacteristic
+from bt_hive_app.characteristics.audio_video import FileInfoCharacteristic, FileTransferCharacteristic, ResetOffsetCharacteristic
+from bt_hive_app.characteristics.file_sensor_data import CPUFileReadCharacteristic, CPUFileReadAllCharacteristic, CPUReadLineByLineCharacteristic, ResetLineOffsetCharacteristic
+from bt_hive_app.characteristics.sensor_states import SensorStateCharacteristic
+from bt_hive_app.characteristics.commands import CommandCharacteristic, CommandCharacteristicWResponse
+from bt_hive_app.characteristics.sensor_readings import TempCharacteristic, UnitCharacteristic, TempHumidityCharacteristic
+from bt_hive_app.characteristics.password_char import PasswordVerificationCharacteristic
 
 
 BLE_SVC_UUID = "00000001-710e-4a5b-8d75-3e5b444bc3cf"
