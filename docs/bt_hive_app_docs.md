@@ -1,7 +1,7 @@
 # Bluetooth Hive Connection Application
 
 ## Overview
-Here are the characteristics, service, and advertisement needed by the React Native application found at this link: https://github.com/tcollins6049/bluetooth_hive_connect. The application is responsible for communicating with the Rasperrby Pi via Bluetooth using this GATT server. It uses these characteristics to read and write data to the pi allowing the user to view data from the sensors connected to the pi as well as modify variables on the pi including sensor states and config file variables.
+Here are the characteristics, service, and advertisement needed by the React Native application. The application code can be found at this link: https://github.com/tcollins6049/bluetooth_hive_connect. The application is responsible for communicating with the Rasperrby Pi via Bluetooth using this GATT server. It uses these characteristics to read and write data to the pi allowing the user to view data from the sensors connected to the pi as well as modify variables on the pi including sensor states and config file variables.
 
 ## Code Structure
 ```
