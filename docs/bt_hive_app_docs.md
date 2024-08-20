@@ -1,7 +1,7 @@
 # Bluetooth Hive Connection Application
 
 ## Overview
-A GATT (Generic Attribute Profile) server is a key componenet in Bluetooth Low Energy (BLE) communication. It defines how data is exchanged over a Bluetooth connection using attributes, which are small pieces of data that can be read, written, or notified by connected devices. This repo contains a GATT server which can accomodate multiple bluetooth services or applications. Each different service or application will be organized into seperate directories for easier management.
+Here are the characteristics, service, and advertisement needed by the React Native application found at this link: https://github.com/tcollins6049/bluetooth_hive_connect. The application is responsible for communicating with the Rasperrby Pi via Bluetooth using this GATT server. It uses these characteristics to read and write data to the pi allowing the user to view data from the sensors connected to the pi as well as modify variables on the pi including sensor states and config file variables.
 
 ## Code Structure
 ```
@@ -19,13 +19,11 @@ bt_hive_app
 |   |   audio_video.py  
 
 ```
-### Core Files
-- **cputemp.py:** Serves as an entry point for the GATT server. It initializes and registers services and advertisments.
-- **advertisment.py:** Responsible for managing BLE advertisements. Utilizes D-Bus for communication with the BlueZ service and allows for configuration of various advertisment properties such as local name and service UUIDs.
-- **service.py:** Defines the core components for the GATT server. It includes classes for managing GATT services, characteristics, and descriptors. This enables communication between BLE devices.
-- **bletools.py:** Provides functions used for interacting with the BLE stack.
+### Code Overview
+- **BLEAppServiceAndAdvertisement.py:** Provides the service and advertisment for the application. These will be called by the GATT server.
+- **characteristics directory:** Contains files for all characteristics used in the application. The application has seperate views so the characteristics are organized into files based on the view those characteristics show up in. 
 
 ## Additions
-### 1. Adding a new service and advertisment
+### 1. Changing Password
 
-### 2. Creating new characteristics
+### 2. Adding a new sensor
