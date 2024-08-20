@@ -10,7 +10,7 @@ from gpiozero import CPUTemperature
 
 from advertisement import Advertisement
 from service import Application, Service, Characteristic, Descriptor
-import helper_methods as help
+# import helper_methods as help
 
 # Characteristic Imports
 from characteristics.modifications_tab import FileCharacteristic
