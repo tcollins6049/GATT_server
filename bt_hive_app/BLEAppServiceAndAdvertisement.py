@@ -13,7 +13,7 @@ from service import Application, Service, Characteristic, Descriptor
 # import helper_methods as help
 
 # Characteristic Imports
-from characteristics.modifications_tab import FileCharacteristic
+from bt_hive_app.characteristics.modifications_tab import FileCharacteristic
 from characteristics.audio_video import FileInfoCharacteristic, FileTransferCharacteristic, ResetOffsetCharacteristic
 from characteristics.file_sensor_data import CPUFileReadCharacteristic, CPUFileReadAllCharacteristic, CPUReadLineByLineCharacteristic, ResetLineOffsetCharacteristic
 from characteristics.sensor_states import SensorStateCharacteristic
