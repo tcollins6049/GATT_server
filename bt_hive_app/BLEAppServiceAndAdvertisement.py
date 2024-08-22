@@ -14,7 +14,7 @@ from service import Application, Service, Characteristic, Descriptor
 
 # Characteristic Imports
 from bt_hive_app.characteristics.modifications_tab import FileCharacteristic
-from bt_hive_app.characteristics.audio_video import FileInfoCharacteristic, FileTransferCharacteristic, ResetOffsetCharacteristic
+from bt_hive_app.characteristics.audio_video import FileInfoCharacteristic, FileTransferCharacteristic, ResetOffsetCharacteristic, VideoReadLineByLineCharacteristic, VideoResetLineOffsetCharacteristic
 from bt_hive_app.characteristics.file_sensor_data import CPUFileReadCharacteristic, CPUFileReadAllCharacteristic, CPUReadLineByLineCharacteristic, ResetLineOffsetCharacteristic
 from bt_hive_app.characteristics.sensor_states import SensorStateCharacteristic
 from bt_hive_app.characteristics.commands import CommandCharacteristic, CommandCharacteristicWResponse
@@ -91,6 +91,12 @@ class BLEService(Service):
         self.add_characteristic(static_file_transfer_characteristic)
         self.add_characteristic(ResetOffsetCharacteristic(self, '00000208-710e-4a5b-8d75-3e5b444bc3cf', static_file_transfer_characteristic))
 
+        # Needed characteristics for reading the humidity + temp csv file line by line.
+        read_line_by_line_characteristic = VideoReadLineByLineCharacteristic(self, '00000209-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/video/')
+        reset_offset_characteristic = VideoResetLineOffsetCharacteristic(self, '00000210-710e-4a5b-8d75-3e5b444bc3cf', read_line_by_line_characteristic)
+        self.add_characteristic(read_line_by_line_characteristic)
+        self.add_characteristic(reset_offset_characteristic)
+
     def add_sensor_data_characteristics(self):
         # Adding a characterisitc for cpu file data
         self.add_characteristic(CPUFileReadCharacteristic(self, '00000301-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/cpu/'))
@@ -103,7 +109,7 @@ class BLEService(Service):
         self.add_characteristic(read_line_by_line_characteristic)
         self.add_characteristic(reset_offset_characteristic)
 
-        # Needed characteristics for reading the cpu temp csv file line by line.
+        # Needed characteristics for reading the humidity + temp csv file line by line.
         read_line_by_line_characteristic = CPUReadLineByLineCharacteristic(self, '00000306-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/temp/')
         reset_offset_characteristic = ResetLineOffsetCharacteristic(self, '00000307-710e-4a5b-8d75-3e5b444bc3cf', read_line_by_line_characteristic)
         self.add_characteristic(read_line_by_line_characteristic)
