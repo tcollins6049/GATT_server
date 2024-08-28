@@ -1,16 +1,7 @@
 #!/usr/bin/python3
-import os
 import socket
-import subprocess
-from datetime import datetime
-
-import dbus
-import cv2
-from gpiozero import CPUTemperature
-
 from advertisement import Advertisement
-from service import Application, Service, Characteristic, Descriptor
-# import helper_methods as help
+from service import Service
 
 # Characteristic Imports
 from bt_hive_app.characteristics.modifications_tab import FileCharacteristic
