@@ -248,8 +248,10 @@ class CPUReadLineByLineCharacteristic(Characteristic):
                         self.line_offset = 0
                         return [dbus.Byte(b) for b in 'EOF'.encode()]
                     
+                    returned_line = lines[self.line_offset]
                     self.line_offset += 1
-                    return [dbus.Byte(b) for b in lines[self.line_offset].encode()]
+                    # return [dbus.Byte(b) for b in lines[self.line_offset].encode()]
+                    return [dbus.Byte(b) for b in returned_line.encode()]
             except Exception as e:
                 # print(f"Error occurred while reading the file: {e}")
                 return []
