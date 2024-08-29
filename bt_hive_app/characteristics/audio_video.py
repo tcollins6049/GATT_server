@@ -181,6 +181,9 @@ class FileTransferCharacteristic(Characteristic):
             return self.readWaveformFile()
         elif self.file_type == 'other':
             return self.ReadStaticFile()
+        elif self.file_type == 'sensor':
+            self.file_path = help.get_most_recent_sensor_file(self.file_path)
+            return self.ReadStaticFile()
     
 
     def capturePicture(self):

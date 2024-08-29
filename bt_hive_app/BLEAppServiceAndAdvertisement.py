@@ -82,6 +82,9 @@ class BLEService(Service):
         self.add_characteristic(static_file_transfer_characteristic)
         self.add_characteristic(ResetOffsetCharacteristic(self, '00000208-710e-4a5b-8d75-3e5b444bc3cf', static_file_transfer_characteristic))
 
+
+        self.add_characteristic(FileTransferCharacteristic(self, '00000211-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/cpu/', 'sensor'))
+
         # Needed characteristics for reading the humidity + temp csv file line by line.
         read_line_by_line_characteristic = VideoReadLineByLineCharacteristic(self, '00000209-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/video/')
         reset_offset_characteristic = VideoResetLineOffsetCharacteristic(self, '00000210-710e-4a5b-8d75-3e5b444bc3cf', read_line_by_line_characteristic)
