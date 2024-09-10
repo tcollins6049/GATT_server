@@ -6,19 +6,34 @@ from datetime import datetime
 # import helper_methods as help
 
 
-# ---------------- Tab 5: Command Characteristics ---------------------- #
-"""
-This class is responsible for running a command on the pi sent from the app
-"""
 class CommandCharacteristic(Characteristic):
-    # COMMAND_CHARACTERISTIC_UUID = "00000023-710e-4a5b-8d75-3e5b444bc3cf"
+    """
+    Characteristic responsible for recieving command from application and running that command on the Pi.
 
+    """
     def __init__(self, service, uuid):
+        """
+        init function
+
+        Args:
+            service: Service this characteristic is located under.
+            uuid (str): This characteristic's UUID
+
+        """
         Characteristic.__init__(
             self, uuid,
             ["write"], service)
     
+
     def WriteValue(self, value, options):
+        """
+        Function responsible for recieving and running the command sent from the application.
+
+        Args:
+            value (str): Command recieved from the application.
+            options:
+
+        """
         command = ''.join([chr(b) for b in value])
         print(f"Received command: {command}")
         try:
@@ -29,6 +44,10 @@ class CommandCharacteristic(Characteristic):
             print("Command failed:", e)
     
 
+"""
+Temporary characteristic, will probably be deleted soon.
+
+"""
 class CommandCharacteristicWResponse(Characteristic):
     def __init__(self, service, uuid):
         Characteristic.__init__(self, uuid, ["write", "read"], service)

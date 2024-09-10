@@ -6,24 +6,42 @@ from datetime import datetime
 import bt_hive_app.helper_methods as help
 
 
-# ---------------- Tab 3: Sensor Data Characteristics ---------------------- #
-"""
-    This class is responsible for reading the cpu temperature from the file
-
-    !! Need to add update functionality !!
-"""
 class CPUFileReadCharacteristic(Characteristic):
+    """
+    Characteristic used to read the most recent recording from file located on the Pi
+
+    """
     def __init__(self, service, uuid, base_path):
+        """
+        init function
+
+        Args:
+            service: Service this characteristic is located under.
+            uuid (str): This characteristic's UUID.
+            base_path (str): Base file path of the file you want to have read.
+        """
         Characteristic.__init__(
             self,
             uuid,
             ['read'],
             service)
         self.folder_path = base_path
-        # print(f"Characteristic initialized with UUID: {uuid}")
+    
 
     def get_most_recent_file(self, base_path):
-        # print("Getting most recent file")
+        """
+        Function used to get most recent file from directory located at base_path.
+
+        Args:
+            base_path (str): Base file path of the file needing to be read.
+
+        Returns:
+            full path of most recent file in base_path directory if successful, otherwise None
+
+        Raises:
+            ValueError: If no files exist inside base_path.
+
+        """
         # List all directories in the base path
         entries = os.listdir(base_path)
         
@@ -56,8 +74,14 @@ class CPUFileReadCharacteristic(Characteristic):
 
 
     def get_relevant_line(self):
+        """
+        Function used to get last line in a file that is not the value 'nan'.
+
+        Returns:
+            str: Line containing something other than nan if one exists, otherwise 'nan' meaning the file only contained nan readings.
+
+        """
         with open(self.file_path, 'r') as file:
-            # last_line = file.readlines()[-1]
             lines = file.readlines()
 
             if ('nan' in lines[-1]):
@@ -79,6 +103,16 @@ class CPUFileReadCharacteristic(Characteristic):
     
 
     def get_update_text(self, last_line):
+        """
+        Function which determines the update text based on if the last line contained nan or not.
+
+        Args:
+            last_line (str): last line of the file, contains an actual value or is 'nan'.
+
+        Returns:
+            str: If last line is a value other than nan, string containing date and time of the recording. Otherwise, string containing date and time when nan values started being recorded.
+        
+        """
         if 'nan' not in last_line:
             # Text returned will just contain the update date and time
             unformatted_time = (last_line.split(',')[0]).replace('"','')
@@ -102,8 +136,16 @@ class CPUFileReadCharacteristic(Characteristic):
 
 
     def ReadValue(self, options):
-        # print("ReadValue called")
-        # self.file_path = self.get_most_recent_file(self.folder_path)
+        """
+        Function used to read last line data.
+
+        Args:
+            options:
+
+        Returns:
+            list: Contains data from final line of file if successful, otherwise empty.
+        
+        """
         self.file_path = help.get_most_recent_sensor_file(self.folder_path)
 
         if self.file_path is not None:

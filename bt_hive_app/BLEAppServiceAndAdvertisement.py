@@ -52,6 +52,12 @@ class BLEService(Service):
 
 
     def add_modification_tab_characteristics(self):
+        """
+        Function adds characteristics used in the modifications tab of the application
+
+        Args:
+            self: 
+        """
         # Adding file-related variable change characteristics
         self.add_characteristic(FileCharacteristic(self, '00000101-710e-4a5b-8d75-3e5b444bc3cf', 'global','capture_window_start_time'))
         self.add_characteristic(FileCharacteristic(self, '00000102-710e-4a5b-8d75-3e5b444bc3cf', 'global', 'capture_window_end_time'))
@@ -65,6 +71,10 @@ class BLEService(Service):
         self.add_characteristic(FileCharacteristic(self, '00000108-710e-4a5b-8d75-3e5b444bc3cf', 'video', 'capture_interval_seconds'))
 
     def add_audio_video_characteristics(self):
+        """
+        Function adds characteristics for the audio and video tabs
+
+        """
         # Adding a characteristic for file information (e.g., file size)
         self.add_characteristic(FileInfoCharacteristic(self, '00000201-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/audio/', 'audio'));
         self.add_characteristic(FileInfoCharacteristic(self, '00000202-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/video/', 'video'));
@@ -92,6 +102,12 @@ class BLEService(Service):
         self.add_characteristic(reset_offset_characteristic)
 
     def add_sensor_data_characteristics(self):
+        """
+        Function for adding characteristics for pulling sensor data
+
+        Args:
+            self: 
+        """
         # Adding a characterisitc for cpu file data
         self.add_characteristic(CPUFileReadCharacteristic(self, '00000301-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/cpu/'))
         self.add_characteristic(CPUFileReadAllCharacteristic(self, '00000303-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/cpu/'))
