@@ -222,6 +222,7 @@ class FileTransferCharacteristic(Characteristic):
                     else:
                         self.offset += len(chunk)
 
+                    print(f"Chunk: {chunk}")
                     # help.delete_file(image_path)
                     return [dbus.Byte(b) for b in chunk]
             else:
