@@ -11,6 +11,7 @@ def get_most_recent_sensor_file(base_path):
     try:
         # List all directories in the base path
         entries = os.listdir(base_path)
+        print(f"Entries: {entries}")
             
         # Filter out possible non directory entries or directories which dont match the data format
         date_dirs = []
@@ -25,11 +26,14 @@ def get_most_recent_sensor_file(base_path):
                     # Skip directories that don't match the date format
                     pass
         if not date_dirs:
+            print("Not date_dirs")
             return None
 
         # Find most recent date
         most_recent_dir = max(date_dirs, key=lambda x: x[1])[0]
+        print(f"Most_recent_dir: {most_recent_dir}")
         full_path = os.path.join(base_path, most_recent_dir)
+        print(f"Full_path: {full_path}")
 
         # List files in this directory
         files = os.listdir(full_path)
