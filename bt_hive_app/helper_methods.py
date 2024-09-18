@@ -10,6 +10,9 @@ def get_most_recent_sensor_file(base_path):
     print("Getting most recent file")
     #try:
     # List all directories in the base path
+    print("GETTING ENTRIES")
+    print(f"BASE_PATH: {base_path}")
+    print(f"ENTRIES: {os.listdir(base_path)}")
     entries = os.listdir(base_path)
     print(f"Entries: {entries}")
             
