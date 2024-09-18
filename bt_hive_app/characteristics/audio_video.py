@@ -178,6 +178,7 @@ class FileTransferCharacteristic(Characteristic):
             help.delete_file(self.image_path)
             return result
         elif self.file_type == 'sensor':
+            print("---------------------------------------------------------------------------------------------")
             self.file_path = help.get_most_recent_sensor_file(self.file_path)
             return self.ReadStaticFile()
     
