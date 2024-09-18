@@ -179,8 +179,9 @@ class FileTransferCharacteristic(Characteristic):
             return result
         elif self.file_type == 'sensor':
             print("---------------------------------------------------------------------------------------------")
-            self.file_path = help.get_most_recent_sensor_file(self.file_path)
-            return self.ReadStaticFile()
+            print(f"Original Base Path: {self.file_path}")
+            base_path = help.get_most_recent_sensor_file(self.file_path)
+            return self.ReadStaticFile(base_path)
     
 
     def capturePicture(self):
@@ -197,7 +198,7 @@ class FileTransferCharacteristic(Characteristic):
             print(f'Error capturing picture: {e}')
         
 
-    def ReadStaticFile(self):
+    def ReadStaticFile(self, base_path):
         """
         Function responsible for reading a file straight from the file_path
 
@@ -207,16 +208,16 @@ class FileTransferCharacteristic(Characteristic):
         """
         try:
             mtu = 512
-            self.image_path = self.file_path
+            # self.image_path = self.file_path
             
             if self.offset == 0:
-                print("IMAGE PATH: ", self.image_path)
-                print("IMAGE SIZE: ", os.path.getsize(self.image_path))
+                print("IMAGE PATH: ", base_path)
+                print("IMAGE SIZE: ", os.path.getsize(base_path))
             
             print(f"OFFSET: {self.offset}")
 
-            if os.path.exists(self.image_path):
-                with open(self.image_path, 'rb') as file:
+            if os.path.exists(base_path):
+                with open(base_path, 'rb') as file:
                     file.seek(self.offset)
                     chunk = file.read(mtu)
                     
