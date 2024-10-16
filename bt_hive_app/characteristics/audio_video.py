@@ -174,7 +174,7 @@ class FileTransferCharacteristic(Characteristic):
         elif self.file_type == 'audio':
             return self.readWaveformFile()
         elif self.file_type == 'other':
-            # self.capturePicture()
+            self.capturePicture()
             result = self.ReadStaticFile()
             # help.delete_file(self.image_path)
             return result
@@ -192,7 +192,7 @@ class FileTransferCharacteristic(Characteristic):
         """
         try:
             # Run the command to capture picture using libcamera-still
-            command = 'libcamera-still -q 10 picture.jpg'
+            command = 'libcamera-still -q 10 -o picture.jpg'
             subprocess.run(command, shell=True, check=True)
             print('Picture captured successfully.')
         except subprocess.CalledProcessError as e:
