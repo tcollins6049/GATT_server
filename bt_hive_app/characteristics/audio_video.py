@@ -174,7 +174,7 @@ class FileTransferCharacteristic(Characteristic):
         elif self.file_type == 'audio':
             return self.readWaveformFile()
         elif self.file_type == 'other':
-            self.capturePicture()
+            # self.capturePicture()
             result = self.ReadStaticFile()
             # help.delete_file(self.image_path)
             return result
@@ -208,7 +208,6 @@ class FileTransferCharacteristic(Characteristic):
 
         """
         try:
-            # self.capturePicture()
             mtu = 512
             # self.image_path = self.file_path
             
