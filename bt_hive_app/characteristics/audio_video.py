@@ -176,7 +176,7 @@ class FileTransferCharacteristic(Characteristic):
         elif self.file_type == 'other':
             print("WITHIN OTHER SECTION")
             # self.capturePicture()
-            self.image_path = self.file_path
+            print(self.image_path)
             result = self.ReadStaticFile()
             # help.delete_file(self.image_path)
             return result
@@ -212,6 +212,7 @@ class FileTransferCharacteristic(Characteristic):
         # try:
         mtu = 512
         # self.image_path = self.file_path
+        
         
         if self.offset == 0:
             print("IMAGE PATH: ", base_path)
