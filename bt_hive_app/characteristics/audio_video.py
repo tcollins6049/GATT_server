@@ -192,7 +192,7 @@ class FileTransferCharacteristic(Characteristic):
         """
         try:
             # Run the command to capture picture using libcamera-still
-            command = 'libcamera-still -q 10 /home/bee/GATT_server/picture.jpg'
+            command = 'libcamera-still -q 10 picture.jpg'
             subprocess.run(command, shell=True, check=True)
             print('Picture captured successfully.')
         except subprocess.CalledProcessError as e:
