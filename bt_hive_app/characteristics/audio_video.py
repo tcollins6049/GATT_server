@@ -208,38 +208,38 @@ class FileTransferCharacteristic(Characteristic):
             list: Contains chunk of data read from file if successful, empty otherwise.
 
         """
-        try:
-            mtu = 512
-            # self.image_path = self.file_path
-            
-            if self.offset == 0:
-                print("IMAGE PATH: ", base_path)
-                print("IMAGE SIZE: ", os.path.getsize(base_path))
-            
-            print(f"OFFSET: {self.offset}")
+        # try:
+        mtu = 512
+        # self.image_path = self.file_path
+        
+        if self.offset == 0:
+            print("IMAGE PATH: ", base_path)
+            print("IMAGE SIZE: ", os.path.getsize(base_path))
+        
+        print(f"OFFSET: {self.offset}")
 
-            if os.path.exists(base_path):
-                with open(base_path, 'rb') as file:
-                    file.seek(self.offset)
-                    chunk = file.read(mtu)
-                    
-                    print(f"Read {len(chunk)} bytes from file starting at offset {self.offset}")
-                    if len(chunk) < mtu:
-                        self.offset = 0  # Reset for next read if this is the last chunk
-                        # help.delete_file(self.image_path)
-                    else:
-                        self.offset += len(chunk)
+        if os.path.exists(base_path):
+            with open(base_path, 'rb') as file:
+                file.seek(self.offset)
+                chunk = file.read(mtu)
+                
+                print(f"Read {len(chunk)} bytes from file starting at offset {self.offset}")
+                if len(chunk) < mtu:
+                    self.offset = 0  # Reset for next read if this is the last chunk
+                    # help.delete_file(self.image_path)
+                else:
+                    self.offset += len(chunk)
 
-                    print(f"Chunk: {chunk}")
-                    # help.delete_file(image_path)
-                    return [dbus.Byte(b) for b in chunk]
-            else:
-                print("No file exists for picture")
+                print(f"Chunk: {chunk}")
+                # help.delete_file(image_path)
+                return [dbus.Byte(b) for b in chunk]
+        else:
+            print("No file exists for picture")
             
 
-        except Exception as e:
-            print(f"Error reading file: {e}")
-            return []
+        #except Exception as e:
+        #    print(f"Error reading file: {e}")
+        #    return []
     
 
     def ReadVideoFile(self):
