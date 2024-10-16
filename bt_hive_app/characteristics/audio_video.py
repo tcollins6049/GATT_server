@@ -176,7 +176,7 @@ class FileTransferCharacteristic(Characteristic):
         elif self.file_type == 'other':
             self.capturePicture()
             result = self.ReadStaticFile()
-            help.delete_file(self.image_path)
+            # help.delete_file(self.image_path)
             return result
         elif self.file_type == 'sensor':
             print("---------------------------------------------------------------------------------------------")
