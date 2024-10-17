@@ -227,7 +227,8 @@ class FileTransferCharacteristic(Characteristic):
                     print(f"Read {len(chunk)} bytes from file starting at offset {self.offset}")
                     if len(chunk) < mtu:
                         self.offset = 0  # Reset for next read if this is the last chunk
-                        # help.delete_file(self.image_path)
+                        if (self.file_type == 'other'):
+                            help.delete_file(self.image_path)
                     else:
                         self.offset += len(chunk)
 
