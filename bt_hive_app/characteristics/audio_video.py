@@ -1,11 +1,13 @@
-import dbus, os, socket, glob, configparser, subprocess, cv2
-from advertisement import Advertisement
-from service import Application, Service, Characteristic, Descriptor
-from gpiozero import CPUTemperature
+# import dbus, os, socket, glob, configparser, subprocess, cv2
+import dbus, os, subprocess
+# from advertisement import Advertisement
+# from service import Application, Service, Characteristic, Descriptor
+from service import Characteristic
+# from gpiozero import CPUTemperature
 from datetime import datetime
 import bt_hive_app.helper_methods as help
 from pydub import AudioSegment
-import time
+# import time
 
 
 class FileInfoCharacteristic(Characteristic):
