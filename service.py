@@ -1,6 +1,7 @@
 import dbus
 import dbus.mainloop.glib
 import dbus.exceptions
+import dbus.service
 try:
   from gi.repository import GObject
 except ImportError:

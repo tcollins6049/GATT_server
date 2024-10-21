@@ -4,7 +4,8 @@
 # import subprocess
 # from datetime import datetime
 
-import dbus
+# import dbus
+# import dbus.service
 # import cv2
 # from gpiozero import CPUTemperature
 
