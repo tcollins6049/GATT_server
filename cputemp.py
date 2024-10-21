@@ -9,8 +9,8 @@
 # from gpiozero import CPUTemperature
 
 # from advertisement import Advertisement
-# from service import Application, Service, Characteristic, Descriptor
-from service import Application
+from service import Application, Service, Characteristic, Descriptor
+# from service import Application
 
 # Imports for services and advertisments
 from bt_hive_app.BLEAppServiceAndAdvertisement import BLEAdvertisement, BLEService
