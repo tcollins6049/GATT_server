@@ -1,9 +1,9 @@
 import os, cv2
 from datetime import datetime
 
-import librosa
-import librosa.display
-import matplotlib.pyplot as plt
+# import librosa
+# import librosa.display
+# import matplotlib.pyplot as plt
 
 
 def get_most_recent_sensor_file(base_path):
@@ -48,7 +48,7 @@ def get_most_recent_sensor_file(base_path):
     #except:
     #    print("Failure within get_most_recent_sensor_file()")
 
-
+'''
 def create_waveform_file(audio_file):
     bgcolor = '#e0e0e0'
     # Load the audio file
@@ -69,6 +69,7 @@ def create_waveform_file(audio_file):
 
     print(f'Waveform image saved as {output_file}')
     return output_file
+'''
 
 
 def delete_file(file_path):

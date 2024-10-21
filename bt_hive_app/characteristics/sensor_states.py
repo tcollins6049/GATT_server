@@ -1,9 +1,5 @@
-import dbus, os, socket, glob, configparser, subprocess, cv2
-from advertisement import Advertisement
-from service import Application, Service, Characteristic, Descriptor
-from gpiozero import CPUTemperature
-from datetime import datetime
-# import helper_methods as help
+import dbus, configparser
+from service import Characteristic
 
 
 # ---------------- Tab 4: Sensor State Characteristics ---------------------- #

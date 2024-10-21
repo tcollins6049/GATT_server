@@ -1,9 +1,6 @@
-import dbus, os, socket, glob, configparser, subprocess, cv2
-from advertisement import Advertisement
-from service import Application, Service, Characteristic, Descriptor
+import dbus
+from service import Characteristic, Descriptor
 from gpiozero import CPUTemperature
-from datetime import datetime
-# import helper_methods as help
 
 
 # Constants for GATT characteristic interface and notification timeout

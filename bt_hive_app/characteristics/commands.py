@@ -1,11 +1,5 @@
-# import dbus, os, socket, glob, configparser, subprocess, cv2
 import dbus, subprocess
-# from advertisement import Advertisement
-# from service import Application, Service, Characteristic, Descriptor
 from service import Characteristic
-# from gpiozero import CPUTemperature
-# from datetime import datetime
-# import helper_methods as help
 
 
 class CommandCharacteristic(Characteristic):

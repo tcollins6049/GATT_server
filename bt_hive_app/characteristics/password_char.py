@@ -1,5 +1,5 @@
 import dbus
-from service import Application, Service, Characteristic, Descriptor
+from service import Characteristic
 
 
 class PasswordVerificationCharacteristic(Characteristic):
