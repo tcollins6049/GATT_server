@@ -1,8 +1,8 @@
 #!/usr/bin/python3
-import os
-import socket
-import subprocess
-from datetime import datetime
+# import os
+# import socket
+# import subprocess
+# from datetime import datetime
 
 import dbus
 import cv2
