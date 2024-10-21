@@ -8,7 +8,7 @@ import dbus
 # import cv2
 # from gpiozero import CPUTemperature
 
-from advertisement import Advertisement
+# from advertisement import Advertisement
 from service import Application, Service, Characteristic, Descriptor
 
 # Imports for services and advertisments
