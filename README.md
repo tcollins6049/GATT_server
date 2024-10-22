@@ -6,12 +6,25 @@ A GATT (Generic Attribute Profile) server is a key componenet in Bluetooth Low E
 - **bt_hive_app**: This folder contains the service, advertisment, and characteristics for the Bluetooth Hive Connection application. This application manages the Bluetooth communication for monitoring and interacting with a hive. It enables the user to view real time data from sensors and to manage hive properties such as config file variables or enabling and disabling sensors.
 
 ## Getting Started
-### Required Libraries
-
 ### Installing and Running
 **Clone the Repository:** Navigate to /home/bee on a Raspberry Pi and run the following command.
 ```
 git clone https://github.com/tcollins6049/GATT_server.git
+```
+
+**Download Dependencies:** On the raspberry pi, run the following commands.
+```
+sudo apt install libdbus-1-dev libdbus-glib-1-dev
+sudo apt-get install libcairo2-dev cmake libgirepository1.0-dev
+pip install dbus-python pycairo PyGObject opencv-python pydub
+```
+
+**beemon-config modifications:** In the file */home/bee/AppMAIS/beemon-config.ini*, add the following lines to the *[video]* section.
+```
+capture_window_start_time = 0800
+capture_window_end_time = 2000
+capture_duration_seconds = 60
+capture_interval_seconds = 300
 ```
 
 **Running:** Run the following command to start advertising services.
