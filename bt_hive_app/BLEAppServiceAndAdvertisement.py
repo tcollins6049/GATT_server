@@ -7,11 +7,11 @@ from service import Service
 from bt_hive_app.characteristics.Modifications_tab.Config_rw_Char import Config_rw_Characteristic
 from bt_hive_app.characteristics.AudVid_tab.FileInfo_Char import FileInfoCharacteristic
 from bt_hive_app.characteristics.AudVid_tab.FileTransfer_Char import FileTransferCharacteristic, ResetOffsetCharacteristic
+from bt_hive_app.characteristics.AudVid_tab.FileRead_LBL_Char import FileRead_LBL_Characteristic
+from bt_hive_app.characteristics.Commands_tab.Commands_Char import CommandCharacteristic, CommandCharacteristicWResponse
 
-from bt_hive_app.characteristics.audio_video import VideoReadLineByLineCharacteristic
 from bt_hive_app.characteristics.file_sensor_data import CPUFileReadCharacteristic, CPUFileReadAllCharacteristic, CPUReadLineByLineCharacteristic, ResetLineOffsetCharacteristic
 from bt_hive_app.characteristics.sensor_states import SensorStateCharacteristic
-from bt_hive_app.characteristics.commands import CommandCharacteristic, CommandCharacteristicWResponse
 from bt_hive_app.characteristics.sensor_readings import TempCharacteristic, UnitCharacteristic, TempHumidityCharacteristic
 from bt_hive_app.characteristics.password_char import PasswordVerificationCharacteristic
 
@@ -94,7 +94,7 @@ class BLEService(Service):
         self.add_characteristic(ResetOffsetCharacteristic(self, '00000208-710e-4a5b-8d75-3e5b444bc3cf', static_file_transfer_characteristic))
 
         # Needed characteristics for reading the humidity + temp csv file line by line.
-        read_line_by_line_characteristic = VideoReadLineByLineCharacteristic(self, '00000209-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/video/')
+        read_line_by_line_characteristic = FileRead_LBL_Characteristic(self, '00000209-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/video/')
         self.add_characteristic(read_line_by_line_characteristic)
         self.add_characteristic(ResetOffsetCharacteristic(self, '00000210-710e-4a5b-8d75-3e5b444bc3cf', read_line_by_line_characteristic))
 
@@ -105,7 +105,6 @@ class BLEService(Service):
         # Characteristics for pulling sensor file data. Data files collected in the appmais directory.
         self.add_characteristic(FileTransferCharacteristic(self, '00000211-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/cpu/', 'sensor'))
         self.add_characteristic(FileTransferCharacteristic(self, '00000212-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/temp/', 'sensor'))
-
 
 
     def add_sensor_data_characteristics(self):

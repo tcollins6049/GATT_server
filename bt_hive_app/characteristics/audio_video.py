@@ -331,7 +331,7 @@ class FileTransferCharacteristic(Characteristic):
         print("FileTransferCharacteristic offset reset to 0")
 '''
 
-
+'''
 class VideoReadLineByLineCharacteristic(Characteristic):
     """
     Characteristic responsible for reading a video file line by line
@@ -451,7 +451,7 @@ class VideoReadLineByLineCharacteristic(Characteristic):
         self.file_path = None
         self.lines = []
         print("Resetting characteristic state")
-
+'''
 
 '''
 class VideoResetLineOffsetCharacteristic(Characteristic):
