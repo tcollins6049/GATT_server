@@ -72,6 +72,7 @@ class BLEService(Service):
         self.add_characteristic(Config_rw_Characteristic(self, '00000107-710e-4a5b-8d75-3e5b444bc3cf', 'video', 'capture_duration_seconds'))
         self.add_characteristic(Config_rw_Characteristic(self, '00000108-710e-4a5b-8d75-3e5b444bc3cf', 'video', 'capture_interval_seconds'))
 
+
     def add_audio_video_characteristics(self):
         """
         Function adds characteristics for the audio and video tabs
@@ -81,30 +82,30 @@ class BLEService(Service):
         self.add_characteristic(FileInfoCharacteristic(self, '00000201-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/audio/', 'audio'));
         self.add_characteristic(FileInfoCharacteristic(self, '00000202-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/video/', 'video'));
 
-
-
-        # Adding a characteristic for pulling a file
+        # Adding a characteristic for pulling a video file. File pulled in chunks.
         video_file_transfer_characteristic = (FileTransferCharacteristic(self, '00000203-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/video/', 'video'))
         self.add_characteristic(video_file_transfer_characteristic)
         self.add_characteristic(ResetOffsetCharacteristic(self, '00000204-710e-4a5b-8d75-3e5b444bc3cf', video_file_transfer_characteristic))
+
+        # Characteristic for pulling 'picture.jpg' file. File pulled in chunks.
+        static_file_transfer_characteristic = (FileTransferCharacteristic(self, '00000207-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/GATT_server/picture.jpg', 'other'))
+        self.add_characteristic(static_file_transfer_characteristic)
+        self.add_characteristic(ResetOffsetCharacteristic(self, '00000208-710e-4a5b-8d75-3e5b444bc3cf', static_file_transfer_characteristic))
+
+        # Needed characteristics for reading the humidity + temp csv file line by line.
+        read_line_by_line_characteristic = VideoReadLineByLineCharacteristic(self, '00000209-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/video/')
+        self.add_characteristic(read_line_by_line_characteristic)
+        self.add_characteristic(ResetOffsetCharacteristic(self, '00000210-710e-4a5b-8d75-3e5b444bc3cf', read_line_by_line_characteristic))
 
         # audio_file_transfer_characteristic = (FileTransferCharacteristic(self, '00000205-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/audio/', 'audio'))
         # self.add_characteristic(audio_file_transfer_characteristic)
         # self.add_characteristic(ResetOffsetCharacteristic(self, '00000206-710e-4a5b-8d75-3e5b444bc3cf', audio_file_transfer_characteristic))
 
-        static_file_transfer_characteristic = (FileTransferCharacteristic(self, '00000207-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/GATT_server/picture.jpg', 'other'))
-        self.add_characteristic(static_file_transfer_characteristic)
-        self.add_characteristic(ResetOffsetCharacteristic(self, '00000208-710e-4a5b-8d75-3e5b444bc3cf', static_file_transfer_characteristic))
-
-
+        # Characteristics for pulling sensor file data. Data files collected in the appmais directory.
         self.add_characteristic(FileTransferCharacteristic(self, '00000211-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/cpu/', 'sensor'))
         self.add_characteristic(FileTransferCharacteristic(self, '00000212-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/temp/', 'sensor'))
 
-        # Needed characteristics for reading the humidity + temp csv file line by line.
-        read_line_by_line_characteristic = VideoReadLineByLineCharacteristic(self, '00000209-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/video/')
-        reset_offset_characteristic = ResetOffsetCharacteristic(self, '00000210-710e-4a5b-8d75-3e5b444bc3cf', read_line_by_line_characteristic)
-        self.add_characteristic(read_line_by_line_characteristic)
-        self.add_characteristic(reset_offset_characteristic)
+
 
     def add_sensor_data_characteristics(self):
         """
