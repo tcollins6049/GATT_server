@@ -4,7 +4,7 @@ from advertisement import Advertisement
 from service import Service
 
 # Characteristic Imports
-from bt_hive_app.characteristics.modifications_tab import FileCharacteristic
+from bt_hive_app.characteristics.Config_rw_Char import Config_rw_Characteristic
 from bt_hive_app.characteristics.audio_video import FileInfoCharacteristic, FileTransferCharacteristic, ResetOffsetCharacteristic, VideoReadLineByLineCharacteristic, VideoResetLineOffsetCharacteristic
 from bt_hive_app.characteristics.file_sensor_data import CPUFileReadCharacteristic, CPUFileReadAllCharacteristic, CPUReadLineByLineCharacteristic, ResetLineOffsetCharacteristic
 from bt_hive_app.characteristics.sensor_states import SensorStateCharacteristic
@@ -59,16 +59,16 @@ class BLEService(Service):
             self: 
         """
         # Adding file-related variable change characteristics
-        self.add_characteristic(FileCharacteristic(self, '00000101-710e-4a5b-8d75-3e5b444bc3cf', 'global','capture_window_start_time'))
-        self.add_characteristic(FileCharacteristic(self, '00000102-710e-4a5b-8d75-3e5b444bc3cf', 'global', 'capture_window_end_time'))
-        self.add_characteristic(FileCharacteristic(self, '00000103-710e-4a5b-8d75-3e5b444bc3cf', 'global', 'capture_duration_seconds'))
-        self.add_characteristic(FileCharacteristic(self, '00000104-710e-4a5b-8d75-3e5b444bc3cf', 'global', 'capture_interval_seconds'))
+        self.add_characteristic(Config_rw_Characteristic(self, '00000101-710e-4a5b-8d75-3e5b444bc3cf', 'global','capture_window_start_time'))
+        self.add_characteristic(Config_rw_Characteristic(self, '00000102-710e-4a5b-8d75-3e5b444bc3cf', 'global', 'capture_window_end_time'))
+        self.add_characteristic(Config_rw_Characteristic(self, '00000103-710e-4a5b-8d75-3e5b444bc3cf', 'global', 'capture_duration_seconds'))
+        self.add_characteristic(Config_rw_Characteristic(self, '00000104-710e-4a5b-8d75-3e5b444bc3cf', 'global', 'capture_interval_seconds'))
 
         # Adding file-related variable change characteristics for video
-        self.add_characteristic(FileCharacteristic(self, '00000105-710e-4a5b-8d75-3e5b444bc3cf', 'video','capture_window_start_time'))
-        self.add_characteristic(FileCharacteristic(self, '00000106-710e-4a5b-8d75-3e5b444bc3cf', 'video', 'capture_window_end_time'))
-        self.add_characteristic(FileCharacteristic(self, '00000107-710e-4a5b-8d75-3e5b444bc3cf', 'video', 'capture_duration_seconds'))
-        self.add_characteristic(FileCharacteristic(self, '00000108-710e-4a5b-8d75-3e5b444bc3cf', 'video', 'capture_interval_seconds'))
+        self.add_characteristic(Config_rw_Characteristic(self, '00000105-710e-4a5b-8d75-3e5b444bc3cf', 'video','capture_window_start_time'))
+        self.add_characteristic(Config_rw_Characteristic(self, '00000106-710e-4a5b-8d75-3e5b444bc3cf', 'video', 'capture_window_end_time'))
+        self.add_characteristic(Config_rw_Characteristic(self, '00000107-710e-4a5b-8d75-3e5b444bc3cf', 'video', 'capture_duration_seconds'))
+        self.add_characteristic(Config_rw_Characteristic(self, '00000108-710e-4a5b-8d75-3e5b444bc3cf', 'video', 'capture_interval_seconds'))
 
     def add_audio_video_characteristics(self):
         """

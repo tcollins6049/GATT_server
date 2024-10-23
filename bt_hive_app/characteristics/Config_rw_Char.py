@@ -5,7 +5,7 @@ from service import Characteristic
 """
     This is a generic class responsible for reading and writing to variables from the beemon-config file
 """
-class FileCharacteristic(Characteristic):
+class Config_rw_Characteristic(Characteristic):
     def __init__(self, service, uuid, section_name, variable_name):
         # Initialize the base Characteristic class with read and write properties
         Characteristic.__init__(
