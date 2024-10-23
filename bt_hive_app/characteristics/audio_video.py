@@ -450,6 +450,7 @@ class VideoReadLineByLineCharacteristic(Characteristic):
         print("Resetting characteristic state")
 
 
+'''
 class VideoResetLineOffsetCharacteristic(Characteristic):
     """
     Characteristic used to reset the line offset of the VideoLineByLineCharacteristic.
@@ -487,3 +488,4 @@ class VideoResetLineOffsetCharacteristic(Characteristic):
         if command == 'reset':
             self.read_line_by_line_characteristic.reset()
             print("Offset reset command received")
+'''
