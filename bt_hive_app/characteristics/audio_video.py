@@ -90,6 +90,7 @@ class FileInfoCharacteristic(Characteristic):
         return rms_level, silence_detected
 '''
 
+'''
 class ResetOffsetCharacteristic(Characteristic):
     """
     Used to reset the byte offset for the file transfer process.
@@ -129,8 +130,10 @@ class ResetOffsetCharacteristic(Characteristic):
         except Exception as e:
             print(f"Error resetting offset: {e}")
         return dbus.Array([], signature='y')  # Return an empty byte array with proper D-Bus signature 
+'''
 
 
+'''
 class FileTransferCharacteristic(Characteristic):
     """
     Class containing the characteristic responsible for transferring a file from the pi to the application
@@ -326,7 +329,7 @@ class FileTransferCharacteristic(Characteristic):
         """
         self.offset = 0
         print("FileTransferCharacteristic offset reset to 0")
-
+'''
 
 
 class VideoReadLineByLineCharacteristic(Characteristic):
