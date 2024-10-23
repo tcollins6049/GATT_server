@@ -4,7 +4,7 @@ from datetime import datetime
 import bt_hive_app.helper_methods as help
 from pydub import AudioSegment
 
-
+'''
 class FileInfoCharacteristic(Characteristic):
     """
     This class holds the charactersitics code for pulling info from audio and video files.
@@ -88,7 +88,7 @@ class FileInfoCharacteristic(Characteristic):
         print('Silence detected' if silence_detected else 'Sound detected')
 
         return rms_level, silence_detected
-
+'''
 
 class ResetOffsetCharacteristic(Characteristic):
     """

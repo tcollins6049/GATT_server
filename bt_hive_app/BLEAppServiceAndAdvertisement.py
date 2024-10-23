@@ -4,8 +4,10 @@ from advertisement import Advertisement
 from service import Service
 
 # Characteristic Imports
-from bt_hive_app.characteristics.Config_rw_Char import Config_rw_Characteristic
-from bt_hive_app.characteristics.audio_video import FileInfoCharacteristic, FileTransferCharacteristic, ResetOffsetCharacteristic, VideoReadLineByLineCharacteristic, VideoResetLineOffsetCharacteristic
+from bt_hive_app.characteristics.Modifications_tab.Config_rw_Char import Config_rw_Characteristic
+from bt_hive_app.characteristics.AudVid_tab.FileInfo_Char import FileInfoCharacteristic
+
+from bt_hive_app.characteristics.audio_video import FileTransferCharacteristic, ResetOffsetCharacteristic, VideoReadLineByLineCharacteristic, VideoResetLineOffsetCharacteristic
 from bt_hive_app.characteristics.file_sensor_data import CPUFileReadCharacteristic, CPUFileReadAllCharacteristic, CPUReadLineByLineCharacteristic, ResetLineOffsetCharacteristic
 from bt_hive_app.characteristics.sensor_states import SensorStateCharacteristic
 from bt_hive_app.characteristics.commands import CommandCharacteristic, CommandCharacteristicWResponse
@@ -84,9 +86,9 @@ class BLEService(Service):
         self.add_characteristic(video_file_transfer_characteristic)
         self.add_characteristic(ResetOffsetCharacteristic(self, '00000204-710e-4a5b-8d75-3e5b444bc3cf', video_file_transfer_characteristic))
 
-        audio_file_transfer_characteristic = (FileTransferCharacteristic(self, '00000205-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/audio/', 'audio'))
-        self.add_characteristic(audio_file_transfer_characteristic)
-        self.add_characteristic(ResetOffsetCharacteristic(self, '00000206-710e-4a5b-8d75-3e5b444bc3cf', audio_file_transfer_characteristic))
+        # audio_file_transfer_characteristic = (FileTransferCharacteristic(self, '00000205-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/audio/', 'audio'))
+        # self.add_characteristic(audio_file_transfer_characteristic)
+        # self.add_characteristic(ResetOffsetCharacteristic(self, '00000206-710e-4a5b-8d75-3e5b444bc3cf', audio_file_transfer_characteristic))
 
         static_file_transfer_characteristic = (FileTransferCharacteristic(self, '00000207-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/GATT_server/picture.jpg', 'other'))
         self.add_characteristic(static_file_transfer_characteristic)
