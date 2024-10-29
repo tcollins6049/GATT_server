@@ -5,18 +5,26 @@ from datetime import datetime
 
 class FileRead_LBL_Characteristic(Characteristic):
     """
-    Characteristic responsible for reading a video file line by line
+    The following characteristic pulls lines from file one at a time.
 
+    Attributes:
+        service (): Service containing this characteristic
+        uuid (str): uuid of the characteristic
+        base_path (str): Path of directory to get most recent file from
+    
+    Methods:
+        get_most_recent_file(base_path): Gets most recent file at base_path
+        ReadValue(): Reads line at offset from file
+        reset(): Resets offset to 0
     """
     def __init__(self, service, uuid, base_path):
         """
-        init function
+        Initialize the class
 
         Args:
             service: Service the characteristic is located under
             uuid (str): Characteristic's UUID
             base_path (str): Full path up to where get_most_recent_file() needs to be called.
-
         """
         Characteristic.__init__(
             self,
@@ -36,11 +44,10 @@ class FileRead_LBL_Characteristic(Characteristic):
             base_path (str): Path of directory we are pulling most recent file from.
 
         Returns:
-            Full path of the most recent file in the base_path directory if successful, None otherwise.
+            str: Full path of the most recent file in the base_path directory if successful, None otherwise.
 
         Raises:
             ValueError: If no files are found in the directory.
-
         """
         # List all directories in the base path
         entries = os.listdir(base_path)
@@ -79,16 +86,12 @@ class FileRead_LBL_Characteristic(Characteristic):
         return (full_path + '/' + most_recent_file)
 
 
-    def ReadValue(self, options):
+    def ReadValue(self):
         """
         Function responsible for reading line from specified file.
 
-        Args:
-            options:
-
         Returns:
             list: Contains line of data if successful, empty otherwise.
-
         """
         print("ReadValue called")
         self.file_path = self.get_most_recent_file(self.folder_path)
@@ -106,19 +109,17 @@ class FileRead_LBL_Characteristic(Characteristic):
                     self.line_offset += 1
                     return [dbus.Byte(b) for b in lines[self.line_offset].encode()]
             except Exception as e:
-                # print(f"Error occurred while reading the file: {e}")
+                # Error while reading file
                 return []
         else:
-            # print("No file found")
+            # File not found
             return []
         
 
     def reset(self):
         """
         Function responsible for resetting the offset, ensures we start reading from the beginning of the file.
-
         """
         self.line_offset = 0
         self.file_path = None
         self.lines = []
-        print("Resetting characteristic state")

@@ -40,8 +40,8 @@ class FileInfoCharacteristic(Characteristic):
         """
         Function responsible for reading information from file at file_path
 
-        Args:
-            options: 
+        Returns:
+
         """
         temp_file_path = self.file_path
 
@@ -83,13 +83,16 @@ class FileInfoCharacteristic(Characteristic):
         Function used to calculate the rms level of the audio recording and determine if it is silent
 
         Args:
-            audio_segment: audio segment taken from the read .wav file
+            audio_segment (): audio segment taken from the read .wav file
         
+        Returns:
+            int: RMS level of audio segment
+            bool: True if silence was detected, False otherwise
         """
         rms_level = audio_segment.rms
         print('RMS Level: {}'.format(rms_level))
         
-        # Define a suitable threshold based on your requirements
+        # Silence threshold
         silence_threshold = 100
         silence_detected = rms_level < silence_threshold
         print('Silence detected' if silence_detected else 'Sound detected')
