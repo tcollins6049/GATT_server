@@ -9,11 +9,12 @@ from bt_hive_app.characteristics.AudVid_tab.FileInfo_Char import FileInfoCharact
 from bt_hive_app.characteristics.AudVid_tab.FileTransfer_Char import FileTransferCharacteristic, ResetOffsetCharacteristic
 from bt_hive_app.characteristics.AudVid_tab.FileRead_LBL_Char import FileRead_LBL_Characteristic
 from bt_hive_app.characteristics.Commands_tab.Commands_Char import CommandCharacteristic, CommandCharacteristicWResponse
+from bt_hive_app.characteristics.Sensor_Files.SF_read_Char import SF_Read_Characteristic, SF_Read_LBL_Characteristic, ResetLineOffsetCharacteristic
+from bt_hive_app.characteristics.Password.password_char import PasswordVerificationCharacteristic
 
-from bt_hive_app.characteristics.file_sensor_data import CPUFileReadCharacteristic, CPUFileReadAllCharacteristic, CPUReadLineByLineCharacteristic, ResetLineOffsetCharacteristic
+from bt_hive_app.characteristics.file_sensor_data import CPUFileReadAllCharacteristic
 from bt_hive_app.characteristics.sensor_states import SensorStateCharacteristic
 from bt_hive_app.characteristics.sensor_readings import TempCharacteristic, UnitCharacteristic, TempHumidityCharacteristic
-from bt_hive_app.characteristics.password_char import PasswordVerificationCharacteristic
 
 
 BLE_SVC_UUID = "00000001-710e-4a5b-8d75-3e5b444bc3cf"
@@ -115,18 +116,18 @@ class BLEService(Service):
             self: 
         """
         # Adding a characterisitc for cpu file data
-        self.add_characteristic(CPUFileReadCharacteristic(self, '00000301-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/cpu/'))
+        self.add_characteristic(SF_Read_Characteristic(self, '00000301-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/cpu/'))
         self.add_characteristic(CPUFileReadAllCharacteristic(self, '00000303-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/cpu/'))
-        self.add_characteristic(CPUFileReadCharacteristic(self, '00000302-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/temp/'))
+        self.add_characteristic(SF_Read_Characteristic(self, '00000302-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/temp/'))
 
         # Needed characteristics for reading the cpu temp csv file line by line.
-        read_line_by_line_characteristic = CPUReadLineByLineCharacteristic(self, '00000304-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/cpu/')
+        read_line_by_line_characteristic = SF_Read_LBL_Characteristic(self, '00000304-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/cpu/')
         reset_offset_characteristic = ResetLineOffsetCharacteristic(self, '00000305-710e-4a5b-8d75-3e5b444bc3cf', read_line_by_line_characteristic)
         self.add_characteristic(read_line_by_line_characteristic)
         self.add_characteristic(reset_offset_characteristic)
 
         # Needed characteristics for reading the humidity + temp csv file line by line.
-        read_line_by_line_characteristic = CPUReadLineByLineCharacteristic(self, '00000306-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/temp/')
+        read_line_by_line_characteristic = SF_Read_LBL_Characteristic(self, '00000306-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/temp/')
         reset_offset_characteristic = ResetLineOffsetCharacteristic(self, '00000307-710e-4a5b-8d75-3e5b444bc3cf', read_line_by_line_characteristic)
         self.add_characteristic(read_line_by_line_characteristic)
         self.add_characteristic(reset_offset_characteristic)
