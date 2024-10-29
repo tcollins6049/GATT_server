@@ -190,3 +190,4 @@ class TempHumidityDescriptor(Descriptor):
             value.append(dbus.Byte(c.encode()))
 
         return value
+    

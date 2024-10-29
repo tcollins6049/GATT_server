@@ -11,10 +11,10 @@ from bt_hive_app.characteristics.AudVid_tab.FileRead_LBL_Char import FileRead_LB
 from bt_hive_app.characteristics.Commands_tab.Commands_Char import CommandCharacteristic, CommandCharacteristicWResponse
 from bt_hive_app.characteristics.Sensor_Files.SF_read_Char import SF_Read_Characteristic, SF_Read_LBL_Characteristic, ResetLineOffsetCharacteristic
 from bt_hive_app.characteristics.Password.password_char import PasswordVerificationCharacteristic
+from bt_hive_app.characteristics.Sensor_States_Tab.sensor_states import SensorStateCharacteristic
+from bt_hive_app.characteristics.Sensor_Files.sensor_readings import TempCharacteristic, UnitCharacteristic, TempHumidityCharacteristic
 
 from bt_hive_app.characteristics.file_sensor_data import CPUFileReadAllCharacteristic
-from bt_hive_app.characteristics.sensor_states import SensorStateCharacteristic
-from bt_hive_app.characteristics.sensor_readings import TempCharacteristic, UnitCharacteristic, TempHumidityCharacteristic
 
 
 BLE_SVC_UUID = "00000001-710e-4a5b-8d75-3e5b444bc3cf"
