@@ -209,34 +209,35 @@ class ResetOffsetCharacteristic(Characteristic):
         file_transfer_characteristic(Characteristic): Characteristic we are calling reset_offset() within
     
     Methods:
-        WriteValue(value): Resets offset
+        WriteValue
     """
     def __init__(self, service, uuid, file_transfer_characteristic):
         """
-        Initialize the class
+        init function
 
         Args:
-            service (): Service this characteristic is under
+            service: Service this characteristic is under
             uuid (str): uuid of the characteristic
             file_transfer_characteristic (characteristic): Characteristic we are accessing the offset in
+
         """
         Characteristic.__init__(
             self, uuid,
             ['write'], service)
         self.file_transfer_characteristic = file_transfer_characteristic
-        # print(f"ResetOffsetCharacteristic initialized with UUID: {uuid}")
+        print(f"ResetOffsetCharacteristic initialized with UUID: {uuid}")
 
 
-    def WriteValue(self, value):
+    def WriteValue(self, value, options):
         """
         Function used to recieve call from the application which then proceeds to reset the offset
 
         Args:
             value (str): Value recieved from the application.
+            options:
 
-        Returns:
-            
         """
+        print("ResetOffsetCharacteristic WriteValue called with value:", value)
         try:
             self.file_transfer_characteristic.reset_offset()
             print("Offset reset")
