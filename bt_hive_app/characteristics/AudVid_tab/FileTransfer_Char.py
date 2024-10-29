@@ -17,7 +17,7 @@ class FileTransferCharacteristic(Characteristic):
         ReadValue(): Passes file to other read method based on file_type.
         ReadStaticFile(): Reads file directly from file path.
         ReadVideoFile(): Reads frame from most recent video file.
-        ReadWaveformFile(): Reads waveform image from file path
+        ReadWaveformFile(): Reads waveform image from
         reset_offset(): Resets offset to 0
     """
     def __init__(self, service, uuid, file_path, file_type):
@@ -41,7 +41,7 @@ class FileTransferCharacteristic(Characteristic):
         # print(f"FileTransferCharacteristic initialized with UUID: {uuid}")
     
 
-    def ReadValue(self):
+    def ReadValue(self, options):
         """
         Function called by the application. Calls read method based off of file_type.
 
@@ -201,15 +201,9 @@ class FileTransferCharacteristic(Characteristic):
 
 class ResetOffsetCharacteristic(Characteristic):
     """
-    The following characteristic is used to reset the offset for file transfers
+    Used to reset the byte offset for the file transfer process.
 
-    Attributes:
-        service (): Service containing this characteristic
-        uuid (str): uuid of the characteristic
-        file_transfer_characteristic(Characteristic): Characteristic we are calling reset_offset() within
-    
-    Methods:
-        WriteValue
+
     """
     def __init__(self, service, uuid, file_transfer_characteristic):
         """
