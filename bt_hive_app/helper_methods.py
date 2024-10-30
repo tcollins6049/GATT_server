@@ -1,52 +1,53 @@
 import os, cv2
 from datetime import datetime
 
-# import librosa
-# import librosa.display
-# import matplotlib.pyplot as plt
-
 
 def get_most_recent_sensor_file(base_path):
-    print("Getting most recent file")
-    #try:
-    # List all directories in the base path
-    print("GETTING ENTRIES")
-    print(f"BASE_PATH: {base_path}")
-    print(f"ENTRIES: {os.listdir(base_path)}")
-    entries = os.listdir(base_path)
-    print(f"Entries: {entries}")
+    """
+    Gets the most recent sensor file, these are the files stores in the 'appmais' directory where sensor data is stored
+
+    Args:
+        base_path (str): 
+    """
+    try:
+        # List all directories in the base path
+        print("GETTING ENTRIES")
+        print(f"BASE_PATH: {base_path}")
+        print(f"ENTRIES: {os.listdir(base_path)}")
+        entries = os.listdir(base_path)
+        print(f"Entries: {entries}")
+                
+        # Filter out possible non directory entries or directories which dont match the data format
+        date_dirs = []
+        for entry in entries:
+            entry_path = os.path.join(base_path, entry)
+            if os.path.isdir(entry_path):
+                try:
+                    # Try to parse the directory name as a date
+                    date = datetime.strptime(entry, "%Y-%m-%d")
+                    date_dirs.append((entry, date))
+                except ValueError:
+                    # Skip directories that don't match the date format
+                    pass
+        if not date_dirs:
+            print("Not date_dirs")
+            return None
+
+        # Find most recent date
+        most_recent_dir = max(date_dirs, key=lambda x: x[1])[0]
+        print(f"Most_recent_dir: {most_recent_dir}")
+        full_path = os.path.join(base_path, most_recent_dir)
+        print(f"Full_path: {full_path}")
+
+        # List files in this directory
+        files = os.listdir(full_path)
+        if (len(files) != 1):
+            raise ValueError(f"Expected exactly one file in directory {full_path}, found {len(files)}")
             
-    # Filter out possible non directory entries or directories which dont match the data format
-    date_dirs = []
-    for entry in entries:
-        entry_path = os.path.join(base_path, entry)
-        if os.path.isdir(entry_path):
-            try:
-                # Try to parse the directory name as a date
-                date = datetime.strptime(entry, "%Y-%m-%d")
-                date_dirs.append((entry, date))
-            except ValueError:
-                # Skip directories that don't match the date format
-                pass
-    if not date_dirs:
-        print("Not date_dirs")
-        return None
-
-    # Find most recent date
-    most_recent_dir = max(date_dirs, key=lambda x: x[1])[0]
-    print(f"Most_recent_dir: {most_recent_dir}")
-    full_path = os.path.join(base_path, most_recent_dir)
-    print(f"Full_path: {full_path}")
-
-    # List files in this directory
-    files = os.listdir(full_path)
-    if (len(files) != 1):
-        raise ValueError(f"Expected exactly one file in directory {full_path}, found {len(files)}")
-        
-    # Get full path of the file
-    return full_path + '/' + files[0]
-    #except:
-    #    print("Failure within get_most_recent_sensor_file()")
+        # Get full path of the file
+        return full_path + '/' + files[0]
+    except:
+        print("Failure within get_most_recent_sensor_file()")
 
 '''
 def create_waveform_file(audio_file):
@@ -73,6 +74,12 @@ def create_waveform_file(audio_file):
 
 
 def delete_file(file_path):
+        """
+        Delete file located at 'file_path'
+
+        Args:
+            file_path (str): Path of file to be deleted.
+        """
         try:
             os.remove(file_path)
             # print(f"Deleted file: {file_path}")
@@ -85,7 +92,15 @@ def delete_file(file_path):
 
 
 def get_most_recent_video_file(base_path):
-        print("Getting most recent file")
+        """
+        Get most recent video file
+
+        Args:
+            base_path (str): Path to pull most recent file from
+        
+        Returns:
+            str: Path to most recent video file
+        """
         # List all directories in the base path
         entries = os.listdir(base_path)
         
@@ -133,6 +148,15 @@ def get_most_recent_video_file(base_path):
 
 
 def get_most_recent_audio_file(base_path):
+        """
+        Gets most recent audio file from 'base_path'
+
+        Args:
+            base_path (str): Path of where to find most recent file
+        
+        Returns:
+            str: Full path of most recent audio file
+        """
         print("Getting most recent file")
         # List all directories in the base path
         entries = os.listdir(base_path)
@@ -181,6 +205,17 @@ def get_most_recent_audio_file(base_path):
 
 
 def extract_frame(video_file, frame_number, output_file):
+        """
+        Extracts fram from video located at 'video_file'
+
+        Args:
+            video_file (str): Path of video to extract frame from
+            frame_number (int): Frame number to extract
+            output_file (): File to save frame to
+        
+        Returns:
+            : output_file
+        """
         # Open the video file
         cap = cv2.VideoCapture(video_file)
 

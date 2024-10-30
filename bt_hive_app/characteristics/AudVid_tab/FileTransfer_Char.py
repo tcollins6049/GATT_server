@@ -200,7 +200,7 @@ class ResetOffsetCharacteristic(Characteristic):
             self, uuid,
             ['write'], service)
         self.file_transfer_characteristic = file_transfer_characteristic
-        print(f"ResetOffsetCharacteristic initialized with UUID: {uuid}")
+        # print(f"ResetOffsetCharacteristic initialized with UUID: {uuid}")
 
 
     def WriteValue(self, value, options):

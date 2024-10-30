@@ -22,8 +22,17 @@ BLE_SVC_UUID = "00000001-710e-4a5b-8d75-3e5b444bc3cf"
 class BLEAdvertisement(Advertisement):
     """
     Advertisment class for the project service
+
+    Attributes:
+        index ():
     """
     def __init__(self, index):
+        """
+        Initialize the class
+
+        Args:
+            index ():
+        """
         Advertisement.__init__(self, index, "peripheral")
         self.add_service_uuid(BLE_SVC_UUID)
         self.include_tx_power = True
@@ -36,9 +45,27 @@ class BLEAdvertisement(Advertisement):
 class BLEService(Service):
     """
     Class responsible for adding all characteristics for the BLE application to the service.
+
+    Attributes:
+        index ():
+    
+    Methods:
+        add_modification_tab_characteristics():
+        add_audio_video_characteristics():
+        add_sensor_data_characteristics():
+        add_sensor_characteristics():
+        add_command_characteristics():
+        add_sensor_reading_characteristics():
+        is_farenheit():
+        set_farenheit():
     """
     def __init__(self, index):
-        # Initialize the temperature unit to Fahrenheit
+        """
+        Initialize the class
+
+        Args:
+            index ():
+        """       
         self.farenheit = True
 
         # Initialize the base Service class with the service UUID
@@ -58,9 +85,6 @@ class BLEService(Service):
     def add_modification_tab_characteristics(self):
         """
         Function adds characteristics used in the modifications tab of the application
-
-        Args:
-            self: 
         """
         # Adding file-related variable change characteristics
         self.add_characteristic(Config_rw_Characteristic(self, '00000101-710e-4a5b-8d75-3e5b444bc3cf', 'global','capture_window_start_time'))
@@ -78,7 +102,6 @@ class BLEService(Service):
     def add_audio_video_characteristics(self):
         """
         Function adds characteristics for the audio and video tabs
-
         """
         # Adding a characteristic for file information (e.g., file size)
         self.add_characteristic(FileInfoCharacteristic(self, '00000201-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/audio/', 'audio'));
@@ -111,9 +134,6 @@ class BLEService(Service):
     def add_sensor_data_characteristics(self):
         """
         Function for adding characteristics for pulling sensor data
-
-        Args:
-            self: 
         """
         # Adding a characterisitc for cpu file data
         self.add_characteristic(SF_Read_Characteristic(self, '00000301-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/cpu/'))
@@ -134,6 +154,9 @@ class BLEService(Service):
 
     
     def add_sensor_characteristics(self):
+        """
+        Adds characteristics for sensor state changes
+        """
         # Adding characteristics for enabling and disabling sensors
         self.add_characteristic(SensorStateCharacteristic(self, '00000401-710e-4a5b-8d75-3e5b444bc3cf', 'audio'))
         self.add_characteristic(SensorStateCharacteristic(self, '00000402-710e-4a5b-8d75-3e5b444bc3cf', 'video'))
@@ -142,20 +165,34 @@ class BLEService(Service):
         self.add_characteristic(SensorStateCharacteristic(self, '00000405-710e-4a5b-8d75-3e5b444bc3cf', 'scale'))
         self.add_characteristic(SensorStateCharacteristic(self, '00000406-710e-4a5b-8d75-3e5b444bc3cf', 'cpu'))
 
+
     def add_command_characteristics(self):
+        """
+        Adds characteristics for running commands on pi from application
+        """
         # Adding the new command characteristic
         self.add_characteristic(CommandCharacteristic(self, '00000501-710e-4a5b-8d75-3e5b444bc3cf'))
         self.add_characteristic(CommandCharacteristicWResponse(self, '00000502-710e-4a5b-8d75-3e5b444bc3cf'))
 
+
     def add_sensor_reading_characteristics(self):
+        """
+        Adds characteristics for reading cpu temp from sensor
+        """
         # Add characteristics to the service
         self.add_characteristic(TempCharacteristic(self))
         self.add_characteristic(UnitCharacteristic(self))
 
-    # Method to check if the temperature unit is Fahrenheit
+
     def is_farenheit(self):
+        """
+        Checks if the temperature unit if Fahrenheit
+        """
         return self.farenheit
 
-    # Method to set the temperature unit to Fahrenheit or Celsius
+
     def set_farenheit(self, farenheit):
+        """
+        Sets the temperature unit to Fahrenheit or Celsius
+        """
         self.farenheit = farenheit
