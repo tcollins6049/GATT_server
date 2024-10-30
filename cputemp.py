@@ -1,15 +1,4 @@
 #!/usr/bin/python3
-# import os
-# import socket
-# import subprocess
-# from datetime import datetime
-
-# import dbus
-# import dbus.service
-# import cv2
-# from gpiozero import CPUTemperature
-
-# from advertisement import Advertisement
 from service import Application
 
 # Imports for services and advertisments
