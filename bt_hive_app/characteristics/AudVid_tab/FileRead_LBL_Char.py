@@ -86,7 +86,7 @@ class FileRead_LBL_Characteristic(Characteristic):
         return (full_path + '/' + most_recent_file)
 
 
-    def ReadValue(self):
+    def ReadValue(self, options):
         """
         Function responsible for reading line from specified file.
 
