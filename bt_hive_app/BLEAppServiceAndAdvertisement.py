@@ -12,7 +12,7 @@ from bt_hive_app.characteristics.Commands_tab.Commands_Char import CommandCharac
 from bt_hive_app.characteristics.Sensor_Files.SF_read_Char import SF_Read_Characteristic, SF_Read_LBL_Characteristic, ResetLineOffsetCharacteristic
 from bt_hive_app.characteristics.Password.password_char import PasswordVerificationCharacteristic
 from bt_hive_app.characteristics.Sensor_States_Tab.sensor_states import SensorStateCharacteristic
-from bt_hive_app.characteristics.Sensor_Files.sensor_readings import TempCharacteristic, UnitCharacteristic, TempHumidityCharacteristic
+from bt_hive_app.characteristics.Sensor_Files.sensor_readings import TempCharacteristic, UnitCharacteristic
 
 from bt_hive_app.characteristics.file_sensor_data import CPUFileReadAllCharacteristic
 
@@ -151,7 +151,6 @@ class BLEService(Service):
         # Add characteristics to the service
         self.add_characteristic(TempCharacteristic(self))
         self.add_characteristic(UnitCharacteristic(self))
-        self.add_characteristic(TempHumidityCharacteristic(self))
 
     # Method to check if the temperature unit is Fahrenheit
     def is_farenheit(self):
