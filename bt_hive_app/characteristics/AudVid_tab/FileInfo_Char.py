@@ -36,7 +36,7 @@ class FileInfoCharacteristic(Characteristic):
         self.file_type = file_type
 
 
-    def ReadValue(self):
+    def ReadValue(self, options):
         """
         Function responsible for reading information from file at file_path
 
