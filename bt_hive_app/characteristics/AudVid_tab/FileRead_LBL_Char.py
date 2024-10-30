@@ -116,7 +116,7 @@ class FileRead_LBL_Characteristic(Characteristic):
             return []
         
 
-    def reset(self):
+    def reset_offset(self):
         """
         Function responsible for resetting the offset, ensures we start reading from the beginning of the file.
         """
