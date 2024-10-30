@@ -2,13 +2,28 @@ import dbus, configparser
 from service import Characteristic
 
 
-# ---------------- Tab 4: Sensor State Characteristics ---------------------- #
-"""
-    This class is responsible for enabling and disabling sensors in the config file
-"""
 class SensorStateCharacteristic(Characteristic):
+    """
+    Characteristic for enabling and disabling sensors in the config file
+
+    Attributes:
+        service (): Service containing this characteristic
+        uuid (str): uuid of the characteristic
+        section_name (str): Sensor we are turning on or off
+
+    Methods:
+        ReadValue(options): Read current state of sensor
+        WriteValue(value, options): Set sensor state to 'value'
+    """
     def __init__(self, service, uuid, section_name):
-        # Initialize the base Characteristic class with read and write properties
+        """
+        Initialize the class
+
+        Args:
+            service (): Service containing this characteristic
+            uuid (str): uuid of the characteristic
+            section_name (str): Sensor we are changing state of
+        """
         Characteristic.__init__(
             self,
             uuid, 
@@ -23,78 +38,16 @@ class SensorStateCharacteristic(Characteristic):
         self.variable_name = 'auto_start'
     
 
-    """
-        Reads the value of the variable from the configuration file.
-
-        :param options: Additional options for reading the value.
-        :return: The value of the variable encoded in bytes.
-    
     def ReadValue(self, options):
-        try:
-            # Cretae a config parser and read the file
-            config = configparser.ConfigParser()
-            config.read(self.file_path)
+        """
+        Read and return current state of the sensor
 
-            values = []
+        Args:
+            options (): Additional options for reading value
 
-            # Get the value from only the video section
-            if self.section_name in config and self.variable_name in config[self.section_name]:
-                value = config[self.section_name][self.variable_name]
-                values.append(f"{self.section_name}: {value}")
-            else:
-                print(f"Variable {self.variable_name} not found in section {self.section_name}")
-            
-            if values:
-                captured_data = '\n'.join(values)
-                
-                print(f"FileCharacteristic Read: {captured_data}")
-                return [dbus.Byte(c) for c in captured_data.encode()]
-            else:
-                print(f"Variable {self.variable_name} not found in any applicable section")
-                return []
-            
+        Returns:
 
-        except Exception as e:
-            print(f"Error Reading File: {e}")
-            return []
-    """
-        
-    """
-        Writes the provided value to the configuration file, updating the variable.
-
-        :param value: The value to write, provided as a list of bytes.
-        :param options: Additional options for writing the value.
-    
-    def WriteValue(self, value, options):
-        try:
-            # Convert the byte values to a string
-            data = ''.join(chr(v) for v in value)
-
-            # Ensure the string is 'True' if it's 'true'
-            if data.lower() == 'true':
-                data = 'True'
-            elif data.lower() == 'false':
-                data = 'False'
-
-            print('FileCharacteristic Write: {}'.format(data))
-
-            # Create a config parser and read the file
-            config = configparser.ConfigParser()
-            config.read(self.file_path)
-
-            # Update the specific section and variable name if section is 'video'
-            if self.section_name in config:
-                config[self.section_name][self.variable_name] = data
-                # print("HHHHHHHHHH", data)
-            else:
-                print(f"Section {self.section_name} not found")
-            # Write the updated config back to the file
-            with open(self.file_path, 'w') as file:
-                config.write(file)
-        except Exception as e:
-            print(f"Error Writing File: {e}")
-    """
-    def ReadValue(self, options):
+        """
         try:
             # Create a config parser and read the file
             config = configparser.ConfigParser()
@@ -111,7 +64,7 @@ class SensorStateCharacteristic(Characteristic):
             else:
                 captured_data = f"{self.section_name}: True"  # Default to True if section or variable is not found
 
-            print(f"FileCharacteristic Read: {captured_data}")
+            # print(f"FileCharacteristic Read: {captured_data}")
             return [dbus.Byte(c) for c in captured_data.encode()]
 
         except Exception as e:
@@ -120,6 +73,13 @@ class SensorStateCharacteristic(Characteristic):
 
 
     def WriteValue(self, value, options):
+        """
+        Change selected sensor state to value
+
+        Args:
+            value (): State to change selected sensor to
+            options (): Additional options when writing value
+        """
         try:
             # Convert the byte values to a string
             data = ''.join(chr(v) for v in value)
@@ -129,8 +89,6 @@ class SensorStateCharacteristic(Characteristic):
                 data = 'True'
             elif data.lower() == 'false':
                 data = 'False'
-
-            print('FileCharacteristic Write: {}'.format(data))
 
             # Create a config parser and read the file
             config = configparser.ConfigParser()

@@ -8,10 +8,20 @@ class SF_Read_Characteristic(Characteristic):
     """
     Characteristic used to read the most recent recording from file located on the Pi
 
+    Attributes:
+        service (): Service containing this characteristic
+        uuid (str): uuid of the characteristic
+        base_path (str): Full or partial path of file being read
+    
+    Methods:
+        get_most_recent_file(base_path):
+        get_relevant_line():
+        get_update_text():
+        ReadValue():
     """
     def __init__(self, service, uuid, base_path):
         """
-        init function
+        Initialize the class
 
         Args:
             service: Service this characteristic is located under.
@@ -38,7 +48,6 @@ class SF_Read_Characteristic(Characteristic):
 
         Raises:
             ValueError: If no files exist inside base_path.
-
         """
         # List all directories in the base path
         entries = os.listdir(base_path)
@@ -77,7 +86,6 @@ class SF_Read_Characteristic(Characteristic):
 
         Returns:
             str: Line containing something other than nan if one exists, otherwise 'nan' meaning the file only contained nan readings.
-
         """
         with open(self.file_path, 'r') as file:
             lines = file.readlines()
@@ -109,7 +117,6 @@ class SF_Read_Characteristic(Characteristic):
 
         Returns:
             str: If last line is a value other than nan, string containing date and time of the recording. Otherwise, string containing date and time when nan values started being recorded.
-        
         """
         if 'nan' not in last_line:
             # Text returned will just contain the update date and time
@@ -132,17 +139,15 @@ class SF_Read_Characteristic(Characteristic):
             return update_text
            
 
-
     def ReadValue(self, options):
         """
         Function used to read last line data.
 
         Args:
-            options:
+            options (): Additional options for writing value
 
         Returns:
             list: Contains data from final line of file if successful, otherwise empty.
-        
         """
         self.file_path = help.get_most_recent_sensor_file(self.folder_path)
 
@@ -163,7 +168,28 @@ class SF_Read_Characteristic(Characteristic):
         
 
 class SF_Read_LBL_Characteristic(Characteristic):
+    """
+    Characteristic to read sensor file line by line
+
+    Attributes:
+        service (): Service containing this characteristic
+        uuid (str): uuid of the characteristic
+        base_path (str): Full or partial path of file to read
+    
+    Methods:
+        get_most_recent_file(base_path):
+        ReadValue(options):
+        reset(): Reset the offset to 0
+    """
     def __init__(self, service, uuid, base_path):
+        """
+        Initialize the class
+
+        Args:
+            service (): Service containing this characteristic
+            uuid (str): uuid of the characteristic
+            base_path (str): Full or partial path of file to read
+        """
         Characteristic.__init__(
             self,
             uuid,
@@ -171,11 +197,19 @@ class SF_Read_LBL_Characteristic(Characteristic):
             service)
         self.folder_path = base_path
         self.line_offset = 0
-        print(f"Characteristic initialized with UUID: {uuid}")
+        # print(f"Characteristic initialized with UUID: {uuid}")
     
 
     def get_most_recent_file(self, base_path):
-        print("Getting most recent file")
+        """
+        Get most recent file found in base_poth
+
+        Args:
+            base_path (str): Partial path of file to be read
+
+        Returns:
+            str: Path of most recent file in base_path
+        """
         # List all directories in the base path
         entries = os.listdir(base_path)
         
@@ -208,7 +242,15 @@ class SF_Read_LBL_Characteristic(Characteristic):
 
 
     def ReadValue(self, options):
-        print("ReadValue called")
+        """
+        Reads line of data from file
+
+        Args:
+            options (): Additional options for reading value
+
+        Returns:
+
+        """
         self.file_path = self.get_most_recent_file(self.folder_path)
 
         if self.file_path is not None:
@@ -234,14 +276,35 @@ class SF_Read_LBL_Characteristic(Characteristic):
         
 
     def reset(self):
+        """
+        Reset offset to 0
+        """
         self.line_offset = 0
         self.file_path = None
         self.lines = []
-        print("Resetting characteristic state")
 
 
 class ResetLineOffsetCharacteristic(Characteristic):
+    """
+    Characteristic to reset offset
+
+    Attributes:
+        service (): Service containing this characteristic
+        uuid (str): uuid of the characteristic
+        read_line_by_line_characteristic (Characteristic): Characteristic whos offset is being reset
+
+    Methods:
+        WriteValue(value, options): Resets offset to 0
+    """
     def __init__(self, service, uuid, read_line_by_line_characteristic):
+        """
+        Initialize the class
+
+        Args:
+            service (): Service containing this characteristic
+            uuid (str): uuid of the characteristic
+            read_line_by_line_characteristic (Characteristic): Characteristic whos offset is being reset
+        """
         Characteristic.__init__(
             self,
             uuid,
@@ -249,9 +312,16 @@ class ResetLineOffsetCharacteristic(Characteristic):
             service)
         self.read_line_by_line_characteristic = read_line_by_line_characteristic
 
+
     def WriteValue(self, value, options):
-        print("WriteValue called")
+        """
+        Resets offset to 0
+
+        Args:
+            value ():
+            options (): Additional options for writing value
+        """
         command = bytes(value).decode('utf-8')
         if command == 'reset':
             self.read_line_by_line_characteristic.reset()
-            print("Offset reset command received")
+            # print("Offset reset command received")
