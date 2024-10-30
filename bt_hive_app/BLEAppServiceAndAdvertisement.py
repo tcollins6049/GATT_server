@@ -144,7 +144,7 @@ class BLEService(Service):
 
     def add_command_characteristics(self):
         # Adding the new command characteristic
-        self.add_characteristic(CommandCharacteristic(self, '00000023-710e-4a5b-8d75-3e5b444bc3cf'))
+        self.add_characteristic(CommandCharacteristic(self, '00000501-710e-4a5b-8d75-3e5b444bc3cf'))
         self.add_characteristic(CommandCharacteristicWResponse(self, '00000502-710e-4a5b-8d75-3e5b444bc3cf'))
 
     def add_sensor_reading_characteristics(self):

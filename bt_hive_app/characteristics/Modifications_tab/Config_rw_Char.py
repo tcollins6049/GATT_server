@@ -1,13 +1,31 @@
 import dbus, configparser
 from service import Characteristic
 
-# ---------------- Tab 1: Variables Characteristics ---------------------- #
-"""
-    This is a generic class responsible for reading and writing to variables from the beemon-config file
-"""
+
 class Config_rw_Characteristic(Characteristic):
+    """
+    Characteristic responsible for reading from and writing to beemon-config file
+
+    Attributes:
+        service (): Service containing this characteristic
+        uuid (str): uuid of the characteristic
+        section_name (str): Either 'global' or 'video' since we want these modified seperately.
+        variable_name (str): Variable we want to modify
+    
+    Methods:
+        ReadValue(options): Reads value from config file
+        WriteValue(value, options): Writes to value from config file
+    """
     def __init__(self, service, uuid, section_name, variable_name):
-        # Initialize the base Characteristic class with read and write properties
+        """
+        Initialize the class
+
+        Args:
+            service (): Service containing this characteristic
+            uuid (str): uuid of the characteristic
+            section_name (str): Either 'global' or 'video' since we want these modified seperately
+            variable_name (str): Variable we want to modify
+        """
         Characteristic.__init__(
             self,
             uuid, 
@@ -22,13 +40,16 @@ class Config_rw_Characteristic(Characteristic):
         self.variable_name = variable_name
 
 
-    """
-        Reads the value of the variable from the configuration file.
-
-        :param options: Additional options for reading the value.
-        :return: The value of the variable encoded in bytes.
-    """
     def ReadValue(self, options):
+        """
+        Reads the value of variable_name from the config file
+
+        Args:
+            options (): Additional options for reading the value
+        
+        Returns:
+
+        """
         try:
             # Cretae a config parser and read the file
             config = configparser.ConfigParser()
@@ -67,17 +88,17 @@ class Config_rw_Characteristic(Characteristic):
             return []
 
 
-    """
-        Writes the provided value to the configuration file, updating the variable.
-
-        :param value: The value to write, provided as a list of bytes.
-        :param options: Additional options for writing the value.
-    """
     def WriteValue(self, value, options):
+        """
+        Writes 'value' to 'variable_name' in the config file
+
+        Args:
+            value (): Value to write to variable_name
+            options (): Additional options for writing the value
+        """
         try:
             # Convert the byte values to a string
             data = ''.join(chr(v) for v in value)
-            print('FileCharacteristic Write: {}'.format(data))
 
             # Create a config parser and read the file
             config = configparser.ConfigParser()
@@ -87,7 +108,6 @@ class Config_rw_Characteristic(Characteristic):
                 # Update the specific section and variable name if section is 'video'
                 if self.section_name in config:
                     config[self.section_name][self.variable_name] = data
-                    print("HHHHHHHHHH", data)
                 else:
                     print(f"Section {self.section_name} not found")
             else:
@@ -95,7 +115,6 @@ class Config_rw_Characteristic(Characteristic):
                 for section in config.sections():
                     if section != 'video' and self.variable_name in config[section]:
                         config[section][self.variable_name] = data
-                        print("IIIIIIII", data)
             # Write the updated config back to the file
             with open(self.file_path, 'w') as file:
                 config.write(file)

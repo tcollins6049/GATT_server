@@ -6,15 +6,20 @@ class CommandCharacteristic(Characteristic):
     """
     Characteristic responsible for recieving command from application and running that command on the Pi.
 
+    Attributes:
+        service (): Service containing this characteristic
+        uuid (str): uuid of the characteristic
+    
+    Methods:
+        WriteValue(value, options): Take command sent from application and run on pi.
     """
     def __init__(self, service, uuid):
         """
-        init function
+        Initialize the class
 
         Args:
-            service: Service this characteristic is located under.
+            service (): Service this characteristic is located under.
             uuid (str): This characteristic's UUID
-
         """
         Characteristic.__init__(
             self, uuid,
@@ -27,7 +32,7 @@ class CommandCharacteristic(Characteristic):
 
         Args:
             value (str): Command recieved from the application.
-            options:
+            options ():
 
         """
         command = ''.join([chr(b) for b in value])
@@ -40,16 +45,34 @@ class CommandCharacteristic(Characteristic):
             print("Command failed:", e)
     
 
-"""
-Temporary characteristic, will probably be deleted soon.
-
-"""
 class CommandCharacteristicWResponse(Characteristic):
+    """
+    Responsible for recieving and running command sent from application while returning a response
+
+    Attributes:
+        service (): Service containing this characteristic
+        uuid (str): uuid of the characteristic
+    """
     def __init__(self, service, uuid):
+        """
+        Initialize the class
+
+        Args:
+            service (): Service containing this characteristic
+            uuid (str): uuid of the characteristic
+        """
         Characteristic.__init__(self, uuid, ["write", "read"], service)
         self.result = ""
 
+
     def WriteValue(self, value, options):
+        """
+        Recieves and runs the command sent from the application.
+
+        Args:
+            value ():
+            options ():
+        """
         command = ''.join([chr(b) for b in value])
         print(f"Received command: {command}")
         try:
@@ -59,6 +82,7 @@ class CommandCharacteristicWResponse(Characteristic):
         except subprocess.CalledProcessError as e:
             self.result = f"Command failed: {e}"
             print("Command failed:", e)
+
 
     def ReadValue(self, options):
         return [dbus.Byte(c) for c in self.result]

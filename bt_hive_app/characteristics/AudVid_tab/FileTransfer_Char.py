@@ -58,21 +58,6 @@ class FileTransferCharacteristic(Characteristic):
         elif self.file_type == 'sensor':
             base_path = help.get_most_recent_sensor_file(self.file_path)
             return self.ReadStaticFile(base_path)
-    
-    '''
-    def capturePicture(self):
-        """
-        Function responsible for taking a picture using camera connected to the Pi
-
-        """
-        try:
-            # Run the command to capture picture using libcamera-still
-            command = 'libcamera-still -q 10 -o picture.jpg'
-            subprocess.run(command, shell=True, check=True)
-            print('Picture captured successfully.')
-        except subprocess.CalledProcessError as e:
-            print(f'Error capturing picture: {e}')
-    '''
 
 
     def ReadStaticFile(self, base_path):
@@ -163,7 +148,6 @@ class FileTransferCharacteristic(Characteristic):
                 print("IMAGE PATH: ", self.image_path)
                 print("IMAGE SIZE: ", os.path.getsize(self.image_path))
 
-            
             with open(self.image_path, 'rb') as file:
                 file.seek(self.offset)
                 chunk = file.read(mtu)
@@ -182,14 +166,6 @@ class FileTransferCharacteristic(Characteristic):
         except Exception as e:
             print(f"Error reading file: {e}")
             return []
-    
-
-    #def send_picture(self):
-        """
-        Function responsible for running command to take picture using the Pi camera.
-
-        """
-    #    result = subprocess.run(['libcamera ,-still, -o /home/bee/GATT_server/test_picture.jpg'])
 
 
     def reset_offset(self):
@@ -201,19 +177,24 @@ class FileTransferCharacteristic(Characteristic):
 
 class ResetOffsetCharacteristic(Characteristic):
     """
-    Used to reset the byte offset for the file transfer process.
+    The following characteristic is used to reset the file transfer offset
 
+    Attributes:
+        service (): Service containing this characteristic
+        uuid (str): uuid of the characteristic
+        file_transfer_characteristic (Characteristic): Characteristic where reset_offset is being called
 
+    Methods:
+        WriteValue(value, options): Resets offset to 0
     """
     def __init__(self, service, uuid, file_transfer_characteristic):
         """
-        init function
+        Initialize the class
 
         Args:
             service: Service this characteristic is under
             uuid (str): uuid of the characteristic
             file_transfer_characteristic (characteristic): Characteristic we are accessing the offset in
-
         """
         Characteristic.__init__(
             self, uuid,
@@ -228,10 +209,9 @@ class ResetOffsetCharacteristic(Characteristic):
 
         Args:
             value (str): Value recieved from the application.
-            options:
-
+            options ():
         """
-        print("ResetOffsetCharacteristic WriteValue called with value:", value)
+        # print("ResetOffsetCharacteristic WriteValue called with value:", value)
         try:
             self.file_transfer_characteristic.reset_offset()
             print("Offset reset")
