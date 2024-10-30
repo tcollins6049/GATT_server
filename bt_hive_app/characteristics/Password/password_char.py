@@ -5,6 +5,15 @@ from service import Characteristic
 class PasswordVerificationCharacteristic(Characteristic):
     """
     Characteristic for password verification
+
+    Attributes:
+        service (): Service containing this characteristic
+        uuid (str): uuid of the characteristic
+        password_file (str): File containing the correct password
+    
+    Methods:
+        ReadValue(options): 
+        WriteValue(value, options): 
     """
     def __init__(self, service, uuid, password_file):
         Characteristic.__init__(
@@ -15,8 +24,8 @@ class PasswordVerificationCharacteristic(Characteristic):
         print(f"PasswordVerificationCharacteristic initialized with UUID: {uuid}")
 
 
-    def ReadValue(self, options):
-        return [dbus.Byte(1) if self.is_correct_password else dbus.Byte(0)]
+    #def ReadValue(self, options):
+    #    return [dbus.Byte(1) if self.is_correct_password else dbus.Byte(0)]
     
 
     def WriteValue(self, value, options):

@@ -33,7 +33,7 @@ class FileRead_LBL_Characteristic(Characteristic):
             service)
         self.folder_path = base_path
         self.line_offset = 0
-        print(f"Characteristic initialized with UUID: {uuid}")
+        # print(f"Characteristic initialized with UUID: {uuid}")
     
 
     def get_most_recent_file(self, base_path):
@@ -93,7 +93,6 @@ class FileRead_LBL_Characteristic(Characteristic):
         Returns:
             list: Contains line of data if successful, empty otherwise.
         """
-        print("ReadValue called")
         self.file_path = self.get_most_recent_file(self.folder_path)
 
         if self.file_path is not None:
