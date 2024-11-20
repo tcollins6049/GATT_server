@@ -32,7 +32,7 @@ class FileRead_LBL_Characteristic(Characteristic):
             ['read'],
             service)
         self.folder_path = base_path
-        self.line_offset = 0
+        self.line_offset = -1
         # print(f"Characteristic initialized with UUID: {uuid}")
     
 
@@ -102,7 +102,7 @@ class FileRead_LBL_Characteristic(Characteristic):
                     all_data = ''.join(lines)
                     # print(f"Returning data: {all_data}")
                     if (self.line_offset >= len(lines)):
-                        self.line_offset = 0
+                        self.line_offset = -1
                         return [dbus.Byte(b) for b in 'EOF'.encode()]
                     
                     self.line_offset += 1
@@ -119,6 +119,6 @@ class FileRead_LBL_Characteristic(Characteristic):
         """
         Function responsible for resetting the offset, ensures we start reading from the beginning of the file.
         """
-        self.line_offset = 0
+        self.line_offset = -1
         self.file_path = None
         self.lines = []
