@@ -41,8 +41,8 @@ def get_most_recent_sensor_file(base_path):
 
         # List files in this directory
         files = os.listdir(full_path)
-        if (len(files) != 1):
-            raise ValueError(f"Expected exactly one file in directory {full_path}, found {len(files)}")
+        # if (len(files) != 1):
+        #     raise ValueError(f"Expected exactly one file in directory {full_path}, found {len(files)}")
             
         # Get full path of the file
         return full_path + '/' + files[0]
