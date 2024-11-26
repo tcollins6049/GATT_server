@@ -129,6 +129,7 @@ class BLEService(Service):
         # Characteristics for pulling sensor file data. Data files collected in the appmais directory.
         self.add_characteristic(FileTransferCharacteristic(self, '00000211-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/cpu/', 'sensor'))
         self.add_characteristic(FileTransferCharacteristic(self, '00000212-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/temp/', 'sensor'))
+        self.add_characteristic(FileTransferCharacteristic(self, '00000213-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/scale/', 'sensor'))
 
 
     def add_sensor_data_characteristics(self):
