@@ -139,6 +139,7 @@ class BLEService(Service):
         # Adding a characterisitc for cpu file data
         self.add_characteristic(SF_Read_Characteristic(self, '00000301-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/cpu/'))
         self.add_characteristic(CPUFileReadAllCharacteristic(self, '00000303-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/cpu/'))
+        self.add_characteristic(SF_Read_Characteristic(self, '00000308-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/scale/'))
         self.add_characteristic(SF_Read_Characteristic(self, '00000302-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/appmais/bee_tmp/temp/'))
 
         # Needed characteristics for reading the cpu temp csv file line by line.
