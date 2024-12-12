@@ -25,5 +25,13 @@ bt_hive_app
 
 ## Additions
 ### 1. Changing Password
+The password is currently stored in a .txt file in the GATT_Server directory on the Raspberry Pi. In order to change this password, you need to just go into this file and change the password.
+
+However, you will probably also want to change the path of where this file is located. Once you change the path, you will need to update the characteristic on the GATT server so that it can find the file. Do this through the steps below:
+- Go to the file "BLEAppServiceAndAdvertisement.py"
+- On line 82 within the  __init_ function you will see the following line of code:
+  ```
+  self.add_characteristic(PasswordVerificationCharacteristic(self, '00000601-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/GATT_server/password.txt'))
+  ```
 
 ### 2. Adding a new sensor
