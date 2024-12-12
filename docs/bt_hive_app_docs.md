@@ -33,5 +33,6 @@ However, you will probably also want to change the path of where this file is lo
   ```
   self.add_characteristic(PasswordVerificationCharacteristic(self, '00000601-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/GATT_server/password.txt'))
   ```
+- As you can see the third parameter here is the path to the file containing the current password. Just change this path to the new password location.
 
 ### 2. Adding a new sensor
