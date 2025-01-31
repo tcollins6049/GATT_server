@@ -5,7 +5,7 @@ A GATT (Generic Attribute Profile) server is a key componenet in Bluetooth Low E
 ### Current Structure
 - **bt_hive_app**: This folder contains the service, advertisment, and characteristics for the Bluetooth Hive Connection application. This application manages the Bluetooth communication for monitoring and interacting with a hive. It enables the user to view real time data from sensors and to manage hive properties such as config file variables or enabling and disabling sensors.
 
-For documentation on the characteristics and services specific to the Bluetooth Hive Connection application, see [bt_hive_app_docs.md](docs/bt_hive_app_docs.md).
+For documentation on the Bluetooth Hive Connection application, see [bt_hive_app_docs.md](docs/bt_hive_app_docs.md).
 
 ## Getting Started
 ### Installing and Running
