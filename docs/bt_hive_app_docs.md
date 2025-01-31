@@ -23,7 +23,7 @@ bt_hive_app
 - **BLEAppServiceAndAdvertisement.py:** Provides the service and advertisment for the application. These will be called by the GATT server.
 - **Characteristics Directory:** Contains files for all characteristics used in the application. The application has seperate views so the characteristics are organized into files based on the view those characteristics show up in.
 
-For documentation on the characteristics and services specific to the Bluetooth Hive Connection application, see [bt_hive_app_docs.md](docs/characteristics.md).
+For documentation on the characteristics and services specific to the Bluetooth Hive Connection application, see [characteristics.md](docs/characteristics.md).
 
 ## Additions
 ### 1. Registering a New Device (Raspberry Pi)
