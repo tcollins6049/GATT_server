@@ -19,3 +19,16 @@ Performs the same function as the above characteristic but returns the commands 
 ## Modifications_tab (Characteristics used in the modifications tab of the application)
 ### Config_rw_Characteristic
 Handles reading and writing to the beemon-config.ini file. ReadValue() is called when the application wants to display the variable values and not modify them. WriteValue() is called by the application when we are ready to modify a variable.
+
+
+## Password (Characteristics for password verification)
+### PasswordVerificationCharacteristic
+Responsible for verifying password before letting user perform any operations with the Pi. The characteristic recieves the user entered password from the application, compares this to the correct password stored on the Pi, and then returns true or false depending on if the password was accurate or not.
+
+
+## Sensor_Files (Characteristics for DeviceDetails screen)
+### SF_Read_Characteristic (Located in SF_read_Char.py)
+Responsible for reading the most recent recorded single sensor value from the Raspberry Pi. It either returns the most recent non nan sensor reading or, if the value is nan, it traces up through the file and finds when nan recordings began and returns this.
+
+### SF_Read_LBL_Characteristic (Located in SF_read_Char.py)
+Responsible for reading sensor data, similar to the characteristic above, but here we are able to read the entire file line by line. This allows the application to get all values recorded by a certain sensor and display those values in the graphs.
