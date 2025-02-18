@@ -53,7 +53,24 @@ GATT_Server
 - **service.py:** Defines the core components for the GATT server. It includes classes for managing GATT services, characteristics, and descriptors. This enables communication between BLE devices.
 - **bletools.py:** Provides functions used for interacting with the BLE stack.
 
-## Additions
-### 1. Adding a new service and advertisment
+## Extending the Application
+### 1. Registering a New Device (Raspberry Pi)
+In order to add a new device, you need to modify the 'src/registered_devices.tsx' file. This file contains a list of registered devices. Each device in the list looks like this:
+```
+{ id: 'E4:5F:01:5F:AF:73', name: 'rpi4-60' }
+```
+To register a new device, add a new entry to the list including the MAC address and name of the new device.
 
-### 2. Creating new characteristics
+- If you are having connection issues when trying to connect to this new device. Try using the 'SCAN' button within the application. This should scan for and pick up the new device. It will then display the correct MAC address of this device in case the MAC address was input incorrectly.
+
+### 2. Changing Password
+The password is currently stored in a .txt file in the GATT_Server directory on the Raspberry Pi. In order to change this password, you need to just go into this file and change the password.
+
+However, you will probably also want to change the path of where this file is located. Once you change the path, you will need to update the characteristic on the GATT server so that it can find the file. Do this through the steps below:
+- Go to the file "BLEAppServiceAndAdvertisement.py"
+- On line 82 within the  __init_ function you will see the following line of code:
+  ```
+  self.add_characteristic(PasswordVerificationCharacteristic(self, '00000601-710e-4a5b-8d75-3e5b444bc3cf', '/home/bee/GATT_server/password.txt'))
+  ```
+- As you can see the third parameter here is the path to the file containing the current password. Just change this path to the new password location.
+
